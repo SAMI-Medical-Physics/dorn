@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/549013816.svg)](https://zenodo.org/badge/latestdoi/549013816)
+
 # Dorn
 
 Dorn is a Python GUI program for generating individual close contact restrictions for radionuclide therapy patients.
