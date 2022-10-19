@@ -11,7 +11,7 @@ Python >= 3.9
 
 ## Dependencies
 
-Python packages:
+Python package dependencies:
 - `numpy`
 - `scipy`
 - `matplotlib`
@@ -19,15 +19,6 @@ Python packages:
 - `glowgreen`
 - `xmltodict`
 - `python-docx`
-
-E.g., works with:
-- `numpy` == 1.23.3
-- `scipy` == 1.9.2 (but <=1.9.1 for `cx_Freeze` .exe to work)
-- `matplotlib` == 3.6.1
-- `pandas` == 1.5.0
-- `glowgreen` == 0.0.4
-- `xmltodict` == 0.13.0
-- `python-docx` == 0.8.11
 
 ## glowgreen package
 
@@ -39,7 +30,7 @@ https://github.com/SAMI-Medical-Physics/glowgreen
 
 A limited number of tests can be ran using `pytest`. Install `pytest`:
 
-    pip install pytest
+    python -m pip install pytest
 
 
 Add the **dorn-master\src** directory to the PYTHONPATH environment variable. For example, for Windows:
@@ -50,11 +41,11 @@ Then in the **dorn-master** directory run:
 
     python -m pytest
 
-## Build an executable
+## Build a standalone executable
 
-Build an executable to run on computers that don't have Python installed. 
+Build a standalone executable to run on computers that don't have Python installed. 
 
-*Note the *.exe* file will only work on computers running the same platform as the computer on which it was built.* 
+Note the executable will only work on computers running the same platform as the computer on which it was built.
 
 Install `cx_Freeze`:
 
@@ -76,6 +67,22 @@ Note that we have to use
     base = None 
 
 in *make_exe.py* for the command line interface to work in the *.exe*, but it means we're stuck with a black window popping up along with the GUI.
+
+## Executable provided with release
+
+The executable included in the Github release was built using the following:
+
+- Windows 10
+- Python == 3.10.1
+- `pip` == 22.3
+- `numpy` == 1.23.3
+- `scipy` == 1.9.1
+- `matplotlib` == 3.6.1
+- `pandas` == 1.5.0
+- `glowgreen` == 0.0.4
+- `xmltodict` == 0.13.0
+- `python-docx` == 0.8.11
+- `cx_Freeze` == 6.11.1
 
 ## Make icon file
 
@@ -103,10 +110,10 @@ https://github.com/SAMI-Medical-Physics/dorn/issues
 Jake Forster (Jake.Forster@sa.gov.au)
 
 ## Copyright
-Dorn is Copyright (C) 2022 South Australia Medical Imaging.
+Dorn is copyright (C) 2022 South Australia Medical Imaging.
 
 ## License
-MIT license. See LICENSE file.
+MIT License. See LICENSE file.
 
 ## Publications
 

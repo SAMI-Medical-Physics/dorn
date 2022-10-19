@@ -44,7 +44,7 @@ options = {
 setup(
     name="Dorn",
     options=options,
-    version="1.9.5",
+    version="1.9.6",
     description="Individual close contact restrictions for nuclear medicine patients",
     executables=executables,
 )

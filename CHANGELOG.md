@@ -30,3 +30,8 @@ causing the columns to not be aligned. The columns now stay aligned.
 - Restrictions begin unticked.
 - For the curve fit, the initial guess for the clearance component half-life or -lives is a third of the physical half life.
 - Increased font size in patient hand out.
+
+## [1.9.6] - 2022-10-19
+
+### Added
+- Starting from this version, the Github release includes a standalone executable of the Dorn program built on Windows and using the latest version of the `glowgreen` package.
