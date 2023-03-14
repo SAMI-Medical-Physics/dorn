@@ -34,6 +34,7 @@ import collections
 import getpass
 
 import importlib.metadata
+import platform
 
 from glowgreen import (
     Clearance_1m,
@@ -47,6 +48,9 @@ try:
     GLOWGREEN_VERSION = importlib.metadata.version("glowgreen")
 except importlib.metadata.PackageNotFoundError:
     GLOWGREEN_VERSION = "0"
+
+
+WINDOWS_OS = platform.system() == "Windows"
 
 
 def func_exp(t, a, b):
@@ -110,6 +114,7 @@ class Gui:
         self.GUI_BKGD = "gui_background.png"
         self.FILENAME_SETTINGS = "settings.xml"
         # the following would let you call the script from a different dir, but won't work for cx_Freeze exe
+        # if WINDOWS_OS:
         # self.SOFTWARE_ICON = os.path.join(os.path.dirname(__file__), self.SOFTWARE_ICON)
         # self.GUI_BKGD = os.path.join(os.path.dirname(__file__), self.GUI_BKGD)
         # self.FILENAME_SETTINGS = os.path.join(os.path.dirname(__file__), self.FILENAME_SETTINGS)
@@ -266,7 +271,8 @@ class Gui:
         self.root.geometry("450x450")
         self.root.resizable(width=False, height=False)
         self.root.title("Main Menu - {}".format(__program_name__))
-        self.root.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            self.root.iconbitmap(self.SOFTWARE_ICON)
 
         bkgd_img = tk.PhotoImage(file=self.GUI_BKGD)
         tk.Label(self.root, image=bkgd_img).place(x=-3, y=-20)
@@ -350,7 +356,9 @@ class Gui:
             try:
                 with open(self.FILENAME_SETTINGS) as fd:
                     settings_odict = xmltodict.parse(
-                        fd.read(), dict_constructor=collections.OrderedDict, postprocessor=Gui.my_postprocessor_settings
+                        fd.read(),
+                        dict_constructor=collections.OrderedDict,
+                        postprocessor=Gui.my_postprocessor_settings,
                     )
                 read_success = True
             except Exception as e:
@@ -797,7 +805,8 @@ class Gui:
         window.geometry("580x730")
         window.resizable(width=False, height=False)
         window.title("Options - Organisation")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Site options", font=("Arial", 10, "bold")).grid(
             row=0, column=0, pady=(10, 0), columnspan=5
@@ -924,7 +933,8 @@ class Gui:
         window.geometry("{}x600".format(int(window_width)))
         window.resizable(width=False, height=False)
         window.title("Options - Initial Values")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Set initial values", font=("Arial", 10, "bold")).grid(
             row=0, column=0, columnspan=3, pady=(10, 0)
@@ -1144,7 +1154,9 @@ class Gui:
             try:
                 with open(filepath) as fd:
                     odict_from_file = xmltodict.parse(
-                        fd.read(), dict_constructor=collections.OrderedDict, postprocessor=Gui.my_postprocessor_patient
+                        fd.read(),
+                        dict_constructor=collections.OrderedDict,
+                        postprocessor=Gui.my_postprocessor_patient,
                     )
             except Exception as e:
                 messagebox.showerror(
@@ -1167,7 +1179,13 @@ class Gui:
             init_odict = self.get_new_odict()
             for key in init_odict["data"]:
                 if (
-                    key not in ["patient_finished_by", "additional_comments_to_patient", "{}_version".format(__program_name__).lower(), "glowgreen_version"]
+                    key
+                    not in [
+                        "patient_finished_by",
+                        "additional_comments_to_patient",
+                        "{}_version".format(__program_name__).lower(),
+                        "glowgreen_version",
+                    ]
                 ) and (key not in odict_from_file["data"]):
                     messagebox.showerror(
                         title="File Open Error",
@@ -1436,8 +1454,10 @@ class Gui:
                 self.odict["data"].pop("morningstar_version")
                 self.odict["data"]["{}_version".format(__program_name__).lower()] = "0"
                 self.odict["data"]["glowgreen_version"] = "0"
-                self.odict["data"].move_to_end("glowgreen_version", last = False)
-                self.odict["data"].move_to_end("{}_version".format(__program_name__).lower(), last = False)
+                self.odict["data"].move_to_end("glowgreen_version", last=False)
+                self.odict["data"].move_to_end(
+                    "{}_version".format(__program_name__).lower(), last=False
+                )
 
             self.root.title(
                 "{} - {}".format(os.path.basename(filepath), __program_name__)
@@ -1573,7 +1593,8 @@ class Gui:
         window.geometry("390x310")
         window.resizable(width=False, height=False)
         window.title("Info")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(
             window,
@@ -1846,7 +1867,8 @@ class Gui:
         window.geometry("{}x350".format(int(window_width)))
         window.resizable(width=False, height=False)
         window.title("Patient Details")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Last name").grid(
             row=0, column=0, pady=(5, 0), sticky="E"
@@ -2472,7 +2494,8 @@ class Gui:
         window.geometry("342x400")
         window.resizable(width=False, height=False)
         window.title("Administration Details")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         frame1 = tk.LabelFrame(window)
 
@@ -3451,7 +3474,8 @@ class Gui:
         window.geometry("940x{}".format(window_height))
         window.resizable(width=False, height=False)
         window.title("Measured Clearance Data")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Dose Rate Measurements", font="Arial 10 bold").grid(
             row=0, column=0, sticky="s"
@@ -3706,6 +3730,14 @@ class Gui:
             except ValueError:
                 messagebox.showerror("Error", "Bad discharge date/time", parent=window)
                 return
+            if s_discharge_datetime < str2datetime(
+                self.odict["data"]["administration_details"]["administration_datetime"]
+            ):
+                messagebox.showerror(
+                    "Error", "Discharge before administration", parent=window
+                )
+                return
+
             self.odict["data"]["patient_discharge"]["actual_datetime"] = datetime2str(
                 s_discharge_datetime
             )
@@ -3786,10 +3818,7 @@ class Gui:
                     self.odict["data"]["clearance_data"]["measurement_distance"]
                 )
 
-            (
-                discharge_dose_rate_1m,
-                discharge_dose_rate_xm,
-            ) = Gui.discharge_dose_rate(
+            (discharge_dose_rate_1m, discharge_dose_rate_xm,) = Gui.discharge_dose_rate(
                 c_admin_datetime,
                 c_discharge_datetime,
                 model,
@@ -3864,7 +3893,8 @@ class Gui:
         window.geometry("260x295")
         window.resizable(width=False, height=False)
         window.title("Patient Discharge")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         if not self.odict["data"]["patient_discharge"]["recommended_datetime"]:
             compute_recommended_discharge(self)
@@ -3992,9 +4022,7 @@ class Gui:
                     self_rw.df["dose_constraint"] = self_rw.df[
                         "dose_constraint"
                     ].astype(float)
-                    self_rw.df["per_episode"] = self_rw.df["per_episode"].astype(
-                        int
-                    )
+                    self_rw.df["per_episode"] = self_rw.df["per_episode"].astype(int)
 
                     if "restriction_period" not in self_rw.df.columns:
                         self_rw.compute_restrictions(self_gui)
@@ -4161,9 +4189,7 @@ class Gui:
                 filepath = self_gui.filepath
                 if filepath is not None:
                     self_gui.root.title(
-                        "*{} - {}".format(
-                            os.path.basename(filepath), __program_name__
-                        )
+                        "*{} - {}".format(os.path.basename(filepath), __program_name__)
                     )
 
                 self_gui.update_buttons()
@@ -4172,7 +4198,8 @@ class Gui:
         window.geometry("650x590")
         window.resizable(width=False, height=False)
         window.title("Restrictions")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         num_treatments_in_year = float(
             self.odict["data"]["patient_details"]["num_treatments_in_year"]
@@ -4230,7 +4257,8 @@ class Gui:
         window.geometry("500x240")
         window.resizable(width=False, height=False)
         window.title("Comments")
-        window.iconbitmap(self.SOFTWARE_ICON)
+        if WINDOWS_OS:
+            window.iconbitmap(self.SOFTWARE_ICON)
 
         text = tk.Text(window, width=54, height=9, wrap=tk.WORD)
         tk.Button(window, text="Load default", command=load_default_comments).pack(
@@ -4495,9 +4523,7 @@ class Gui:
                 if int(row["applies"]):
                     name_str = "\N{BULLET} {}".format(row["name"])
                     MAX_NAME_LEN = 48  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
-                    name_str_corrected = Gui.split_line_report(
-                        name_str, MAX_NAME_LEN
-                    )
+                    name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
                     n_new_lines = name_str_corrected.count("\n")
                     col1 += name_str_corrected
 
@@ -4916,9 +4942,7 @@ class Gui:
                 if int(row["applies"]):
                     name_str = "\N{BULLET} {}".format(row["name"])
                     MAX_NAME_LEN = 64  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
-                    name_str_corrected = Gui.split_line_report(
-                        name_str, MAX_NAME_LEN
-                    )
+                    name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
                     n_new_lines = name_str_corrected.count("\n")
                     col1 += name_str_corrected
 
