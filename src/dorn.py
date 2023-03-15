@@ -755,14 +755,14 @@ class Gui:
             else:
                 startdir = os.getcwd()
 
-            file = filedialog.askopenfilename(
+            filep = filedialog.askopenfilename(
                 initialdir=startdir,
                 parent=window,
                 title="Select organisation logo",
                 filetypes=[("Image Files", (".png", ".jpg", ".jpeg"))],
             )
-            if file != "":
-                stringvar.set(file)
+            if filep != "" and filep != ():
+                stringvar.set(filep)
 
         def submit_options_organisation(self):
             site_options = [e.get() for e in site]
@@ -1148,7 +1148,7 @@ class Gui:
             filetypes=[("XML files (*.xml)", "*.xml")],
         )
 
-        if filepath != "":
+        if filepath != "" and filepath != ():
             self.previous_data_directory = os.path.dirname(filepath)
 
             try:
