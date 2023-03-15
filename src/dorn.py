@@ -269,9 +269,9 @@ class Gui:
         # Create the GUI
         self.root = tk.Tk()
         self.root.geometry("450x450")
-        self.root.resizable(width=False, height=False)
         self.root.title("Main Menu - {}".format(__program_name__))
         if WINDOWS_OS:
+            self.root.resizable(width=False, height=False)
             self.root.iconbitmap(self.SOFTWARE_ICON)
 
         bkgd_img = tk.PhotoImage(file=self.GUI_BKGD)
@@ -803,9 +803,9 @@ class Gui:
 
         window = tk.Toplevel()
         window.geometry("580x730")
-        window.resizable(width=False, height=False)
         window.title("Options - Organisation")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Site options", font=("Arial", 10, "bold")).grid(
@@ -931,9 +931,9 @@ class Gui:
         if window_width < 470:
             window_width = 470
         window.geometry("{}x600".format(int(window_width)))
-        window.resizable(width=False, height=False)
         window.title("Options - Initial Values")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Set initial values", font=("Arial", 10, "bold")).grid(
@@ -1591,9 +1591,9 @@ class Gui:
     def info_box(self):
         window = tk.Toplevel()
         window.geometry("390x310")
-        window.resizable(width=False, height=False)
         window.title("Info")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(
@@ -1865,9 +1865,9 @@ class Gui:
         if window_width < 380:
             window_width = 380
         window.geometry("{}x350".format(int(window_width)))
-        window.resizable(width=False, height=False)
         window.title("Patient Details")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Last name").grid(
@@ -2492,9 +2492,9 @@ class Gui:
 
         window = tk.Toplevel()
         window.geometry("342x400")
-        window.resizable(width=False, height=False)
         window.title("Administration Details")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         frame1 = tk.LabelFrame(window)
@@ -3472,9 +3472,9 @@ class Gui:
         if window_height < 570:
             window_height = 570
         window.geometry("940x{}".format(window_height))
-        window.resizable(width=False, height=False)
         window.title("Measured Clearance Data")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         tk.Label(window, text="Dose Rate Measurements", font="Arial 10 bold").grid(
@@ -3891,9 +3891,9 @@ class Gui:
 
         window = tk.Toplevel()
         window.geometry("260x295")
-        window.resizable(width=False, height=False)
         window.title("Patient Discharge")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         if not self.odict["data"]["patient_discharge"]["recommended_datetime"]:
@@ -4196,9 +4196,9 @@ class Gui:
 
         window = tk.Toplevel()
         window.geometry("650x590")
-        window.resizable(width=False, height=False)
         window.title("Restrictions")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         num_treatments_in_year = float(
@@ -4255,9 +4255,9 @@ class Gui:
 
         window = tk.Toplevel()
         window.geometry("500x240")
-        window.resizable(width=False, height=False)
         window.title("Comments")
         if WINDOWS_OS:
+            window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
 
         text = tk.Text(window, width=54, height=9, wrap=tk.WORD)
