@@ -3,8 +3,11 @@
 # Dorn
 
 Dorn is a Python GUI program for generating individual close contact restrictions for radionuclide therapy patients.
-Example use cases are I-131 for thyroid cancer and Lu-177-dotatate for neuroendocrine tumours.
-
+Example use cases:
+- \(^{131}\)I for thyroid cancer
+- \(^{131}\)I for hyperthyroidism
+- \(^{177}\)Lu-dotatate for neuroendocrine tumours
+ 
 ## Requires
 
 Python >= 3.9
@@ -19,6 +22,22 @@ Python package dependencies:
 - `glowgreen`
 - `xmltodict`
 - `python-docx`
+
+
+## Platform support
+
+dorn.py and dorn_cli.py are known to run on 
+- Windows 10
+- Windows 11
+- Ubtuntu 22.04.2 LTS
+
+They probably run on Windows 7 but I can no longer confirm. 
+I have not tried running Dorn on a Mac.
+
+On Linux, some of the GUI windows are too small and need to be expanded to reveal content. 
+Also note that LibreOffice does not render the generated report .docx files correctly. 
+In particular, the restriction tables are not formatted correctly in LibreOffice.
+
 
 ## glowgreen package
 
@@ -51,38 +70,34 @@ Install `cx_Freeze`:
 
     python -m pip install cx_Freeze
 
-Currently does not work with `scipy` 1.9.2
-
-    python -m pip install scipy==1.9.1
-
 Then in the **dorn-master\src** directory run:
     
     python make_exe.py build
 
-This generates a directory called something like **exe.win-amd64-3.9** inside **dorn-master\src\build**. 
+This generates a directory called something like **exe.win-amd64-3.11** inside **dorn-master\src\build**. 
 You can copy this directory to another computer and run the program from the *Dorn.exe* file.
 
 Note that we have to use
 
     base = None 
 
-in *make_exe.py* for the command line interface to work in the *.exe*, but it means we're stuck with a black window popping up along with the GUI.
+in *make_exe.py* for the command line interface to work in the *.exe*, but it means we're stuck with a console popping up along with the GUI.
 
 ## Executable provided with release
 
-The executable included in the Github release was built using the following:
+The executable for Windows included in the Github release was built using the following:
 
 - Windows 10
-- Python == 3.10.1
-- `pip` == 22.3
-- `numpy` == 1.23.3
-- `scipy` == 1.9.1
-- `matplotlib` == 3.6.1
-- `pandas` == 1.5.0
+- Python 3.11.2
+- `pip` == 23.0.1
+- `numpy` == 1.23.5
+- `scipy` == 1.9.3
+- `matplotlib` == 3.6.2
+- `pandas` == 1.5.2
 - `glowgreen` == 0.0.4
 - `xmltodict` == 0.13.0
 - `python-docx` == 0.8.11
-- `cx_Freeze` == 6.11.1
+- `cx_Freeze` == 6.14.7
 
 ## Make icon file
 
@@ -110,15 +125,13 @@ https://github.com/SAMI-Medical-Physics/dorn/issues
 Jake Forster (Jake.Forster@sa.gov.au)
 
 ## Copyright
-Dorn is copyright (C) 2022 South Australia Medical Imaging.
+Dorn is copyright (C) 2022, 2023 South Australia Medical Imaging.
 
 ## License
 MIT License. See LICENSE file.
 
-## Publications
-
-Dorn reference paper:
-- Close contact restriction periods for patients who received radioactive iodine-131 therapy for differentiated thyroid cancer, J. C. Forster et al., In preparation.
+## Citation
+See CITATION.cff file. 
 
 ---------------------------------------
 
@@ -144,15 +157,14 @@ The user may add at most 1 additional therapy options with measured clearance da
         Dorn.exe -h
 
 
-### To do
+### TODO
 
-Additional features considered:
+New features considered:
 
-- For therapy options that use generic clearance, allow the user to provide a single dose rate measurement to use for the clearance function parameter: initial dose rate at 1 m.
-- Allow different distances for dose rate measurements.
-- Allow the user to edit/add contact patterns.
-- More dose rate measurement time points and a scroll bar.
+- For therapy options that use generic clearance, allow the user to provide an initial dose rate measurement to determine the clearance function parameter: initial dose rate at 1 m.
+- Add more dose rate measurement time points and a scroll bar.
 - Add curve fit model representing no excretion at night. The difficulty will be adding the support in `glowgreen`.
 - Add a familiar name field for the detector.
-- Review contact patterns. 
-- Low-, medium- and high-grade versions of patterns?
+- Review appropriateness of contact patterns. 
+- Attempt to propagate uncertainty from the contact pattern onto the calculated restriction period or dose.
+- Allow the user to edit/add contact patterns.

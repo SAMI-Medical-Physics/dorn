@@ -14,7 +14,7 @@ executables = [
         base=base,
         icon="icofile.ico",
         target_name="Dorn.exe",
-        copyright="Copyright (C) 2022 South Australia Medical Imaging",
+        copyright="Copyright (C) 2022, 2023 South Australia Medical Imaging",
     )
 ]
 
@@ -44,7 +44,7 @@ options = {
 setup(
     name="Dorn",
     options=options,
-    version="1.9.6",
+    version="1.9.7",
     description="Individual close contact restrictions for nuclear medicine patients",
     executables=executables,
 )

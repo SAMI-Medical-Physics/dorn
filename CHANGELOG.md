@@ -35,3 +35,12 @@ causing the columns to not be aligned. The columns now stay aligned.
 
 ### Added
 - Starting from this version, the Github release includes a standalone executable of the Dorn program built on Windows and using the latest version of the `glowgreen` package.
+
+## [1.9.7] - 2023-03-17
+
+### Added
+- Added support for Linux users.
+- Windows executable included with release was built using Python 3.11.
+
+### Fixed
+- User is unable to enter a discharge time earlier than the administration time.
