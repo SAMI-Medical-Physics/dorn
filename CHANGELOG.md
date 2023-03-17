@@ -36,7 +36,7 @@ causing the columns to not be aligned. The columns now stay aligned.
 ### Added
 - Starting from this version, the Github release includes a standalone executable of the Dorn program built on Windows and using the latest version of the `glowgreen` package.
 
-## [1.9.7] - 2023-03-17
+## [1.9.7] - 2023-03-18
 
 ### Added
 - Added support for Linux users.
