@@ -1053,7 +1053,7 @@ class Gui:
     def options_init_vals(self):
         def fill_stringvar(stringvar):
             mydir = filedialog.askdirectory(initialdir=stringvar.get(), parent=window)
-            if mydir != "":
+            if mydir != "" and mydir != ():
                 stringvar.set(mydir)
 
         def submit_options_init_vals(self):
@@ -4963,8 +4963,7 @@ class Gui:
             initialfile="Patient_handout_" + filename + ".docx",
             filetypes=[("Microsoft Word Document (*.docx)", "*.docx")],
         )
-
-        if f != "":
+        if f != "" and f != ():
             self.previous_report_directory = os.path.dirname(f)
             patient_handout = get_patient_handout(self)
             patient_handout.save(f)
@@ -4985,7 +4984,7 @@ class Gui:
             initialfile="Summary_report_" + filename + ".docx",
             filetypes=[("Microsoft Word Document (*.docx)", "*.docx")],
         )
-        if f != "":
+        if f != "" and f != ():
             self.previous_report_directory = os.path.dirname(f)
             summary_report = get_summary_report(self)
             summary_report.save(f)
@@ -5029,7 +5028,7 @@ class Gui:
             initialfile=filename,
             filetypes=[("XML file (*.xml)", "*.xml")],
         )
-        if filepath_new != "":
+        if filepath_new != "" and filepath_new != ():
             self.previous_data_directory = os.path.dirname(filepath_new)
             self.odict["data"]["patient_finished"] = "1"
             self.odict["data"]["patient_finished_by"] = getpass.getuser()
