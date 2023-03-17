@@ -283,9 +283,7 @@ class RestrictionsWindow:
 
         filepath = gui.filepath
         if filepath is not None:
-            gui.root.title(
-                "*{} - {}".format(os.path.basename(filepath), __program_name__)
-            )
+            gui.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
         gui.update_buttons()
 
@@ -371,15 +369,11 @@ class Gui:
         if add_therapy_measured is not None:
             therapy_name, radionuclide, inpatient = add_therapy_measured
             if therapy_name in self.therapy_options_df["name"].to_list():
-                raise ValueError(
-                    'Therapy named "{}" already exists'.format(therapy_name)
-                )
+                raise ValueError(f'Therapy named "{therapy_name}" already exists')
             radionuclide_list = self.radionuclide_options_df.index.to_list()
             if radionuclide not in radionuclide_list:
                 raise ValueError(
-                    "Radionuclide {} not one of {}".format(
-                        radionuclide, radionuclide_list
-                    )
+                    f"Radionuclide {radionuclide} not one of {radionuclide_list}"
                 )
             measured_therapy_dict = self.therapy_dict(
                 therapy_name, radionuclide, inpatient
@@ -398,32 +392,22 @@ class Gui:
                 generic_parameters,
             ) = add_therapy_generic
             if therapy_name in self.therapy_options_df["name"].to_list():
-                raise ValueError(
-                    'Therapy named "{}" already exists'.format(therapy_name)
-                )
+                raise ValueError(f'Therapy named "{therapy_name}" already exists')
             radionuclide_list = self.radionuclide_options_df.index.to_list()
             if radionuclide not in radionuclide_list:
                 raise ValueError(
-                    "Radionuclide {} not one of {}".format(
-                        radionuclide, radionuclide_list
-                    )
+                    f"Radionuclide {radionuclide} not one of {radionuclide_list}"
                 )
             model_list = ["exponential", "biexponential"]
             if generic_model not in model_list:
-                raise ValueError(
-                    "Model {} not one of {}".format(generic_model, model_list)
-                )
+                raise ValueError(f"Model {generic_model} not one of {model_list}")
             if generic_model == "exponential" and len(generic_parameters) != 2:
                 raise IndexError(
-                    "Exponential model needs 2 parameters, {} supplied".format(
-                        len(generic_parameters)
-                    )
+                    f"Exponential model needs 2 parameters, {len(generic_parameters)} supplied"
                 )
             if generic_model == "biexponential" and len(generic_parameters) != 4:
                 raise IndexError(
-                    "Biexponential model needs 4 parameters, {} supplied".format(
-                        len(generic_parameters)
-                    )
+                    f"Biexponential model needs 4 parameters, {len(generic_parameters)} supplied"
                 )
             generic_therapy_dict = self.therapy_dict(
                 therapy_name,
@@ -454,7 +438,7 @@ class Gui:
         # Create the GUI
         self.root = tk.Tk()
         self.root.geometry("450x450")
-        self.root.title("Main Menu - {}".format(__program_name__))
+        self.root.title(f"Main Menu - {__program_name__}")
         if WINDOWS_OS:
             self.root.resizable(width=False, height=False)
             self.root.iconbitmap(self.SOFTWARE_ICON)
@@ -549,7 +533,7 @@ class Gui:
             except Exception as e:
                 messagebox.showinfo(
                     "Information",
-                    "Ignoring {} due to:\n{}".format(self.FILENAME_SETTINGS, e),
+                    f"Ignoring {self.FILENAME_SETTINGS} due to:\n{e}",
                 )
 
             if read_success:
@@ -562,27 +546,21 @@ class Gui:
                 except Exception as e:
                     messagebox.showinfo(
                         "Information",
-                        "Ignoring organisation email, URL and logo file in {} due to:\n{}".format(
-                            self.FILENAME_SETTINGS, e
-                        ),
+                        f"Ignoring organisation email, URL and logo file in {self.FILENAME_SETTINGS} due to:\n{e}",
                     )
                 try:
                     self.site_options_df = Gui.read_sites(settings_odict)
                 except Exception as e:
                     messagebox.showinfo(
                         "Information",
-                        "Ignoring sites in {} due to:\n{}".format(
-                            self.FILENAME_SETTINGS, e
-                        ),
+                        f"Ignoring sites in {self.FILENAME_SETTINGS} due to:\n{e}",
                     )
                 try:
                     self.init_vals = self.read_init_vals(settings_odict)
                 except Exception as e:
                     messagebox.showinfo(
                         "Information",
-                        "Ignoring initial values in {} due to:\n{}".format(
-                            self.FILENAME_SETTINGS, e
-                        ),
+                        f"Ignoring initial values in {self.FILENAME_SETTINGS} due to:\n{e}",
                     )
         else:
             self.write_settings()
@@ -634,7 +612,7 @@ class Gui:
         generic_parameters=None,
     ):
         if radionuclide not in self.radionuclide_options_df.index.to_list():
-            raise ValueError('Radionuclide "{}" not recognised'.format(radionuclide))
+            raise ValueError(f'Radionuclide "{radionuclide}" not recognised')
         return {
             "name": name,
             "radionuclide": radionuclide,
@@ -766,7 +744,7 @@ class Gui:
             last_name, first_name = self.odict["data"]["patient_details"]["name"].split(
                 "^"
             )
-            info_str += "{} {}".format(last_name.upper(), first_name)
+            info_str += f"{last_name.upper()} {first_name}"
         if "type_therapy" in self.odict["data"]["patient_details"]:
             info_str += "\n{}".format(
                 self.odict["data"]["patient_details"]["type_therapy"]
@@ -846,9 +824,7 @@ class Gui:
             x not in settings_odict["root"]["organisation"] for x in organisation_keys
         ):
             raise KeyError(
-                "Missing one or more of the following keys: {}".format(
-                    organisation_keys
-                )
+                f"Missing one or more of the following keys: {organisation_keys}"
             )
 
         email = settings_odict["root"]["organisation"]["email"]
@@ -896,15 +872,13 @@ class Gui:
 
         therapy_options = self.therapy_options_df.index.to_list()
         if therapy not in therapy_options:
-            raise ValueError('"{}" is not a valid therapy option'.format(therapy))
+            raise ValueError(f'"{therapy}" is not a valid therapy option')
 
         if site not in self.site_options_df.index.to_list():
-            raise ValueError('"{}" is not a valid site option'.format(site))
+            raise ValueError(f'"{site}" is not a valid site option')
 
         if curve_fit_model not in ["exponential", "biexponential"]:
-            raise ValueError(
-                '"{}" is not a valid curve fit model'.format(curve_fit_model)
-            )
+            raise ValueError(f'"{curve_fit_model}" is not a valid curve fit model')
 
         return init_vals
 
@@ -1115,7 +1089,7 @@ class Gui:
         window_width = 6 * width_therapy + 218
         if window_width < 470:
             window_width = 470
-        window.geometry("{}x600".format(int(window_width)))
+        window.geometry(f"{int(window_width)}x600")
         window.title("Options - Initial Values")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
@@ -1293,7 +1267,7 @@ class Gui:
         self.button_clearance.grid(row=4, pady=(5, 0))
         self.button_discharge.grid(row=5, pady=(5, 0))
         self.update_buttons()
-        self.root.title("Main Menu - {}".format(__program_name__))
+        self.root.title(f"Main Menu - {__program_name__}")
         self.filepath = None
         self.unsaved_data = False
 
@@ -1301,7 +1275,7 @@ class Gui:
     def get_new_odict(self):
         odict = collections.OrderedDict()
         odict["data"] = collections.OrderedDict()
-        odict["data"]["{}_version".format(__program_name__).lower()] = __version__
+        odict["data"][f"{__program_name__.lower()}_version"] = __version__
         odict["data"]["glowgreen_version"] = GLOWGREEN_VERSION
         odict["data"]["patient_details"] = collections.OrderedDict()
         odict["data"]["administration_details"] = collections.OrderedDict()
@@ -1346,18 +1320,14 @@ class Gui:
             except Exception as e:
                 messagebox.showerror(
                     title="File Open Error",
-                    message="Unable to open {} due to:\n{}".format(
-                        os.path.basename(filepath), e
-                    ),
+                    message=f"Unable to open {os.path.basename(filepath)} due to:\n{e}",
                 )
                 return
 
             if "data" not in odict_from_file:
                 messagebox.showerror(
                     title="File Open Error",
-                    message='Unable to open {}. Missing key "data"'.format(
-                        os.path.basename(filepath)
-                    ),
+                    message=f'Unable to open {os.path.basename(filepath)}. Missing key "data"',
                 )
                 return
 
@@ -1368,15 +1338,13 @@ class Gui:
                     not in [
                         "patient_finished_by",
                         "additional_comments_to_patient",
-                        "{}_version".format(__program_name__).lower(),
+                        f"{__program_name__.lower()}_version",
                         "glowgreen_version",
                     ]
                 ) and (key not in odict_from_file["data"]):
                     messagebox.showerror(
                         title="File Open Error",
-                        message='Unable to open {}. Missing key "{}".'.format(
-                            os.path.basename(filepath), key
-                        ),
+                        message=f'Unable to open {os.path.basename(filepath)}. Missing key "{key}".',
                     )
                     return
             if (
@@ -1385,9 +1353,7 @@ class Gui:
             ):
                 messagebox.showerror(
                     title="File Open Error",
-                    message='Unable to open {}. Missing key "recommended_datetime".'.format(
-                        os.path.basename(filepath)
-                    ),
+                    message=f'Unable to open {os.path.basename(filepath)}. Missing key "recommended_datetime".',
                 )
                 return
 
@@ -1637,16 +1603,14 @@ class Gui:
 
             if "morningstar_version" in self.odict["data"]:
                 self.odict["data"].pop("morningstar_version")
-                self.odict["data"]["{}_version".format(__program_name__).lower()] = "0"
+                self.odict["data"][f"{__program_name__.lower()}_version"] = "0"
                 self.odict["data"]["glowgreen_version"] = "0"
                 self.odict["data"].move_to_end("glowgreen_version", last=False)
                 self.odict["data"].move_to_end(
-                    "{}_version".format(__program_name__).lower(), last=False
+                    f"{__program_name__.lower()}_version", last=False
                 )
 
-            self.root.title(
-                "{} - {}".format(os.path.basename(filepath), __program_name__)
-            )
+            self.root.title(f"{os.path.basename(filepath)} - {__program_name__}")
 
             info_str = self.get_info_str()
             if info_str:
@@ -1689,12 +1653,12 @@ class Gui:
 
         self.filepath = filepath
         self.unsaved_data = False
-        self.odict["data"]["{}_version".format(__program_name__).lower()] = __version__
+        self.odict["data"][f"{__program_name__.lower()}_version"] = __version__
 
         with open(filepath, "w") as fd:
             fd.write(xmltodict.unparse(self.odict, pretty=True))
 
-        self.root.title("{} - {}".format(os.path.basename(filepath), __program_name__))
+        self.root.title(f"{os.path.basename(filepath)} - {__program_name__}")
 
     # Save As
     def save_patient_as(self):
@@ -1742,9 +1706,7 @@ class Gui:
             if filepath is not None:
                 response = messagebox.askyesnocancel(
                     title="Save Changes?",
-                    message="{} has been modified, save changes?".format(
-                        os.path.basename(filepath)
-                    ),
+                    message=f"{os.path.basename(filepath)} has been modified, save changes?",
                     default=messagebox.CANCEL,
                 )
                 if response == True:
@@ -1786,27 +1748,24 @@ class Gui:
             text=__program_name__,
             font="Arial 10 bold",
         ).pack(pady=(10, 0))
-        tk.Label(window, text="version {}".format(__version__)).pack()
+        tk.Label(window, text=f"version {__version__}").pack()
         tk.Label(
             window,
-            text="released {}".format(__release_date__),
+            text=f"released {__release_date__}",
         ).pack()
-        tk.Label(window, text="using glowgreen {}".format(GLOWGREEN_VERSION)).pack()
+        tk.Label(window, text=f"using glowgreen {GLOWGREEN_VERSION}").pack()
 
-        tk.Label(window, text="Author: {}".format(__author__)).pack(pady=(20, 0))
-        tk.Label(window, text="Email: {}".format(__author_email__)).pack()
+        tk.Label(window, text=f"Author: {__author__}").pack(pady=(20, 0))
+        tk.Label(window, text=f"Email: {__author_email__}").pack()
         tk.Label(window, text=__homepage__).pack()
 
         tk.Label(
             window,
-            text="Copyright \N{COPYRIGHT SIGN} {} {}".format(
-                __copyright_year__,
-                __copyright_owner__,
-            ),
+            text=f"Copyright \N{COPYRIGHT SIGN} {__copyright_year__} {__copyright_owner__}",
         ).pack(pady=(20, 0))
 
         # tk.Label(window, text="License: Apache-2.0", font="Arial 9 bold").pack()
-        tk.Label(window, text="License: {}".format(__license__)).pack()
+        tk.Label(window, text=f"License: {__license__}").pack()
 
         tk.Button(window, text="OK", command=window.withdraw).pack(pady=(20, 0))
 
@@ -1982,9 +1941,7 @@ class Gui:
 
             filepath = self.filepath
             if filepath is not None:
-                self.root.title(
-                    "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                )
+                self.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
             self.generic_updates()
 
@@ -2049,7 +2006,7 @@ class Gui:
         window_width = (130 / 20) * width_therapy + 97
         if window_width < 380:
             window_width = 380
-        window.geometry("{}x350".format(int(window_width)))
+        window.geometry(f"{int(window_width)}x350")
         window.title("Patient Details")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
@@ -2362,7 +2319,7 @@ class Gui:
                     "administered_activity"
                 ] = r_admin_activity
                 admin_activity_str.set(
-                    "The administered activity was {:.0f} MBq".format(r_admin_activity)
+                    f"The administered activity was {r_admin_activity:.0f} MBq"
                 )
                 l1.grid(row=2, pady=(10, 0))
                 button_ok.grid(row=3, pady=(10, 0))
@@ -2425,9 +2382,7 @@ class Gui:
 
             filepath = self.filepath
             if filepath is not None:
-                self.root.title(
-                    "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                )
+                self.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
             self.generic_updates()
             self.update_buttons()
@@ -2547,7 +2502,7 @@ class Gui:
                     "administered_activity"
                 ] = r_admin_activity
                 admin_activity_str.set(
-                    "The administered activity was {:.0f} MBq".format(r_admin_activity)
+                    f"The administered activity was {r_admin_activity:.0f} MBq"
                 )
                 l1.grid(row=2, pady=(10, 0))
                 button_ok.grid(row=3, pady=(10, 0))
@@ -2624,9 +2579,7 @@ class Gui:
 
             filepath = self.filepath
             if filepath is not None:
-                self.root.title(
-                    "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                )
+                self.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
             self.generic_updates()
             self.update_buttons()
@@ -2800,7 +2753,7 @@ class Gui:
         l1 = tk.Label(window, textvariable=admin_activity_str)
         if admin_activity is not None:
             admin_activity_str.set(
-                "The administered activity was {:.0f} MBq".format(admin_activity)
+                f"The administered activity was {admin_activity:.0f} MBq"
             )
             l1.grid(row=2, pady=(10, 0))
 
@@ -3175,7 +3128,7 @@ class Gui:
                     except ValueError:
                         messagebox.showerror(
                             "Error",
-                            "Bad dose rate measurement {}".format(qdoserate),
+                            f"Bad dose rate measurement {qdoserate}",
                             parent=window,
                         )
                         return
@@ -3183,7 +3136,7 @@ class Gui:
                     if qqdoserate < 0.0:
                         messagebox.showerror(
                             "Error",
-                            "Bad dose rate measurement {}".format(qqdoserate),
+                            f"Bad dose rate measurement {qqdoserate}",
                             parent=window,
                         )
                         return
@@ -3352,9 +3305,7 @@ class Gui:
 
             filepath = self.filepath
             if filepath is not None:
-                self.root.title(
-                    "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                )
+                self.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
             self.update_buttons()
 
@@ -3402,7 +3353,7 @@ class Gui:
                     except Exception as e:
                         messagebox.showerror(
                             "Error",
-                            "Unable to fit a biexponential curve.\n{}".format(e),
+                            f"Unable to fit a biexponential curve.\n{e}",
                             parent=window,
                         )
                         return
@@ -3450,7 +3401,7 @@ class Gui:
                     except Exception as e:
                         messagebox.showerror(
                             "Error",
-                            "Unable to fit an exponential curve.\n{}".format(e),
+                            f"Unable to fit an exponential curve.\n{e}",
                             parent=window,
                         )
                         return
@@ -3537,9 +3488,7 @@ class Gui:
 
             filepath = self.filepath
             if filepath is not None:
-                self.root.title(
-                    "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                )
+                self.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
             button_view_residuals["state"] = "normal"
 
@@ -3656,7 +3605,7 @@ class Gui:
         window_height = 24 * self.N_MEASUREMENTS_MAX + 300
         if window_height < 570:
             window_height = 570
-        window.geometry("940x{}".format(window_height))
+        window.geometry(f"940x{int(window_height)}")
         window.title("Measured Clearance Data")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
@@ -3881,25 +3830,19 @@ class Gui:
                     hrs_new = cfit.get_timedelta(activity_limit_for_discharge, init=a0)
                 if activity_limit_for_discharge.is_integer():
                     activity_limit_for_discharge = int(activity_limit_for_discharge)
-                    activity_limit_for_discharge_str = "{}".format(
-                        activity_limit_for_discharge
-                    )
+                    activity_limit_for_discharge_str = f"{activity_limit_for_discharge}"
                 else:
-                    activity_limit_for_discharge_str = "{:.1f}".format(
-                        activity_limit_for_discharge
+                    activity_limit_for_discharge_str = (
+                        f"{activity_limit_for_discharge:.1f}"
                     )
 
                 if hrs_new is not None:
                     if hrs is None:
                         hrs = hrs_new
-                        method = "{} MBq retained".format(
-                            activity_limit_for_discharge_str
-                        )
+                        method = f"{activity_limit_for_discharge_str} MBq retained"
                     elif hrs_new > hrs:
                         hrs = hrs_new
-                        method = "{} MBq retained".format(
-                            activity_limit_for_discharge_str
-                        )
+                        method = f"{activity_limit_for_discharge_str} MBq retained"
             if hrs is None:
                 hrs = 0.0
                 method = "immediately following administration"
@@ -3967,9 +3910,7 @@ class Gui:
 
             filepath = self.filepath
             if filepath is not None:
-                self.root.title(
-                    "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                )
+                self.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
             self.update_buttons()
 
@@ -4044,7 +3985,7 @@ class Gui:
                 self.odict["data"]["patient_discharge"]["discharge_activity"]
             )
             discharge_activity_str.set(
-                "Activity retained at\ndischarge: {:.0f} MBq".format(discharge_activity)
+                f"Activity retained at\ndischarge: {discharge_activity:.0f} MBq"
             )
             discharge_activity_label.grid(row=5, columnspan=5)
 
@@ -4058,16 +3999,16 @@ class Gui:
                 if discharge_activity > activity_limit_for_discharge:
                     if activity_limit_for_discharge.is_integer():
                         activity_limit_for_discharge = int(activity_limit_for_discharge)
-                        activity_limit_for_discharge_str = "{}".format(
-                            activity_limit_for_discharge
+                        activity_limit_for_discharge_str = (
+                            f"{activity_limit_for_discharge}"
                         )
                     else:
-                        activity_limit_for_discharge_str = "{:.1f}".format(
-                            activity_limit_for_discharge
+                        activity_limit_for_discharge_str = (
+                            f"{activity_limit_for_discharge:.1f}"
                         )
 
                     discharge_activity_warning_str.set(
-                        "WARNING:\n>{} MBq".format(activity_limit_for_discharge_str)
+                        f"WARNING:\n>{activity_limit_for_discharge_str} MBq"
                     )
                     discharge_activity_warning_label["fg"] = "red"
                 else:
@@ -4116,9 +4057,9 @@ class Gui:
         )
 
         frame = tk.Frame(window)
-        tk.Label(
-            frame, text="Recommended discharge: {}".format(recommended_datetime_str)
-        ).grid(columnspan=7)
+        tk.Label(frame, text=f"Recommended discharge: {recommended_datetime_str}").grid(
+            columnspan=7
+        )
 
         tk.Label(frame, text="Actual Discharge", font="Arial 10 bold").grid(
             row=1, columnspan=7, pady=(10, 5)
@@ -4214,9 +4155,7 @@ class Gui:
 
         tk.Label(
             window,
-            text="NB. You selected {} treatment(s) in a year".format(
-                num_treatments_in_year
-            ),
+            text=f"NB. You selected {num_treatments_in_year} treatment(s) in a year",
         ).grid(columnspan=4, sticky="e", pady=(0, 20))
         tk.Label(window, text="Type", font="Arial 10 bold").grid(row=1)
         tk.Label(window, text="End", font="Arial 10 bold").grid(row=1, column=1)
@@ -4250,9 +4189,7 @@ class Gui:
 
             filepath = self.filepath
             if filepath is not None:
-                self.root.title(
-                    "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                )
+                self.root.title(f"*{os.path.basename(filepath)} - {__program_name__}")
 
             self.update_buttons()
 
@@ -4350,7 +4287,7 @@ class Gui:
                 .replace(" 0", " ")
             )
             a0 = self.odict["data"]["administration_details"]["administered_activity"]
-            a0 = "{:.0f}".format(float(a0))
+            a0 = f"{float(a0):.0f}"
 
             inpatient = self.therapy_options_df.loc[
                 self.odict["data"]["patient_details"]["type_therapy"], "inpatient"
@@ -4396,18 +4333,14 @@ class Gui:
             instructions_2 = "your particular circumstances "
             instructions_3 = (
                 "are given here. The time for which each of the listed restrictions applies is based "
-                + "on the amount of radioactive substance given to you{}. If you follow these restrictions for the specified time, ".format(
-                    generic_str
-                )
+                + f"on the amount of radioactive substance given to you{generic_str}. If you follow these restrictions for the specified time, "
                 + "the radiation dose to persons around you will be very small and need not be of concern. "
                 + "If you have any difficulty in complying with these restrictions, or there are special "
                 + "circumstances you would like to be taken into consideration, please let your Doctor know "
             )
-            instructions_4 = "before you {}. ".format(inpatient_str)
+            instructions_4 = f"before you {inpatient_str}. "
             instructions_5 = (
-                "You may also contact the Nuclear Medicine Department at {} ".format(
-                    site
-                )
+                f"You may also contact the Nuclear Medicine Department at {site} "
                 + "at any time if you have any worries or queries regarding your therapy."
             )
 
@@ -4436,9 +4369,7 @@ class Gui:
             r.text = "For more information"
             s = p.add_run()
             s.font.bold = True
-            s.text = "\n{}\n{}\n{}\n{}\n{}\n{}".format(
-                site, addressA, addressB, phone, email, url
-            )
+            s.text = f"\n{site}\n{addressA}\n{addressB}\n{phone}\n{email}\n{url}"
             s.font.size = Pt(8)
 
             section.footer_distance = Inches(0.1)
@@ -4464,19 +4395,15 @@ class Gui:
             row_cells = table.add_row().cells
             row_cells[
                 0
-            ].text = "\u2022 First name: {}\n\u2022 Last name: {}\n\u2022 ID number: {}\n\u2022 Date of birth: {}".format(
-                first_name, last_name, pid, dob
-            )
+            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
             row_cells[
                 1
-            ].text = "\u2022 Type of therapy: {}\n\u2022 Site: {}\n\u2022 Date/time of administration: {}\n\u2022 Activity administered: {} MBq".format(
-                type_therapy, site, admin_datetime_str, a0
-            )
+            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0} MBq"
             if discharge_datetime_str is not None:
                 row_cells[
                     1
-                ].text += "\n\u2022 Date/time of patient discharge: {}".format(
-                    discharge_datetime_str
+                ].text += (
+                    f"\n\u2022 Date/time of patient discharge: {discharge_datetime_str}"
                 )
 
             # set the font size for the table
@@ -4711,14 +4638,14 @@ class Gui:
                 discharge_activity = float(
                     self.odict["data"]["patient_discharge"]["discharge_activity"]
                 )
-                discharge_activity_str = "{:.0f}".format(discharge_activity)
+                discharge_activity_str = f"{discharge_activity:.0f}"
                 calculated_discharge_dose_rate_1m = float(
                     self.odict["data"]["patient_discharge"][
                         "calculated_discharge_dose_rate_1m"
                     ]
                 )
-                calculated_discharge_dose_rate_1m_str = "{:.1f}".format(
-                    calculated_discharge_dose_rate_1m
+                calculated_discharge_dose_rate_1m_str = (
+                    f"{calculated_discharge_dose_rate_1m:.1f}"
                 )
 
             measurement_distance_str = None
@@ -4734,25 +4661,21 @@ class Gui:
                 )
                 if measurement_distance.is_integer():
                     measurement_distance = int(measurement_distance)
-                    measurement_distance_str = "{}".format(measurement_distance)
+                    measurement_distance_str = f"{measurement_distance}"
                 else:
-                    measurement_distance_str = "{:.1f}".format(measurement_distance)
+                    measurement_distance_str = f"{measurement_distance:.1f}"
                 first_dose_rate_measurement = float(
                     self.odict["data"]["clearance_data"]["measurement"][0][
                         "doserate_corrected"
                     ]
                 )
-                first_dose_rate_measurement_str = "{:.1f}".format(
-                    first_dose_rate_measurement
-                )
+                first_dose_rate_measurement_str = f"{first_dose_rate_measurement:.1f}"
                 last_dose_rate_measurement = float(
                     self.odict["data"]["clearance_data"]["measurement"][-1][
                         "doserate_corrected"
                     ]
                 )
-                last_dose_rate_measurement_str = "{:.1f}".format(
-                    last_dose_rate_measurement
-                )
+                last_dose_rate_measurement_str = f"{last_dose_rate_measurement:.1f}"
 
             df = pd.DataFrame.from_dict(
                 self.odict["data"]["restrictions"]["restriction"]
@@ -4765,9 +4688,9 @@ class Gui:
             )
             if num_treatments_in_year.is_integer():
                 num_treatments_in_year = int(num_treatments_in_year)
-                num_treatments_in_year_str = "{}".format(num_treatments_in_year)
+                num_treatments_in_year_str = f"{num_treatments_in_year}"
             else:
-                num_treatments_in_year_str = "{:.1f}".format(num_treatments_in_year)
+                num_treatments_in_year_str = f"{num_treatments_in_year:.1f}"
 
             plural_str = "" if num_treatments_in_year == 1 else "s"
             inpatient_str = "upon discharge" if inpatient else "at home"
@@ -4782,9 +4705,7 @@ class Gui:
                     + "rates, derived from several measurements of dose rate from this patient over a period of time."
                 )
 
-            instructions_1 = "{} It was assumed the patient is receiving {} treatment{} in a year.".format(
-                generic_str, num_treatments_in_year_str, plural_str
-            )
+            instructions_1 = f"{generic_str} It was assumed the patient is receiving {num_treatments_in_year_str} treatment{plural_str} in a year."
             instructions_2 = (
                 "The precautions and restrictions necessary to limit radiation exposure of other persons "
                 + "have been fully explained to this patient. The patient has also been provided with written "
@@ -4814,9 +4735,7 @@ class Gui:
             r.text = "For more information"
             s = p.add_run()
             s.font.bold = True
-            s.text = "\n{}\n{}\n{}\n{}\n{}\n{}".format(
-                site, addressA, addressB, phone, email, url
-            )
+            s.text = f"\n{site}\n{addressA}\n{addressB}\n{phone}\n{email}\n{url}"
             s.font.size = Pt(8)
 
             section.footer_distance = Inches(0.1)
@@ -4842,19 +4761,15 @@ class Gui:
             row_cells = table.add_row().cells
             row_cells[
                 0
-            ].text = "\u2022 First name: {}\n\u2022 Last name: {}\n\u2022 ID number: {}\n\u2022 Date of birth: {}".format(
-                first_name, last_name, pid, dob
-            )
+            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
             row_cells[
                 1
-            ].text = "\u2022 Type of therapy: {}\n\u2022 Site: {}\n\u2022 Date/time of administration: {}\n\u2022 Activity administered: {} MBq".format(
-                type_therapy, site, admin_datetime_str, a0_str
-            )
+            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0_str} MBq"
             if discharge_datetime_str is not None:
                 row_cells[
                     1
-                ].text += "\n\u2022 Date/time of patient discharge: {}".format(
-                    discharge_datetime_str
+                ].text += (
+                    f"\n\u2022 Date/time of patient discharge: {discharge_datetime_str}"
                 )
 
             if pregnancy_excluded:
@@ -4864,28 +4779,20 @@ class Gui:
             if hygiene_status:
                 row_cells[
                     0
-                ].text += "\n\u2022 The patient can be properly cared for (and good hygiene maintained) {}".format(
-                    inpatient_str
-                )
+                ].text += f"\n\u2022 The patient can be properly cared for (and good hygiene maintained) {inpatient_str}"
 
             if recommended_discharge_based_on is not None:
                 row_cells[
                     1
-                ].text += "\n\u2022 Recommended date/time of discharge based on {}: {}".format(
-                    recommended_discharge_based_on, recommended_discharge_datetime_str
-                )
+                ].text += f"\n\u2022 Recommended date/time of discharge based on {recommended_discharge_based_on}: {recommended_discharge_datetime_str}"
                 row_cells[
                     1
-                ].text += "\n\u2022 Calculated activity retained at time of discharge: {} MBq".format(
-                    discharge_activity_str
-                )
+                ].text += f"\n\u2022 Calculated activity retained at time of discharge: {discharge_activity_str} MBq"
             if activity_limit_for_discharge is not None:
                 if discharge_activity > activity_limit_for_discharge:
                     row_cells[
                         1
-                    ].text += "- exceeds the recommended limit of {:.0f} MBq".format(
-                        activity_limit_for_discharge
-                    )
+                    ].text += f"- exceeds the recommended limit of {activity_limit_for_discharge:.0f} MBq"
             if measurement_distance_str is not None:
                 row_cells[
                     1
