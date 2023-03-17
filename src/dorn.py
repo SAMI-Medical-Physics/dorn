@@ -3,7 +3,7 @@ __version__ = "1.9.7"
 __release_date__ = "17 Mar 2023"
 __homepage__ = "https://github.com/SAMI-Medical-Physics/dorn"
 __author__ = "Jake Forster"
-__author_email__ = "Jake.Forster@sa.gov.au"
+__author_email__ = "jake.forster@sa.gov.au"
 __copyright_year__ = "2022, 2023"
 __copyright_owner__ = "South Australia Medical Imaging"
 __license__ = "MIT"
@@ -3672,9 +3672,13 @@ class Gui:
                     self.odict["data"]["clearance_data"]["measurement_distance"]
                 )
             cfit = Clearance_1m(model, meaningful_parameters, measurement_distance)
+            dr_1m_init = cfit.model_params[0]
+            hrs = None
+            method = None
+            if dr_1m_init > 25.0:
+                hrs = cfit.get_timedelta(25.0)
+                method = "25 uSv/h at 1 m"
 
-            hrs = cfit.get_timedelta(25.0)
-            method = "25 uSv/h at 1 m"
             radionuclide = self.therapy_options_df.loc[
                 self.odict["data"]["patient_details"]["type_therapy"], "radionuclide"
             ]
@@ -3687,7 +3691,9 @@ class Gui:
                         "administered_activity"
                     ]
                 )
-                hrs_new = cfit.get_timedelta(activity_limit_for_discharge, init=a0)
+                hrs_new = None
+                if a0 > activity_limit_for_discharge:
+                    hrs_new = cfit.get_timedelta(activity_limit_for_discharge, init=a0)
                 if activity_limit_for_discharge.is_integer():
                     activity_limit_for_discharge = int(activity_limit_for_discharge)
                     activity_limit_for_discharge_str = "{}".format(
@@ -3697,14 +3703,29 @@ class Gui:
                     activity_limit_for_discharge_str = "{:.1f}".format(
                         activity_limit_for_discharge
                     )
-                if hrs_new > hrs:
-                    hrs = hrs_new
-                    method = "{} MBq on board".format(activity_limit_for_discharge_str)
+
+                if hrs_new is not None:
+                    if hrs is None:
+                        hrs = hrs_new
+                        method = "{} MBq retained".format(
+                            activity_limit_for_discharge_str
+                        )
+                    elif hrs_new > hrs:
+                        hrs = hrs_new
+                        method = "{} MBq retained".format(
+                            activity_limit_for_discharge_str
+                        )
+            if hrs is None:
+                hrs = 0.0
+                method = "immediately following administration"
 
             c_admin_datetime = str2datetime(
                 self.odict["data"]["administration_details"]["administration_datetime"]
             )
-            recommended_discharge_datetime = c_admin_datetime + timedelta(hours=hrs)
+            add_mins = 1 if hrs != 0 else 0
+            recommended_discharge_datetime = c_admin_datetime + timedelta(
+                hours=hrs, minutes=add_mins
+            )
 
             self.odict["data"]["patient_discharge"]["recommended_datetime"][
                 "datetime"
@@ -3838,7 +3859,7 @@ class Gui:
                 self.odict["data"]["patient_discharge"]["discharge_activity"]
             )
             discharge_activity_str.set(
-                "Activity on board at\ndischarge: {:.0f} MBq".format(discharge_activity)
+                "Activity retained at\ndischarge: {:.0f} MBq".format(discharge_activity)
             )
             discharge_activity_label.grid(row=5, columnspan=5)
 
@@ -4864,12 +4885,12 @@ class Gui:
             if recommended_discharge_based_on is not None:
                 row_cells[
                     1
-                ].text += "\n\u2022 Recommended date/time of discharge for {}: {}".format(
+                ].text += "\n\u2022 Recommended date/time of discharge based on {}: {}".format(
                     recommended_discharge_based_on, recommended_discharge_datetime_str
                 )
                 row_cells[
                     1
-                ].text += "\n\u2022 Calculated activity on board at time of discharge: {} MBq".format(
+                ].text += "\n\u2022 Calculated activity retained at time of discharge: {} MBq".format(
                     discharge_activity_str
                 )
             if activity_limit_for_discharge is not None:
