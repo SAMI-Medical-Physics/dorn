@@ -44,3 +44,4 @@ causing the columns to not be aligned. The columns now stay aligned.
 
 ### Fixed
 - User is unable to enter a discharge time earlier than the administration time.
+- A recommended discharge time for inpatient therapy is now calculated even when the initial dose rate at 1 m is less than 25 uSv/h or the administered activity is less than the recommended maximum administered activity for outpatient therapy.

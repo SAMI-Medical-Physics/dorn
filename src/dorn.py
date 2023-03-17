@@ -105,6 +105,191 @@ def date2str(d):
     return str(d.year) + str(d.month).zfill(2) + str(d.day).zfill(2)
 
 
+class RestrictionsWindow:
+    def __init__(self, gui):
+        self.chks = []
+        if gui.odict["data"]["restrictions"]:
+            self.df = pd.DataFrame.from_dict(
+                gui.odict["data"]["restrictions"]["restriction"]
+            )
+
+            # Values are in strings first-thing after reading XML file
+            self.df["theta"] = self.df["theta"].map(
+                lambda x: [float(i) for i in x]
+                if isinstance(x, (list, np.ndarray))
+                else float(x)
+            )
+            self.df["c"] = self.df["c"].map(
+                lambda x: [float(i) for i in x]
+                if isinstance(x, (list, np.ndarray))
+                else float(x)
+            )
+            self.df["d"] = self.df["d"].map(
+                lambda x: [float(i) for i in x]
+                if isinstance(x, (list, np.ndarray))
+                else float(x)
+            )
+            self.df["dose_constraint"] = self.df["dose_constraint"].astype(float)
+            self.df["per_episode"] = self.df["per_episode"].astype(int)
+
+            if "restriction_period" not in self.df.columns:
+                self.compute_restrictions(gui)
+        else:
+            self.df = cs_patterns()
+            self.compute_restrictions(gui)
+
+    def compute_restrictions(self, gui):
+        admin_datetime = str2datetime(
+            gui.odict["data"]["administration_details"]["administration_datetime"]
+        )
+
+        model = gui.odict["data"]["clearance_data"]["curve_fit"]["model"]
+        meaningful_parameters = [
+            float(a)
+            for a in gui.odict["data"]["clearance_data"]["curve_fit"][
+                "meaningful_parameters"
+            ].values()
+        ]
+        if gui.therapy_options_df.loc[
+            gui.odict["data"]["patient_details"]["type_therapy"],
+            "generic_clearance",
+        ]:
+            measurement_distance = 1.0
+        else:
+            measurement_distance = float(
+                gui.odict["data"]["clearance_data"]["measurement_distance"]
+            )
+        cfit = Clearance_1m(model, meaningful_parameters, measurement_distance)
+
+        num_treatments_in_year = float(
+            gui.odict["data"]["patient_details"]["num_treatments_in_year"]
+        )
+
+        self.df = restrictions_for(
+            self.df,
+            cfit,
+            num_treatments_in_year,
+            admin_datetime=admin_datetime,
+        )
+        self.df["datetime_end"] = self.df["datetime_end"].map(datetime2str)
+
+        gui.odict["data"]["glowgreen_version"] = GLOWGREEN_VERSION
+
+    # Display restrictions in window
+    def make_display(self, gui, window):
+        for i in range(self.df.shape[0]):
+            if self.df["per_episode"].iloc[i]:
+                tk.Label(window, text=self.df["name"].iloc[i], fg="#0072B2").grid(
+                    row=i + 2
+                )
+            else:
+                tk.Label(window, text=self.df["name"].iloc[i]).grid(row=i + 2)
+            datetime_end = str2datetime(self.df["datetime_end"].iloc[i])
+            datetime_end_display = (
+                (datetime_end + timedelta(hours=1))
+                if datetime_end.minute != 0
+                else datetime_end
+            )
+            datetime_end_str = (
+                datetime_end_display.strftime("%d %b, %I %p")
+                .lstrip("0")
+                .replace(" 0", " ")
+            )
+            tk.Label(window, text=datetime_end_str).grid(
+                row=i + 2, column=1, padx=(5, 5)
+            )
+
+            self.chks.append(tk.IntVar())
+            tk.Checkbutton(window, variable=self.chks[-1]).grid(row=i + 2, column=2)
+
+            if "applies" in self.df.columns:
+                self.chks[-1].set(int(self.df.loc[i, "applies"]))
+            else:
+                self.chks[-1].set(0)
+
+            tk.Button(
+                window,
+                text="View",
+                command=lambda i=i: self.view_restriction(gui, i),
+            ).grid(row=i + 2, column=3, padx=(5, 0))
+
+    # View button alongside each restriction
+    def view_restriction(self, gui, i):
+        admin_datetime = str2datetime(
+            gui.odict["data"]["administration_details"]["administration_datetime"]
+        )
+
+        model = gui.odict["data"]["clearance_data"]["curve_fit"]["model"]
+        meaningful_parameters = [
+            float(a)
+            for a in gui.odict["data"]["clearance_data"]["curve_fit"][
+                "meaningful_parameters"
+            ].values()
+        ]
+        if gui.therapy_options_df.loc[
+            gui.odict["data"]["patient_details"]["type_therapy"],
+            "generic_clearance",
+        ]:
+            measurement_distance = 1.0
+        else:
+            measurement_distance = float(
+                gui.odict["data"]["clearance_data"]["measurement_distance"]
+            )
+        cfit = Clearance_1m(model, meaningful_parameters, measurement_distance)
+
+        num_treatments_in_year = float(
+            gui.odict["data"]["patient_details"]["num_treatments_in_year"]
+        )
+
+        pd_series = self.df.iloc[i]
+        if pd_series["pattern_type"] == "repeating":
+            cpat = ContactPatternRepeating(
+                pd_series["theta"], pd_series["c"], pd_series["d"]
+            )
+        elif pd_series["pattern_type"] == "onceoff":
+            cpat = ContactPatternOnceoff(
+                pd_series["theta"], pd_series["c"], pd_series["d"]
+            )
+
+        if pd_series["per_episode"] == 0:
+            dose_constraint = pd_series["dose_constraint"] / num_treatments_in_year
+        elif pd_series["per_episode"] == 1:
+            dose_constraint = pd_series["dose_constraint"]
+
+        cpat.plot(
+            name=pd_series["name"],
+            cfit=cfit,
+            dose_constraint=dose_constraint,
+            admin_datetime=admin_datetime,
+        )
+
+    # Submit button in window
+    def submit_restrictions(self, gui, window):
+        self.df["applies"] = [e.get() for e in self.chks]
+
+        gui.odict["data"]["restrictions"]["restriction"] = self.df.to_dict(
+            "records", into=collections.OrderedDict
+        )
+        window.withdraw()
+
+        gui.odict["data"]["reports_generated"] = "0"
+
+        gui.unsaved_data = True
+
+        if int(gui.odict["data"]["patient_finished"]):
+            gui.odict["data"]["patient_finished"] = "0"
+            gui.odict["data"]["patient_finished_by"] = "0"
+            gui.viewing_completed_patient_label.place_forget()
+
+        filepath = gui.filepath
+        if filepath is not None:
+            gui.root.title(
+                "*{} - {}".format(os.path.basename(filepath), __program_name__)
+            )
+
+        gui.update_buttons()
+
+
 class Gui:
     def __init__(
         self, add_therapy_measured=None, add_therapy_generic=None, write_info=False
@@ -4014,207 +4199,6 @@ class Gui:
 
     # Restrictions
     def restrictions_window(self):
-        class RestrictionsWindow:
-            def __init__(self_rw, self_gui):
-                # Pass the instance of Gui when creating an instance of RestrictionsWindow
-                # self_rw refers to the instance of RestrictionsWindow, self_gui refers to the instance of Gui
-                self_rw.chks = []
-                if self_gui.odict["data"]["restrictions"]:
-                    self_rw.df = pd.DataFrame.from_dict(
-                        self_gui.odict["data"]["restrictions"]["restriction"]
-                    )
-
-                    # Values are in strings first-thing after reading XML file
-                    self_rw.df["theta"] = self_rw.df["theta"].map(
-                        lambda x: [float(i) for i in x]
-                        if isinstance(x, (list, np.ndarray))
-                        else float(x)
-                    )
-                    self_rw.df["c"] = self_rw.df["c"].map(
-                        lambda x: [float(i) for i in x]
-                        if isinstance(x, (list, np.ndarray))
-                        else float(x)
-                    )
-                    self_rw.df["d"] = self_rw.df["d"].map(
-                        lambda x: [float(i) for i in x]
-                        if isinstance(x, (list, np.ndarray))
-                        else float(x)
-                    )
-                    self_rw.df["dose_constraint"] = self_rw.df[
-                        "dose_constraint"
-                    ].astype(float)
-                    self_rw.df["per_episode"] = self_rw.df["per_episode"].astype(int)
-
-                    if "restriction_period" not in self_rw.df.columns:
-                        self_rw.compute_restrictions(self_gui)
-                else:
-                    self_rw.df = cs_patterns()
-                    self_rw.compute_restrictions(self_gui)
-
-            def compute_restrictions(self_rw, self_gui):
-                admin_datetime = str2datetime(
-                    self_gui.odict["data"]["administration_details"][
-                        "administration_datetime"
-                    ]
-                )
-
-                model = self_gui.odict["data"]["clearance_data"]["curve_fit"]["model"]
-                meaningful_parameters = [
-                    float(a)
-                    for a in self_gui.odict["data"]["clearance_data"]["curve_fit"][
-                        "meaningful_parameters"
-                    ].values()
-                ]
-                if self_gui.therapy_options_df.loc[
-                    self_gui.odict["data"]["patient_details"]["type_therapy"],
-                    "generic_clearance",
-                ]:
-                    measurement_distance = 1.0
-                else:
-                    measurement_distance = float(
-                        self_gui.odict["data"]["clearance_data"]["measurement_distance"]
-                    )
-                cfit = Clearance_1m(model, meaningful_parameters, measurement_distance)
-
-                num_treatments_in_year = float(
-                    self_gui.odict["data"]["patient_details"]["num_treatments_in_year"]
-                )
-
-                self_rw.df = restrictions_for(
-                    self_rw.df,
-                    cfit,
-                    num_treatments_in_year,
-                    admin_datetime=admin_datetime,
-                )
-                self_rw.df["datetime_end"] = self_rw.df["datetime_end"].map(
-                    datetime2str
-                )
-
-                self_gui.odict["data"]["glowgreen_version"] = GLOWGREEN_VERSION
-
-            # Display restrictions in window
-            def make_display(self_rw, self_gui):
-                for i in range(self_rw.df.shape[0]):
-                    if self_rw.df["per_episode"].iloc[i]:
-                        tk.Label(
-                            window, text=self_rw.df["name"].iloc[i], fg="#0072B2"
-                        ).grid(row=i + 2)
-                    else:
-                        tk.Label(window, text=self_rw.df["name"].iloc[i]).grid(
-                            row=i + 2
-                        )
-                    datetime_end = str2datetime(self_rw.df["datetime_end"].iloc[i])
-                    datetime_end_display = (
-                        (datetime_end + timedelta(hours=1))
-                        if datetime_end.minute != 0
-                        else datetime_end
-                    )
-                    datetime_end_str = (
-                        datetime_end_display.strftime("%d %b, %I %p")
-                        .lstrip("0")
-                        .replace(" 0", " ")
-                    )
-                    tk.Label(window, text=datetime_end_str).grid(
-                        row=i + 2, column=1, padx=(5, 5)
-                    )
-
-                    self_rw.chks.append(tk.IntVar())
-                    tk.Checkbutton(window, variable=self_rw.chks[-1]).grid(
-                        row=i + 2, column=2
-                    )
-
-                    if "applies" in self_rw.df.columns:
-                        self_rw.chks[-1].set(int(self_rw.df.loc[i, "applies"]))
-                    else:
-                        self_rw.chks[-1].set(0)
-
-                    tk.Button(
-                        window,
-                        text="View",
-                        command=lambda i=i: restr.view_restriction(self_gui, i),
-                    ).grid(row=i + 2, column=3, padx=(5, 0))
-
-            # View button alongside each restriction
-            def view_restriction(self_rw, self_gui, i):
-                admin_datetime = str2datetime(
-                    self_gui.odict["data"]["administration_details"][
-                        "administration_datetime"
-                    ]
-                )
-
-                model = self_gui.odict["data"]["clearance_data"]["curve_fit"]["model"]
-                meaningful_parameters = [
-                    float(a)
-                    for a in self_gui.odict["data"]["clearance_data"]["curve_fit"][
-                        "meaningful_parameters"
-                    ].values()
-                ]
-                if self_gui.therapy_options_df.loc[
-                    self_gui.odict["data"]["patient_details"]["type_therapy"],
-                    "generic_clearance",
-                ]:
-                    measurement_distance = 1.0
-                else:
-                    measurement_distance = float(
-                        self_gui.odict["data"]["clearance_data"]["measurement_distance"]
-                    )
-                cfit = Clearance_1m(model, meaningful_parameters, measurement_distance)
-
-                num_treatments_in_year = float(
-                    self_gui.odict["data"]["patient_details"]["num_treatments_in_year"]
-                )
-
-                pd_series = self_rw.df.iloc[i]
-                if pd_series["pattern_type"] == "repeating":
-                    cpat = ContactPatternRepeating(
-                        pd_series["theta"], pd_series["c"], pd_series["d"]
-                    )
-                elif pd_series["pattern_type"] == "onceoff":
-                    cpat = ContactPatternOnceoff(
-                        pd_series["theta"], pd_series["c"], pd_series["d"]
-                    )
-
-                if pd_series["per_episode"] == 0:
-                    dose_constraint = (
-                        pd_series["dose_constraint"] / num_treatments_in_year
-                    )
-                elif pd_series["per_episode"] == 1:
-                    dose_constraint = pd_series["dose_constraint"]
-
-                cpat.plot(
-                    name=pd_series["name"],
-                    cfit=cfit,
-                    dose_constraint=dose_constraint,
-                    admin_datetime=admin_datetime,
-                )
-
-            # Submit button in window
-            def submit_restrictions(self_rw, self_gui):
-
-                self_rw.df["applies"] = [e.get() for e in self_rw.chks]
-
-                self_gui.odict["data"]["restrictions"][
-                    "restriction"
-                ] = self_rw.df.to_dict("records", into=collections.OrderedDict)
-                window.withdraw()
-
-                self_gui.odict["data"]["reports_generated"] = "0"
-
-                self_gui.unsaved_data = True
-
-                if int(self_gui.odict["data"]["patient_finished"]):
-                    self_gui.odict["data"]["patient_finished"] = "0"
-                    self_gui.odict["data"]["patient_finished_by"] = "0"
-                    self_gui.viewing_completed_patient_label.place_forget()
-
-                filepath = self_gui.filepath
-                if filepath is not None:
-                    self_gui.root.title(
-                        "*{} - {}".format(os.path.basename(filepath), __program_name__)
-                    )
-
-                self_gui.update_buttons()
-
         window = tk.Toplevel()
         window.geometry("650x590")
         window.title("Restrictions")
@@ -4239,10 +4223,12 @@ class Gui:
         tk.Label(window, text="Applicable?", font="Arial 10 bold").grid(row=1, column=2)
 
         restr = RestrictionsWindow(self)
-        restr.make_display(self)
+        restr.make_display(self, window)
 
         tk.Button(
-            window, text="Submit", command=lambda: restr.submit_restrictions(self)
+            window,
+            text="Submit",
+            command=lambda: restr.submit_restrictions(self, window),
         ).grid(row=restr.df.shape[0] + 2, columnspan=4, pady=(20, 0))
 
     # Comments
