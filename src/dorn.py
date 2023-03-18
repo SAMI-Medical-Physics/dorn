@@ -1709,11 +1709,13 @@ class Gui:
                     message=f"{os.path.basename(filepath)} has been modified, save changes?",
                     default=messagebox.CANCEL,
                 )
-                if response == True:
+                if response is None:
+                    pass
+                elif response:
                     self.save_patient()
                     self.root.quit()
                     self.root.destroy()
-                elif response == False:
+                else:
                     self.root.quit()
                     self.root.destroy()
             else:
@@ -1722,12 +1724,14 @@ class Gui:
                     message="Do you want to save the progress?",
                     default=messagebox.CANCEL,
                 )
-                if response == True:
+                if response is None:
+                    pass
+                elif response:
                     t = self.save_patient_as()
                     if t:
                         self.root.quit()
                         self.root.destroy()
-                elif response == False:
+                else:
                     self.root.quit()
                     self.root.destroy()
         else:
@@ -5143,7 +5147,7 @@ class Gui:
             or "curve_fit" not in self.odict["data"]["clearance_data"]
         )
 
-    def action_forbidden_comments(self):
+    def action_forbidden_common_comments_reports(self):
         a = all(
             k in self.odict["data"]["patient_details"]
             for k in (
@@ -5198,13 +5202,6 @@ class Gui:
             not in self.odict["data"]["patient_discharge"]["recommended_datetime"]
         ):
             d = False
-        e = "restriction" in self.odict["data"]["restrictions"]
-        if e:
-            e = (
-                "restriction_period"
-                in self.odict["data"]["restrictions"]["restriction"][0]
-            )
-
         if "type_therapy" in self.odict["data"]["patient_details"]:
             if self.therapy_options_df.loc[
                 self.odict["data"]["patient_details"]["type_therapy"],
@@ -5215,86 +5212,26 @@ class Gui:
                 self.odict["data"]["patient_details"]["type_therapy"], "inpatient"
             ]:
                 d = True
-
+        e = "restriction" in self.odict["data"]["restrictions"]
+        if e:
+            e = (
+                "restriction_period"
+                in self.odict["data"]["restrictions"]["restriction"][0]
+            )
         forbidden = not (a and b and c and d and e)
+        return forbidden
+
+    def action_forbidden_comments(self):
+        # inactivate the comments button until the business end
+        forbidden = self.action_forbidden_common_comments_reports()
         if self.odict["data"]["additional_comments_to_patient"] != "0":
             forbidden = False
-
         return forbidden
 
     def action_forbidden_reports(self):
-        a = all(
-            k in self.odict["data"]["patient_details"]
-            for k in (
-                "name",
-                "id",
-                "dob",
-                "type_therapy",
-                "site",
-                "num_treatments_in_year",
-                "pregnancy_excluded",
-                "breastfeeding_excluded",
-                "hygiene",
-            )
-        )
-        b = all(
-            k in self.odict["data"]["administration_details"]
-            for k in (
-                "calibrated_activity",
-                "calibration_datetime",
-                "administration_datetime",
-                "administered_activity",
-            )
-        )
-        c = all(
-            k in self.odict["data"]["clearance_data"]
-            for k in ("measurement", "curve_fit")
-        )
-        if "measurement" in self.odict["data"]["clearance_data"]:
-            if isinstance(self.odict["data"]["clearance_data"]["measurement"], list):
-                if (
-                    "hours_elapsed"
-                    not in self.odict["data"]["clearance_data"]["measurement"][0]
-                ):
-                    c = False
-            else:
-                if (
-                    "hours_elapsed"
-                    not in self.odict["data"]["clearance_data"]["measurement"]
-                ):
-                    c = False
-        d = all(
-            k in self.odict["data"]["patient_discharge"]
-            for k in (
-                "actual_datetime",
-                "discharge_activity",
-                "calculated_discharge_dose_rate_1m",
-                "calculated_discharge_dose_rate_xm",
-            )
-        )
-        if (
-            "datetime"
-            not in self.odict["data"]["patient_discharge"]["recommended_datetime"]
-        ):
-            d = False
-        if "type_therapy" in self.odict["data"]["patient_details"]:
-            if self.therapy_options_df.loc[
-                self.odict["data"]["patient_details"]["type_therapy"],
-                "generic_clearance",
-            ]:
-                c = True
-            if not self.therapy_options_df.loc[
-                self.odict["data"]["patient_details"]["type_therapy"], "inpatient"
-            ]:
-                d = True
-        e = "restriction" in self.odict["data"]["restrictions"]
-        if e:
-            e = (
-                "restriction_period"
-                in self.odict["data"]["restrictions"]["restriction"][0]
-            )
+        forbidden = self.action_forbidden_common_comments_reports()
         f = self.odict["data"]["additional_comments_to_patient"] != "0"
-        forbidden = not (a and b and c and d and e and f)
+        forbidden = forbidden or (not f)
         return forbidden
 
     # "Action required" meaning data is missing which can be filled via the window

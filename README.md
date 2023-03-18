@@ -5,11 +5,11 @@
 Dorn is a Python GUI program for generating individual close contact restrictions for radionuclide therapy patients.
 Some example use cases are shown in the Table below.
 
-| Radionuclide therapy                             | In/outpatient | Dose rate measurements |
-|--------------------------------------------------|---------------|------------------------|
-| $^{131}$I for thyroid cancer                     | Inpatient     | Yes                    |
-| $^{131}$I for hyperthyroidism                    | Outpatient    | No                     |
-| $^{177}$Lu-dotatate for neuroendocrine neoplasms | Outpatient    | Yes                    |
+| Radionuclide therapy                               | In/outpatient | Dose rate measurements |
+|----------------------------------------------------|---------------|------------------------|
+| ${}^{131}$I for thyroid cancer                     | Inpatient     | Yes                    |
+| ${}^{131}$I for hyperthyroidism                    | Outpatient    | No                     |
+| ${}^{177}$Lu-dotatate for neuroendocrine neoplasms | Outpatient    | Yes                    |
  
 ## Requires
 
@@ -33,10 +33,11 @@ The Python files *dorn.py* and *dorn_cli.py* are known to run on:
 - Windows 10
 - Windows 11
 - Ubtuntu 22.04.2 LTS
+
 They probably also run on Windows 7 but I can no longer confirm. I have not tried on macOS.
 
 On Linux, some of the GUI windows are too small and need to be expanded to reveal content. 
-Also note that LibreOffice does not render the generated report .docx files correctly; the restriction tables are not formatted as intended. 
+Also note that LibreOffice does not render the generated report *.docx* files correctly; the restriction tables are not formatted as intended. 
 
 
 ## glowgreen package
@@ -128,7 +129,7 @@ https://github.com/SAMI-Medical-Physics/dorn
 https://github.com/SAMI-Medical-Physics/dorn/issues
 
 ## Author
-Jake Forster (Jake.Forster@sa.gov.au)
+Jake Forster (jake.forster@sa.gov.au)
 
 ## Copyright
 Dorn is copyright (C) 2022, 2023 South Australia Medical Imaging.
