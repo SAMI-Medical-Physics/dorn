@@ -5,11 +5,11 @@
 Dorn is a Python GUI program for generating individual close contact restrictions for radionuclide therapy patients.
 Some example use cases are shown in the Table below.
 
-| Radionuclide therapy                               | In/outpatient | Dose rate measurements |
-|----------------------------------------------------|---------------|------------------------|
-| ${}^{131}$I for thyroid cancer                     | Inpatient     | Yes                    |
-| ${}^{131}$I for hyperthyroidism                    | Outpatient    | No                     |
-| ${}^{177}$Lu-dotatate for neuroendocrine neoplasms | Outpatient    | Yes                    |
+| Radionuclide therapy                         | In/outpatient | Dose rate measurements |
+|----------------------------------------------|---------------|------------------------|
+| I-131 for thyroid cancer                     | Inpatient     | Yes                    |
+| I-131 for hyperthyroidism                    | Outpatient    | No                     |
+| Lu-177-dotatate for neuroendocrine neoplasms | Outpatient    | Yes                    |
  
 ## Requires
 
@@ -67,7 +67,7 @@ Then in the **dorn-master** directory run:
 
 ## Executable provided with release
 
-Each release on Github includes a zip file. The zip file contains an executable file that can be used to run the Dorn program on Windows 10 and 11 systems without needing to install Python and Dorn's other dependencies.
+Each release on Github includes a zip file. The zip file contains an executable file *Dorn.exe* that can be used to run the Dorn program on Windows 10 and 11 systems without needing to install Python and Dorn's other dependencies.
 
 The executable for Windows provided with the current release (version 1.9.7) was built using the following:
 
