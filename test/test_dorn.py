@@ -1,6 +1,14 @@
 import numpy as np
 from dorn import Gui
 from datetime import datetime, timedelta
+from glowgreen import (
+    Clearance_1m,
+    cs_patterns,
+    ContactPatternOnceoff,
+    ContactPatternRepeating,
+    restrictions_for,
+)
+from datetime import datetime
 
 
 def test_administered_activity():
@@ -202,4 +210,70 @@ def test_discharge_dose_rate_biexp():
             measurement_distance,
         )[1]
         == model_parameters[0]
+    )
+
+
+def test_glowgreen_api():
+    theta = [0, 6]
+    c = [1.5, 25]
+    d = [0.1, 1]
+    cpat = ContactPatternOnceoff(theta, c, d)
+
+    theta = np.array([0.6, 2.5])
+    c = np.array([0.7, 2])
+    d = np.array([1, 2])
+    cpat = ContactPatternRepeating(theta, c, d)
+
+    df = cs_patterns()
+    df_cols = df.columns
+    assert all(
+        x in df_cols
+        for x in [
+            "name",
+            "pattern_type",
+            "theta",
+            "c",
+            "d",
+            "dose_constraint",
+            "per_episode",
+        ]
+    )
+    assert all(x == "onceoff" or x == "repeating" for x in df["pattern_type"].unique())
+    assert all(x == 0 or x == 1 for x in df["per_episode"].unique())
+
+    model = "exponential"
+    dose_rate_xm_init = 80.0
+    effective_half_life = 11.0
+    model_params = [dose_rate_xm_init, effective_half_life]
+    measurement_distance = 2.0
+    cfit = Clearance_1m(model, model_params, measurement_distance)
+    cfit.model_params[0]
+    cfit.get_timedelta(25.0)
+    cfit.get_timedelta(600, init=700.0)
+
+    model = "biexponential"
+    dose_rate_xm_init = 50.0
+    fraction_1 = 0.4
+    half_life_1 = 11.0
+    half_life_2 = 20.0
+    model_params = [dose_rate_xm_init, fraction_1, half_life_1, half_life_2]
+    measurement_distance = 2.0
+    cfit = Clearance_1m(model, model_params, measurement_distance)
+    cfit.model_params[0]
+    cfit.get_timedelta(25.0)
+    cfit.get_timedelta(600, init=700.0)
+
+    num_treatments_in_year = 2.0
+    df_new = restrictions_for(
+        df, cfit, num_treatments_in_year, admin_datetime=datetime.now()
+    )
+    df_cols = df_new.columns
+    assert all(
+        x in df_cols
+        for x in [
+            "dose_constraint_corrected",
+            "restriction_period",
+            "dose",
+            "datetime_end",
+        ]
     )

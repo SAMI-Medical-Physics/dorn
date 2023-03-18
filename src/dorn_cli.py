@@ -69,7 +69,7 @@ def main():
             try:
                 float(x)
             except Exception as e:
-                raise ValueError("Model parameters must be numbers\n{}".format(e))
+                raise ValueError(f"Model parameters must be numbers\n{e}")
         meaningful_parameters = [float(x) for x in meaningful_parameters]
         add_therapy_generic = [
             therapy_name,

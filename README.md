@@ -3,8 +3,14 @@
 # Dorn
 
 Dorn is a Python GUI program for generating individual close contact restrictions for radionuclide therapy patients.
-Example use cases are I-131 for thyroid cancer and Lu-177-dotatate for neuroendocrine tumours.
+Some example use cases are shown in the Table below.
 
+| Radionuclide therapy                         | In/outpatient | Dose rate measurements |
+|----------------------------------------------|---------------|------------------------|
+| I-131 for thyroid cancer                     | Inpatient     | Yes                    |
+| I-131 for hyperthyroidism                    | Outpatient    | No                     |
+| Lu-177-dotatate for neuroendocrine neoplasms | Outpatient    | Yes                    |
+ 
 ## Requires
 
 Python >= 3.9
@@ -20,6 +26,20 @@ Python package dependencies:
 - `xmltodict`
 - `python-docx`
 
+
+## Platforms 
+
+The Python files *dorn.py* and *dorn_cli.py* are known to run on:
+- Windows 10
+- Windows 11
+- Ubtuntu 22.04.2 LTS
+
+They probably also run on Windows 7 but I can no longer confirm. I have not tried on macOS.
+
+On Linux, some of the GUI windows are too small and need to be expanded to reveal content. 
+Also note that LibreOffice does not render the generated report *.docx* files correctly; the restriction tables are not formatted as intended. 
+
+
 ## glowgreen package
 
 Dorn uses the Python package `glowgreen` for calculating radiation dose from contact patterns and restriction periods. 
@@ -33,17 +53,40 @@ A limited number of tests can be ran using `pytest`. Install `pytest`:
     python -m pip install pytest
 
 
-Add the **dorn-master\src** directory to the PYTHONPATH environment variable. For example, for Windows:
+Add the **dorn-master\src** directory to the PYTHONPATH environment variable. For Windows:
 
     set PYTHONPATH=%PYTHONPATH%;\path\to\dorn-master\src\
+    
+For Linux: 
+
+    export PYTHONPATH="${PYTHONPATH}:/path/to/dorn-master/src/"
 
 Then in the **dorn-master** directory run:
 
     python -m pytest
 
-## Build a standalone executable
+## Executable provided with release
 
-Build a standalone executable to run on computers that don't have Python installed. 
+Each release on Github includes a zip file. The zip file contains an executable file *Dorn.exe* that can be used to run the Dorn program on Windows 10 and 11 systems without needing to install Python and Dorn's other dependencies.
+
+The executable for Windows provided with the current release (version 1.9.7) was built using the following:
+
+- Windows 10
+- Python 3.11.2
+- `pip` == 23.0.1
+- `numpy` == 1.24.2
+- `scipy` == 1.10.1
+- `matplotlib` == 3.7.1
+- `pandas` == 1.5.3
+- `glowgreen` == 0.0.4
+- `xmltodict` == 0.13.0
+- `python-docx` == 0.8.11
+- `cx_Freeze` == 6.14.7
+
+## Build your own standalone executable
+
+Follow these instructions to build a standalone executable of Dorn that can run on computers that don't have Python installed.
+This requires Python and the Python packages listed above.
 
 Note the executable will only work on computers running the same platform as the computer on which it was built.
 
@@ -51,38 +94,18 @@ Install `cx_Freeze`:
 
     python -m pip install cx_Freeze
 
-Currently does not work with `scipy` 1.9.2
-
-    python -m pip install scipy==1.9.1
-
 Then in the **dorn-master\src** directory run:
     
     python make_exe.py build
 
-This generates a directory called something like **exe.win-amd64-3.9** inside **dorn-master\src\build**. 
+This generates a directory called something like **exe.win-amd64-3.11** inside **dorn-master\src\build**. 
 You can copy this directory to another computer and run the program from the *Dorn.exe* file.
 
 Note that we have to use
 
     base = None 
 
-in *make_exe.py* for the command line interface to work in the *.exe*, but it means we're stuck with a black window popping up along with the GUI.
-
-## Executable provided with release
-
-The executable included in the Github release was built using the following:
-
-- Windows 10
-- Python == 3.10.1
-- `pip` == 22.3
-- `numpy` == 1.23.3
-- `scipy` == 1.9.1
-- `matplotlib` == 3.6.1
-- `pandas` == 1.5.0
-- `glowgreen` == 0.0.4
-- `xmltodict` == 0.13.0
-- `python-docx` == 0.8.11
-- `cx_Freeze` == 6.11.1
+in *make_exe.py* for the command line interface to work in the *.exe*, but it means we're stuck with a console popping up along with the GUI.
 
 ## Make icon file
 
@@ -107,18 +130,16 @@ https://github.com/SAMI-Medical-Physics/dorn
 https://github.com/SAMI-Medical-Physics/dorn/issues
 
 ## Author
-Jake Forster (Jake.Forster@sa.gov.au)
+Jake Forster (jake.forster@sa.gov.au)
 
 ## Copyright
-Dorn is copyright (C) 2022 South Australia Medical Imaging.
+Dorn is copyright (C) 2022, 2023 South Australia Medical Imaging.
 
 ## License
 MIT License. See LICENSE file.
 
-## Publications
-
-Dorn reference paper:
-- Close contact restriction periods for patients who received radioactive iodine-131 therapy for differentiated thyroid cancer, J. C. Forster et al., In preparation.
+## Citation
+See CITATION.cff file. 
 
 ---------------------------------------
 
@@ -144,15 +165,14 @@ The user may add at most 1 additional therapy options with measured clearance da
         Dorn.exe -h
 
 
-### To do
+### TODO
 
-Additional features considered:
+New features considered:
 
-- For therapy options that use generic clearance, allow the user to provide a single dose rate measurement to use for the clearance function parameter: initial dose rate at 1 m.
-- Allow different distances for dose rate measurements.
-- Allow the user to edit/add contact patterns.
-- More dose rate measurement time points and a scroll bar.
+- For therapy options that use generic clearance, allow the user to provide an initial dose rate measurement to determine the clearance function parameter: initial dose rate at 1 m.
+- Add more dose rate measurement time points and a scroll bar.
 - Add curve fit model representing no excretion at night. The difficulty will be adding the support in `glowgreen`.
 - Add a familiar name field for the detector.
-- Review contact patterns. 
-- Low-, medium- and high-grade versions of patterns?
+- Review appropriateness of contact patterns. 
+- Attempt to propagate uncertainty from the contact pattern onto the calculated restriction period or dose.
+- Allow the user to edit/add contact patterns.

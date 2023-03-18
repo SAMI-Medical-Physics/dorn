@@ -35,3 +35,13 @@ causing the columns to not be aligned. The columns now stay aligned.
 
 ### Added
 - Starting from this version, the Github release includes a standalone executable of the Dorn program built on Windows and using the latest version of the `glowgreen` package.
+
+## [1.9.7] - 2023-03-18
+
+### Added
+- Added support for Linux users.
+- Windows executable included with release was built using Python 3.11.
+
+### Fixed
+- User is unable to enter a discharge time earlier than the administration time.
+- A recommended discharge time for inpatient therapy is now calculated even when the initial dose rate at 1 m is less than 25 uSv/h or the administered activity is less than the recommended maximum administered activity for outpatient therapy.
