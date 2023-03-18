@@ -85,7 +85,8 @@ The executable for Windows provided with the current release (version 1.9.7) was
 
 ## Build your own standalone executable
 
-Build a standalone executable to run on computers that don't have Python installed. 
+Follow these instructions to build a standalone executable of Dorn that can run on computers that don't have Python installed.
+This requires Python and the Python packages listed above.
 
 Note the executable will only work on computers running the same platform as the computer on which it was built.
 
