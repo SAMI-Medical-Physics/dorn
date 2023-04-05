@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the article from preferred-citation and the software itself."
+authors:
+- family-names: "Forster"
+  given-names: "Jake Cameron"
+  orcid: "https://orcid.org/0000-0002-0313-5897"
+title: "Dorn"
+version: 1.9.7
+date-released: 2023-03-18
+doi: 10.5281/zenodo.7189660
+url: "https://github.com/SAMI-Medical-Physics/dorn"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Forster"
+    given-names: "Jake Cameron"
+    orcid: "https://orcid.org/0000-0002-0313-5897"
+  - family-names: "Badager"
+    given-names: "Daniel"
+    orcid: "https://orcid.org/0000-0001-7093-6021"
+  - family-names: "Hickson"
+    given-names: "Kevin James"
+    orcid: "https://orcid.org/0000-0002-4006-4944"
+  doi: "10.1088/1361-6498/acc4d0"
+  journal: "Journal of Radiological Protection"
+  title: "Close contact restriction periods for patients who have received iodine-131 therapy for differentiated thyroid cancer"
+  volume: 43
+  issue: 2
+  year: 2023
+  month: 4
+  start: 021501
+identifiers:
+- type: doi
+  value: 10.5281/zenodo.7748450
+  description: "Zenodo DOI for version 1.9.7"
+- type: doi
+  value: 10.5281/zenodo.7224836
+  description: "Zenodo DOI for version 1.9.6"
+- type: doi
+  value: 10.48550/arXiv.2210.14065
+  description: "The arXiv preprint of the paper"
