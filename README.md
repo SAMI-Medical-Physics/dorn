@@ -69,19 +69,19 @@ Then in the **dorn-master** directory run:
 
 Each release on Github includes a zip file. The zip file contains an executable file *Dorn.exe* that can be used to run the Dorn program on Windows 10 and 11 systems without needing to install Python and Dorn's other dependencies.
 
-The executable for Windows provided with the current release (version 1.9.7) was built using the following:
+The executable for Windows provided with the current release (version 1.10.0) was built using the following:
 
 - Windows 10
 - Python 3.11.2
-- `pip` == 23.0.1
+- `pip` == 23.2.1
 - `numpy` == 1.24.2
-- `scipy` == 1.10.1
-- `matplotlib` == 3.7.1
-- `pandas` == 1.5.3
-- `glowgreen` == 0.0.4
+- `scipy` == 1.11.2
+- `matplotlib` == 3.8.0
+- `pandas` == 2.1.0
+- `glowgreen` == 0.1.0
 - `xmltodict` == 0.13.0
 - `python-docx` == 0.8.11
-- `cx_Freeze` == 6.14.7
+- `cx_Freeze` == 6.15.7
 
 ## Build your own standalone executable
 

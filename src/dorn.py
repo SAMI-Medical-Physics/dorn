@@ -1,6 +1,6 @@
 __program_name__ = "Dorn"
-__version__ = "1.9.7"
-__release_date__ = "18 Mar 2023"
+__version__ = "1.10.0"
+__release_date__ = "18 Sep 2023"
 __homepage__ = "https://github.com/SAMI-Medical-Physics/dorn"
 __author__ = "Jake Forster"
 __author_email__ = "jake.forster@sa.gov.au"
