@@ -343,6 +343,7 @@ class Gui:
             self.radionuclide_dict(
                 "I-125", 59.400 * 24.0, specific_dose_rate_1m=7.432e-2
             ),
+            self.radionuclide_dict("Tc-99m", 6.0072, specific_dose_rate_1m=3.317e-2),
         ]
         self.radionuclide_options_df = pd.DataFrame(radionuclide_options)
         self.radionuclide_options_df.set_index("name", inplace=True)
@@ -3969,7 +3970,10 @@ class Gui:
                     self.odict["data"]["clearance_data"]["measurement_distance"]
                 )
 
-            (discharge_dose_rate_1m, discharge_dose_rate_xm,) = Gui.discharge_dose_rate(
+            (
+                discharge_dose_rate_1m,
+                discharge_dose_rate_xm,
+            ) = Gui.discharge_dose_rate(
                 c_admin_datetime,
                 c_discharge_datetime,
                 model,
