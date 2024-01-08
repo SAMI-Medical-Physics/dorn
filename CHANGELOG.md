@@ -20,8 +20,7 @@ All notable changes to this project will be documented in this file.
 ## [1.9.4] - 2022-02-23
 
 ### Fixed
-- In the restriction tables in reports, some of the new restriction names were long and went onto a second line, 
-causing the columns to not be aligned. The columns now stay aligned.
+- In the restriction tables in reports, some of the new restriction names were long and went onto a second line, causing the columns to not be aligned. The columns now stay aligned.
 
 ## [1.9.5] - 2022-10-11
 
@@ -50,3 +49,11 @@ causing the columns to not be aligned. The columns now stay aligned.
 
 ### Changed
 - Executable distributed with GitHub release uses `glowgreen` 0.1.0.
+
+## [1.10.1] - 2024-01-08
+
+### Added
+- Added radionuclide Tc-99m.
+
+### Fixed
+- Fixed a bug that occurred when a single measured dose rate was entered and the administration time or residual was subsequently changed.

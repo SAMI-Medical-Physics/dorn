@@ -1,10 +1,10 @@
 __program_name__ = "Dorn"
-__version__ = "1.10.0"
-__release_date__ = "18 Sep 2023"
+__version__ = "1.10.1"
+__release_date__ = "8 Jan 2024"
 __homepage__ = "https://github.com/SAMI-Medical-Physics/dorn"
 __author__ = "Jake Forster"
 __author_email__ = "jake.forster@sa.gov.au"
-__copyright_year__ = "2022, 2023"
+__copyright_year__ = "2022-2024"
 __copyright_owner__ = "South Australia Medical Imaging"
 __license__ = "MIT"
 
@@ -2523,7 +2523,10 @@ class Gui:
                     for child1 in self.odict["data"]["clearance_data"]["measurement"]:
                         if "hours_elapsed" in child1:
                             child1.pop("hours_elapsed")
-                else:
+                elif (
+                    "hours_elapsed"
+                    in self.odict["data"]["clearance_data"]["measurement"]
+                ):
                     self.odict["data"]["clearance_data"]["measurement"].pop(
                         "hours_elapsed"
                     )
