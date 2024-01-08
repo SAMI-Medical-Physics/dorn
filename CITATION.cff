@@ -5,8 +5,8 @@ authors:
   given-names: "Jake Cameron"
   orcid: "https://orcid.org/0000-0002-0313-5897"
 title: "Dorn"
-version: 1.10.0
-date-released: 2023-09-18
+version: 1.10.1
+date-released: 2024-01-08
 doi: 10.5281/zenodo.7189660
 url: "https://github.com/SAMI-Medical-Physics/dorn"
 preferred-citation:
@@ -30,6 +30,9 @@ preferred-citation:
   month: 4
   start: 021501
 identifiers:
+- type: doi
+  value: 10.5281/zenodo.10467581
+  description: "Zenodo DOI for version 1.10.1"
 - type: doi
   value: 10.5281/zenodo.8354142
   description: "Zenodo DOI for version 1.10.0"

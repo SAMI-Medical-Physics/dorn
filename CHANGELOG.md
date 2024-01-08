@@ -56,4 +56,4 @@ All notable changes to this project will be documented in this file.
 - Added radionuclide Tc-99m.
 
 ### Fixed
-- Fixed a bug that occurred when a single measured dose rate was entered and the administration time or residual was subsequently changed.
+- Fixed a bug that occurred when a single dose rate measurement was entered and the administration time or residual was subsequently changed.
