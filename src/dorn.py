@@ -4380,7 +4380,7 @@ class Gui:
             r.text = "For more information"
             s = p.add_run()
             s.font.bold = True
-            s.text = f"\n{site}\n{addressA}\n{addressB}\n{phone}\n{email}\n{url}"
+            s.text = f"\n{site}\n{addressA}\n{addressB}\n{phone}\n{email}\n{url}\t\tMade using {__program_name__} version {__version__} ({__release_date__})"
             s.font.size = Pt(8)
 
             section.footer_distance = Inches(0.1)
@@ -4746,7 +4746,7 @@ class Gui:
             r.text = "For more information"
             s = p.add_run()
             s.font.bold = True
-            s.text = f"\n{site}\n{addressA}\n{addressB}\n{phone}\n{email}\n{url}"
+            s.text = f"\n{site}\n{addressA}\n{addressB}\n{phone}\n{email}\n{url}\t\tMade using {__program_name__} version {__version__} ({__release_date__})"
             s.font.size = Pt(8)
 
             section.footer_distance = Inches(0.1)
