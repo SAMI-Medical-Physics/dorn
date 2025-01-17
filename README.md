@@ -173,6 +173,5 @@ New features considered:
 - Add more dose rate measurement time points and a scroll bar.
 - Add curve fit model representing no excretion at night. The difficulty will be adding the support in `glowgreen`.
 - Add a familiar name field for the detector.
-- Review appropriateness of contact patterns. 
 - Attempt to propagate uncertainty from the contact pattern onto the calculated restriction period or dose.
 - Allow the user to edit/add contact patterns.
