@@ -1,10 +1,10 @@
 __program_name__ = "Dorn"
-__version__ = "1.10.1"
-__release_date__ = "8 Jan 2024"
+__version__ = "1.11.0"
+__release_date__ = "17 Jan 2025"
 __homepage__ = "https://github.com/SAMI-Medical-Physics/dorn"
 __author__ = "Jake Forster"
 __author_email__ = "jake.forster@sa.gov.au"
-__copyright_year__ = "2022-2024"
+__copyright_year__ = "2022-2025"
 __copyright_owner__ = "South Australia Medical Imaging"
 __license__ = "MIT"
 

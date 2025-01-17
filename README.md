@@ -69,7 +69,7 @@ Then in the **dorn-master** directory run:
 
 Each release on Github includes a zip file. The zip file contains an executable file *Dorn.exe* that can be used to run the Dorn program on Windows 10 and 11 systems without needing to install Python and Dorn's other dependencies.
 
-The executable for Windows provided with the current release (version 1.10.x) was built using the following:
+The executable for Windows provided with the current release (version 1.11.x) was built using the following:
 
 - Windows 10
 - Python 3.11.2
@@ -133,7 +133,7 @@ https://github.com/SAMI-Medical-Physics/dorn/issues
 Jake Forster (jake.forster@sa.gov.au)
 
 ## Copyright
-Dorn is copyright (C) 2022, 2023 South Australia Medical Imaging.
+Dorn is copyright (C) 2022-2025 South Australia Medical Imaging.
 
 ## License
 MIT License. See LICENSE file.
