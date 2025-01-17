@@ -4473,20 +4473,23 @@ class Gui:
                     col1 += name_str_corrected
 
                     datetime_end = str2datetime(row["datetime_end"])
+                    # display end of restriction as ceil of datetime_end to hour resolution
                     datetime_end_display = (
-                        (datetime_end + timedelta(hours=1))
+                        (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
                         if datetime_end.minute != 0
                         else datetime_end
                     )
+                    # don't use platform-specific strftime format codes
+                    # (without zero-padded is dash on Unix and hash on Windows)
                     col2 += (
                         datetime_end_display.strftime("%I %p on %d %b, %Y")
                         .lstrip("0")
                         .replace(" 0", " ")
                     )
                     col2 += "\n" * n_new_lines
-
+                    
                     if discharge_datetime_str is not None:
-                        if datetime_end < discharge_datetime:
+                        if datetime_end_display <= discharge_datetime:
                             col3 += "Yes"
                     col3 += "\n" * n_new_lines
 
@@ -4872,11 +4875,14 @@ class Gui:
                     col1 += name_str_corrected
 
                     datetime_end = str2datetime(row["datetime_end"])
+                    # display end of restriction as ceil of datetime_end to hour resolution
                     datetime_end_display = (
-                        (datetime_end + timedelta(hours=1))
+                        (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
                         if datetime_end.minute != 0
                         else datetime_end
                     )
+                    # don't use platform-specific strftime format codes
+                    # (without zero-padded is dash on Unix and hash on Windows)
                     col2 += (
                         datetime_end_display.strftime("%I %p on %d %b, %Y")
                         .lstrip("0")
@@ -4885,7 +4891,7 @@ class Gui:
                     col2 += "\n" * n_new_lines
 
                     if discharge_datetime_str is not None:
-                        if datetime_end < discharge_datetime:
+                        if datetime_end_display <= discharge_datetime:
                             col3 += "Yes"
                     col3 += "\n" * n_new_lines
 
