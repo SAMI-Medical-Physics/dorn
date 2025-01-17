@@ -57,3 +57,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed a bug that occurred when a single dose rate measurement was entered and the administration time or residual was subsequently changed.
+
+## [1.11.0] - 2025-01-17
+
+### Added
+- Added the version of Dorn to the footer in reports.
+
+### Fixed
+- In the summary report, fixed the alignment of restrictions in the table.  Now the restriction "Prolonged close contact (>15min) with adult household members" takes up 2 lines in every column.
