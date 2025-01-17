@@ -4869,7 +4869,7 @@ class Gui:
             for index, row in df.iterrows():
                 if int(row["applies"]):
                     name_str = "\N{BULLET} {}".format(row["name"])
-                    MAX_NAME_LEN = 64  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
+                    MAX_NAME_LEN = 62  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
                     name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
                     n_new_lines = name_str_corrected.count("\n")
                     col1 += name_str_corrected
