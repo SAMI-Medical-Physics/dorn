@@ -5102,6 +5102,8 @@ class Gui:
                             "Warning - Failed PDF Export",
                             f"Failed to export docx patient handout to PDF:\n    {e}",
                         )
+                        # PDF export is not essential
+                        # so don't raise or return
 
         default_dir = self.init_vals["summary_report_directory"]
         if not os.path.isdir(default_dir):
@@ -5151,6 +5153,8 @@ class Gui:
                             "Warning - Failed PDF Export",
                             f"Failed to export docx summary report to PDF:\n    {e}",
                         )
+                        # PDF export is not essential
+                        # so don't raise or return
 
         self.odict["data"]["reports_generated"] = "1"
         self.update_buttons()
