@@ -4539,45 +4539,45 @@ class Gui:
             col1 = ""
             col2 = ""
             col3 = ""
-            if df["applies"].dtype == "int64":
-                n_rows = df["applies"].value_counts()[1]
+            n_rows = len(df[df["applies"].isin([1, "1"])])
+            if n_rows !=  0:
+                ii = 1
+                for index, row in df.iterrows():
+                    if int(row["applies"]):
+                        name_str = "\N{BULLET} {}".format(row["name"])
+                        MAX_NAME_LEN = 48  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
+                        name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
+                        n_new_lines = name_str_corrected.count("\n")
+                        col1 += name_str_corrected
+
+                        datetime_end = str2datetime(row["datetime_end"])
+                        # display end of restriction as ceil of datetime_end to hour resolution
+                        datetime_end_display = (
+                            (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
+                            if datetime_end.minute != 0
+                            else datetime_end
+                        )
+                        # don't use platform-specific strftime format codes
+                        # (without zero-padded is dash on Unix and hash on Windows)
+                        col2 += (
+                            datetime_end_display.strftime("%I %p on %d %b, %Y")
+                            .lstrip("0")
+                            .replace(" 0", " ")
+                        )
+                        col2 += "\n" * n_new_lines
+                        
+                        if discharge_datetime_str is not None:
+                            if datetime_end_display <= discharge_datetime:
+                                col3 += "Yes"
+                        col3 += "\n" * n_new_lines
+
+                        if ii < n_rows:
+                            col1 += "\n"
+                            col2 += "\n"
+                            col3 += "\n"
+                        ii += 1
             else:
-                n_rows = df["applies"].value_counts()["1"]
-            ii = 1
-            for index, row in df.iterrows():
-                if int(row["applies"]):
-                    name_str = "\N{BULLET} {}".format(row["name"])
-                    MAX_NAME_LEN = 48  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
-                    name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
-                    n_new_lines = name_str_corrected.count("\n")
-                    col1 += name_str_corrected
-
-                    datetime_end = str2datetime(row["datetime_end"])
-                    # display end of restriction as ceil of datetime_end to hour resolution
-                    datetime_end_display = (
-                        (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
-                        if datetime_end.minute != 0
-                        else datetime_end
-                    )
-                    # don't use platform-specific strftime format codes
-                    # (without zero-padded is dash on Unix and hash on Windows)
-                    col2 += (
-                        datetime_end_display.strftime("%I %p on %d %b, %Y")
-                        .lstrip("0")
-                        .replace(" 0", " ")
-                    )
-                    col2 += "\n" * n_new_lines
-                    
-                    if discharge_datetime_str is not None:
-                        if datetime_end_display <= discharge_datetime:
-                            col3 += "Yes"
-                    col3 += "\n" * n_new_lines
-
-                    if ii < n_rows:
-                        col1 += "\n"
-                        col2 += "\n"
-                        col3 += "\n"
-                    ii += 1
+                col1+="No restrictions."
 
             row_cells = table.add_row().cells
             row_cells[0].text = col1
@@ -4941,45 +4941,45 @@ class Gui:
             col1 = ""
             col2 = ""
             col3 = ""
-            if df["applies"].dtype == "int64":
-                n_rows = df["applies"].value_counts()[1]
+            n_rows = len(df[df["applies"].isin([1, "1"])])
+            if n_rows !=  0:
+                ii = 1
+                for index, row in df.iterrows():
+                    if int(row["applies"]):
+                        name_str = "\N{BULLET} {}".format(row["name"])
+                        MAX_NAME_LEN = 62  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
+                        name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
+                        n_new_lines = name_str_corrected.count("\n")
+                        col1 += name_str_corrected
+
+                        datetime_end = str2datetime(row["datetime_end"])
+                        # display end of restriction as ceil of datetime_end to hour resolution
+                        datetime_end_display = (
+                            (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
+                            if datetime_end.minute != 0
+                            else datetime_end
+                        )
+                        # don't use platform-specific strftime format codes
+                        # (without zero-padded is dash on Unix and hash on Windows)
+                        col2 += (
+                            datetime_end_display.strftime("%I %p on %d %b, %Y")
+                            .lstrip("0")
+                            .replace(" 0", " ")
+                        )
+                        col2 += "\n" * n_new_lines
+
+                        if discharge_datetime_str is not None:
+                            if datetime_end_display <= discharge_datetime:
+                                col3 += "Yes"
+                        col3 += "\n" * n_new_lines
+
+                        if ii < n_rows:
+                            col1 += "\n"
+                            col2 += "\n"
+                            col3 += "\n"
+                        ii += 1
             else:
-                n_rows = df["applies"].value_counts()["1"]
-            ii = 1
-            for index, row in df.iterrows():
-                if int(row["applies"]):
-                    name_str = "\N{BULLET} {}".format(row["name"])
-                    MAX_NAME_LEN = 62  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
-                    name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
-                    n_new_lines = name_str_corrected.count("\n")
-                    col1 += name_str_corrected
-
-                    datetime_end = str2datetime(row["datetime_end"])
-                    # display end of restriction as ceil of datetime_end to hour resolution
-                    datetime_end_display = (
-                        (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
-                        if datetime_end.minute != 0
-                        else datetime_end
-                    )
-                    # don't use platform-specific strftime format codes
-                    # (without zero-padded is dash on Unix and hash on Windows)
-                    col2 += (
-                        datetime_end_display.strftime("%I %p on %d %b, %Y")
-                        .lstrip("0")
-                        .replace(" 0", " ")
-                    )
-                    col2 += "\n" * n_new_lines
-
-                    if discharge_datetime_str is not None:
-                        if datetime_end_display <= discharge_datetime:
-                            col3 += "Yes"
-                    col3 += "\n" * n_new_lines
-
-                    if ii < n_rows:
-                        col1 += "\n"
-                        col2 += "\n"
-                        col3 += "\n"
-                    ii += 1
+                col1+="No restrictions."
 
             row_cells = table.add_row().cells
             row_cells[0].text = col1
