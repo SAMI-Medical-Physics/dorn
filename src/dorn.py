@@ -587,7 +587,7 @@ class Gui:
                 except Exception as e:
                     messagebox.showinfo(
                         "Information",
-                        f"Ignoring initial values in {self.FILENAME_SETTINGS} due to:\n{e}",
+                        f"Ignoring 'initial_values' in {self.FILENAME_SETTINGS}:\n    {e}",
                     )
                 # 'other_settings' was added in Dorn 1.12.
                 # It will remain missing from the settings file until the user submits a setting.
@@ -896,13 +896,13 @@ class Gui:
         return df_site_options
 
     def read_init_vals(self, settings_odict):
+        if "initial_values" not in settings_odict["root"]:
+            raise KeyError('Missing "initial_values" key')
         init_vals = settings_odict["root"]["initial_values"]
 
         if any(x not in init_vals for x in self.init_vals):
             raise KeyError(
-                'File "{}" is missing one of the following keys: {}'.format(
-                    self.FILENAME_SETTINGS, self.init_vals.keys()
-                )
+                f"Missing one of the following keys: {list(self.init_vals.keys())}"
             )
 
         therapy = init_vals["therapy_type"]
