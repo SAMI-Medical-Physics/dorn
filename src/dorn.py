@@ -1987,13 +1987,13 @@ class Gui:
                 num_treatments_in_year = int(num_treatments_in_year)
         else:
             num_treatments_in_year = None
-        if "pregnancy_excluded" in self.odict["data"]["patient_details"]:
-            hygiene = int(self.odict["data"]["patient_details"]["pregnancy_excluded"])
+        if "hygiene" in self.odict["data"]["patient_details"]:
+            hygiene = int(self.odict["data"]["patient_details"]["hygiene"])
         else:
             hygiene = None
-        if "pregnancy_excluded" in self.odict["data"]["patient_details"]:
+        if "breastfeeding_excluded" in self.odict["data"]["patient_details"]:
             breastfeeding = int(
-                self.odict["data"]["patient_details"]["pregnancy_excluded"]
+                self.odict["data"]["patient_details"]["breastfeeding_excluded"]
             )
         else:
             breastfeeding = None
