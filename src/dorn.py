@@ -32,6 +32,7 @@ import os.path
 import xmltodict
 import collections
 import getpass
+from pathlib import Path
 
 import importlib.metadata
 import platform
@@ -104,6 +105,30 @@ def date2str(d):
     """
     return str(d.year) + str(d.month).zfill(2) + str(d.day).zfill(2)
 
+def word_available(windows_os):
+    if not windows_os:
+        raise NotImplementedError("This feature is only supported on Windows.")
+    import win32com.client  # from pywin32
+    try:
+        win32com.client.Dispatch("Word.Application")
+    except:
+        # The default exception message is unhelpful.
+        raise FileNotFoundError("MS Word was not found.")
+
+def docx2pdf(path_in, path_out):
+    # Adapted from https://github.com/AlJohri/docx2pdf
+    import win32com.client
+    word = win32com.client.Dispatch("Word.Application")
+    wdFormatPDF = 17
+    docx_filepath = Path(path_in).resolve()
+    pdf_filepath = Path(path_out).resolve()
+    doc = word.Documents.Open(str(docx_filepath))
+    try:
+        doc.SaveAs(str(pdf_filepath), FileFormat=wdFormatPDF)
+    except:
+        raise
+    finally:
+        doc.Close(0)
 
 class RestrictionsWindow:
     def __init__(self, gui):
@@ -513,6 +538,7 @@ class Gui:
         mainmenu.add_cascade(label="Settings", menu=settings)
         settings.add_command(label="Organisation", command=self.settings_organisation)
         settings.add_command(label="Initial Values", command=self.settings_init_vals)
+        settings.add_command(label="Other", command=self.settings_other)
         self.root.config(menu=mainmenu)
 
         self.update_buttons()
@@ -563,6 +589,16 @@ class Gui:
                         "Information",
                         f"Ignoring initial values in {self.FILENAME_SETTINGS} due to:\n{e}",
                     )
+                # 'other_settings' was added in Dorn 1.12.
+                # It will remain missing from the settings file until the user submits a setting.
+                if "other_settings" in settings_odict["root"]:
+                    try:
+                        self.other_settings = self.read_other_settings(settings_odict)
+                    except Exception as e:
+                        messagebox.showinfo(
+                            "Information",
+                            f"Ignoring 'other_settings' in {self.FILENAME_SETTINGS}:\n    {e}",
+                        )
         else:
             self.write_settings()
 
@@ -815,6 +851,8 @@ class Gui:
             "patient_handout_comments": "For the next two days, continue to take precautions with your urine and saliva. Sit down while urinating, shut the toilet lid before flushing, and flush twice. Avoid contacting other people with your saliva and wash your toothbrush thoroughly after each use.",
         }
 
+        self.other_settings = {"export_pdf": 0}
+
     @staticmethod
     def read_organisation_info(settings_odict):
         if "organisation" not in settings_odict["root"]:
@@ -883,6 +921,14 @@ class Gui:
 
         return init_vals
 
+    def read_other_settings(self, settings_odict):
+        other_settings = settings_odict["root"]["other_settings"]
+        if any(x not in other_settings for x in self.other_settings):
+            raise KeyError(
+                f"Missing one of the following keys: {list(self.other_settings.keys())}"
+            )
+        return other_settings
+
     def write_settings(self):
         settings_odict = collections.OrderedDict()
         settings_odict["root"] = collections.OrderedDict()
@@ -900,6 +946,10 @@ class Gui:
 
         settings_odict["root"]["initial_values"] = collections.OrderedDict(
             self.init_vals
+        )
+
+        settings_odict["root"]["other_settings"] = collections.OrderedDict(
+            self.other_settings
         )
 
         with open(self.FILENAME_SETTINGS, "w") as fd:
@@ -1249,6 +1299,36 @@ class Gui:
         tk.Button(
             window, text="Submit", command=lambda: submit_settings_init_vals(self)
         ).grid(row=14, column=0, columnspan=3, pady=(20, 0))
+
+    # Settings > Other
+    def settings_other(self):
+        def submit_settings_other(self):
+            window.withdraw()
+
+            other_settings = {}
+            other_settings["export_pdf"] = chk_export_pdf.get()
+            self.other_settings = other_settings
+            self.write_settings()
+
+        window = tk.Toplevel()
+        window.geometry("355x130")
+        window.title("Settings - Other")
+        if WINDOWS_OS:
+            window.resizable(width=False, height=False)
+            window.iconbitmap(self.SOFTWARE_ICON)
+
+        tk.Label(window, text="Other settings", font=("Arial", 10, "bold")).grid(
+            row=0, column=0, columnspan=2, pady=(10, 10)
+        )
+
+        tk.Label(window, text="Export reports to PDF if MS Word is installed (Windows only)").grid(row=1, column=0, sticky="W", padx=(5,0))
+        chk_export_pdf = tk.IntVar()
+        tk.Checkbutton(window, variable=chk_export_pdf).grid(row=1, column=1)
+        chk_export_pdf.set(self.other_settings["export_pdf"])
+
+        tk.Button(
+            window, text="Submit", command=lambda: submit_settings_other(self)
+        ).grid(row=3, column=0, columnspan=2, pady=(20, 0))
 
     # New
     def new_patient(self):
@@ -4972,6 +5052,16 @@ class Gui:
                 "The default directory for patient handouts was not found.",
             )
 
+        want_export_pdf = int(self.other_settings["export_pdf"])
+        if want_export_pdf:
+            word_avail = True
+            try:
+                word_available(WINDOWS_OS)
+            except Exception as e:
+                word_avail = False
+                messagebox.showinfo("Information", f"Unable to export docx files to PDF:\n    {e}\nTo stop seeing this message, uncheck the box in 'Settings \u2192 Other'.")
+        export_pdf = want_export_pdf and word_avail
+
         f = filedialog.asksaveasfilename(
             initialdir=default_dir
             if self.previous_report_directory is None
@@ -4984,6 +5074,25 @@ class Gui:
             self.previous_report_directory = os.path.dirname(f)
             patient_handout = get_patient_handout(self)
             patient_handout.save(f)
+            if export_pdf:
+                base, _ = os.path.splitext(os.path.basename(f))
+                initfile = base + ".pdf"
+                fp = filedialog.asksaveasfilename(
+                    initialdir=default_dir
+                    if self.previous_report_directory is None
+                    else self.previous_report_directory,
+                    title="Save patient handout",
+                    initialfile=initfile,
+                    filetypes=[("PDF Files", "*.pdf")],
+                )
+                if fp != "" and fp != ():
+                    try:
+                        docx2pdf(f, fp)
+                    except Exception as e:
+                        messagebox.showwarning(
+                            "Warning - Failed PDF Export",
+                            f"Failed to export docx patient handout to PDF:\n    {e}",
+                        )
 
         default_dir = self.init_vals["summary_report_directory"]
         if not os.path.isdir(default_dir):
@@ -5005,6 +5114,25 @@ class Gui:
             self.previous_report_directory = os.path.dirname(f)
             summary_report = get_summary_report(self)
             summary_report.save(f)
+            if export_pdf:
+                base, _ = os.path.splitext(os.path.basename(f))
+                initfile = base + ".pdf"
+                fp = filedialog.asksaveasfilename(
+                    initialdir=default_dir
+                    if self.previous_report_directory is None
+                    else self.previous_report_directory,
+                    title="Save summary report",
+                    initialfile=initfile,
+                    filetypes=[("PDF Files", "*.pdf")],
+                )
+                if fp != "" and fp != ():
+                    try:
+                        docx2pdf(f, fp)
+                    except Exception as e:
+                        messagebox.showwarning(
+                            "Warning - Failed PDF Export",
+                            f"Failed to export docx summary report to PDF:\n    {e}",
+                        )
 
         self.odict["data"]["reports_generated"] = "1"
         self.update_buttons()
