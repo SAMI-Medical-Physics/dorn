@@ -5073,7 +5073,16 @@ class Gui:
         if f != "" and f != ():
             self.previous_report_directory = os.path.dirname(f)
             patient_handout = get_patient_handout(self)
-            patient_handout.save(f)
+            try:
+                patient_handout.save(f)
+            except Exception as e:
+                messagebox.showerror(
+                    "Error",
+                    f"{e}",
+                )
+                # Better to raise than return so there is a more verbose 
+                # error message in CLI session.
+                raise
             if export_pdf:
                 base, _ = os.path.splitext(os.path.basename(f))
                 initfile = base + ".pdf"
@@ -5113,7 +5122,16 @@ class Gui:
         if f != "" and f != ():
             self.previous_report_directory = os.path.dirname(f)
             summary_report = get_summary_report(self)
-            summary_report.save(f)
+            try:
+                summary_report.save(f)
+            except Exception as e:
+                messagebox.showerror(
+                    "Error",
+                    f"{e}",
+                )
+                # Better to raise than return so there is a more verbose 
+                # error message in CLI session.
+                raise
             if export_pdf:
                 base, _ = os.path.splitext(os.path.basename(f))
                 initfile = base + ".pdf"
