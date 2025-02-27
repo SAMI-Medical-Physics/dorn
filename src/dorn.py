@@ -509,10 +509,10 @@ class Gui:
         mainmenu.add_command(label="Save As", command=self.save_patient_as)
         mainmenu.add_command(label="Info", command=self.info_box)
 
-        options = tk.Menu(mainmenu, tearoff=0)
-        mainmenu.add_cascade(label="Options", menu=options)
-        options.add_command(label="Organisation", command=self.options_organisation)
-        options.add_command(label="Initial Values", command=self.options_init_vals)
+        settings = tk.Menu(mainmenu, tearoff=0)
+        mainmenu.add_cascade(label="Settings", menu=settings)
+        settings.add_command(label="Organisation", command=self.settings_organisation)
+        settings.add_command(label="Initial Values", command=self.settings_init_vals)
         self.root.config(menu=mainmenu)
 
         self.update_buttons()
@@ -905,8 +905,8 @@ class Gui:
         with open(self.FILENAME_SETTINGS, "w") as fd:
             fd.write(xmltodict.unparse(settings_odict, pretty=True))
 
-    # Options > Organisation
-    def options_organisation(self):
+    # Settings > Organisation
+    def settings_organisation(self):
         # button next to logo path that can fill the path
         def fill_stringvar(stringvar):
             f_old = stringvar.get()
@@ -924,7 +924,7 @@ class Gui:
             if filep != "" and filep != ():
                 stringvar.set(filep)
 
-        def submit_options_organisation(self):
+        def submit_settings_organisation(self):
             site_options = [e.get() for e in site]
             addressA_list = [e.get() for e in addressA]
             addressB_list = [e.get() for e in addressB]
@@ -963,7 +963,7 @@ class Gui:
 
         window = tk.Toplevel()
         window.geometry("580x730")
-        window.title("Options - Organisation")
+        window.title("Settings - Organisation")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
@@ -1047,17 +1047,17 @@ class Gui:
         ).grid(row=7 + x, column=3, sticky="w", pady=(5, 0))
 
         tk.Button(
-            window, text="Submit", command=lambda: submit_options_organisation(self)
+            window, text="Submit", command=lambda: submit_settings_organisation(self)
         ).grid(row=9 + x, column=0, columnspan=4)
 
-    # Options > Initial Values
-    def options_init_vals(self):
+    # Settings > Initial Values
+    def settings_init_vals(self):
         def fill_stringvar(stringvar):
             mydir = filedialog.askdirectory(initialdir=stringvar.get(), parent=window)
             if mydir != "" and mydir != ():
                 stringvar.set(mydir)
 
-        def submit_options_init_vals(self):
+        def submit_settings_init_vals(self):
             window.withdraw()
 
             init_vals = {}
@@ -1091,7 +1091,7 @@ class Gui:
         if window_width < 470:
             window_width = 470
         window.geometry(f"{int(window_width)}x600")
-        window.title("Options - Initial Values")
+        window.title("Settings - Initial Values")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
             window.iconbitmap(self.SOFTWARE_ICON)
@@ -1247,7 +1247,7 @@ class Gui:
         )
 
         tk.Button(
-            window, text="Submit", command=lambda: submit_options_init_vals(self)
+            window, text="Submit", command=lambda: submit_settings_init_vals(self)
         ).grid(row=14, column=0, columnspan=3, pady=(20, 0))
 
     # New
