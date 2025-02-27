@@ -1420,7 +1420,7 @@ class Gui:
                     not in self.therapy_options_df.index.to_list()
                 ):
                     messagebox.showwarning(
-                        "Warning - Open",
+                        "Warning - Therapy Type",
                         "Therapy '{}' not recognised. Select a new one to proceed.".format(
                             self.odict["data"]["patient_details"]["type_therapy"]
                         ),
