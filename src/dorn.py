@@ -4925,32 +4925,14 @@ class Gui:
             for r in r:
                 r.font.size = Pt(10)
 
-            table = document.add_table(rows=1, cols=3)
-            hdr_cells = table.rows[0].cells
-            hdr_cells[0].text = "Restriction"
-            hdr_cells[1].text = "Applies until"
-            hdr_cells[2].text = "Expired?"
-
-            # set the font size for the heading row of the table
-            for hdr_cell in hdr_cells:
-                r = hdr_cell.paragraphs[0].runs
-                r[0].font.size = Pt(10)
-                r[0].font.bold = True
-
-            # fill the table
-            col1 = ""
-            col2 = ""
-            col3 = ""
+            # restrictions without formatting
             n_rows = len(df[df["applies"].isin([1, "1"])])
             if n_rows !=  0:
+                restrictions_plain = ""
                 ii = 1
                 for index, row in df.iterrows():
                     if int(row["applies"]):
-                        name_str = "\N{BULLET} {}".format(row["name"])
-                        MAX_NAME_LEN = 62  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
-                        name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
-                        n_new_lines = name_str_corrected.count("\n")
-                        col1 += name_str_corrected
+                        restrictions_plain += row["name"] + ": "
 
                         datetime_end = str2datetime(row["datetime_end"])
                         # display end of restriction as ceil of datetime_end to hour resolution
@@ -4961,48 +4943,29 @@ class Gui:
                         )
                         # don't use platform-specific strftime format codes
                         # (without zero-padded is dash on Unix and hash on Windows)
-                        col2 += (
+                        restrictions_plain += (
                             datetime_end_display.strftime("%I %p on %d %b, %Y")
                             .lstrip("0")
                             .replace(" 0", " ")
                         )
-                        col2 += "\n" * n_new_lines
-
-                        if discharge_datetime_str is not None:
-                            if datetime_end_display <= discharge_datetime:
-                                col3 += "Yes"
-                        col3 += "\n" * n_new_lines
 
                         if ii < n_rows:
-                            col1 += "\n"
-                            col2 += "\n"
-                            col3 += "\n"
+                            restrictions_plain += "\n"
                         ii += 1
             else:
-                col1+="No restrictions."
-
-            row_cells = table.add_row().cells
-            row_cells[0].text = col1
-            row_cells[1].text = col2
-            row_cells[2].text = col3
-
-            # set the font size for the table
-            for row_cell in row_cells:
-                r = row_cell.paragraphs[0].runs
-                r[0].font.size = Pt(10)
-
-            table.style = document.styles["Table Grid"]
-
-            for cell in table.columns[2].cells:
-                cell.width = Inches(0.7)
-            for cell in table.columns[1].cells:
-                cell.width = Inches(1.7)
-            for cell in table.columns[0].cells:
-                cell.width = Inches(4.2)
+                restrictions_plain="No restrictions."
 
             p = document.add_paragraph()
             r = p.add_run()
-            r.text = "\n" + instructions_2
+            r.text = restrictions_plain
+
+            r = p.runs
+            for r in r:
+                r.font.size = Pt(10)
+
+            p = document.add_paragraph()
+            r = p.add_run()
+            r.text = instructions_2
 
             r = p.runs
             for r in r:
