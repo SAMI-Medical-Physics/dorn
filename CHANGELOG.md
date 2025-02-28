@@ -65,3 +65,15 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - In the summary report, fixed the alignment of restrictions in the table.  Now the restriction "Prolonged close contact (>15min) with adult household members" takes up 2 lines in every column.
+
+## [1.12.0] - 2025-02-xx
+
+### Added
+- Added the option to export DOCX report files to PDF using MS Word on Windows.  This feature is turned off by default.  To enable it, check the box in `Settings \u2192 Other`.
+
+### Changed
+- In the summary report, the restrictions are now in plain text without any formatting, instead of being inside a table.  This allows the restrictions to be copied and pasted elsewhere more easily.  
+- The menu command `Options` was renamed to the more conventional `Settings`.
+
+### Fixed
+- Reports can now be generated when no restrictions are checked.
