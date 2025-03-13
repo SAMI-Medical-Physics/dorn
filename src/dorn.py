@@ -4413,26 +4413,13 @@ class Gui:
                 "are discharged from hospital" if inpatient else "leave the department"
             )
 
-            instructions_1 = (
-                "After you have been given the radioactive substance to treat your medical condition, "
-                + "you will be a potential source of radiation exposure to other persons around you, "
-                + "particularly if they approach closer than one metre. You will have already been given some "
-                + "quite detailed instructions on the general precautions which you should take in order to "
-                + "minimise the radiation contamination and exposure to other persons. Specific instructions "
-                + "which relate to "
-            )
-            instructions_2 = "your particular circumstances "
-            instructions_3 = (
-                "are given here. The time for which each of the listed restrictions applies is based "
-                + f"on the amount of radioactive substance given to you{generic_str}. If you follow these restrictions for the specified time, "
-                + "the radiation dose to persons around you will be very small and need not be of concern. "
-                + "If you have any difficulty in complying with these restrictions, or there are special "
-                + "circumstances you would like to be taken into consideration, please let your Doctor know "
-            )
-            instructions_4 = f"before you {inpatient_str}. "
-            instructions_5 = (
-                f"You may also contact the Nuclear Medicine Department at {site} "
-                + "at any time if you have any worries or queries regarding your therapy."
+            instructions = (
+                "The table below contains details of any restrictions you have on your prolonged close contact with others.  "
+                "You must follow these instructions to ensure that the radiation exposure to your family and friends "
+                "will be well below the legal limit.  "
+                "Detailed explanation of the types of restrictions can be found in the information sheet "
+                "that you were provided by your Nuclear Medicine Doctor.  "
+                f"Please contact the Nuclear Medicine Department at {site} if you have any questions."
             )
 
             additional_comments = self.odict["data"]["additional_comments_to_patient"]
@@ -4503,21 +4490,11 @@ class Gui:
                 r[0].font.size = Pt(10)
 
             # instructions
-            document.add_heading("Instructions", level=2)
+            document.add_heading("Close Contact Restrictions", level=2)
 
             p = document.add_paragraph()
             r = p.add_run()
-            r.text = instructions_1
-            r = p.add_run()
-            r.text = instructions_2
-            r.font.bold = True
-            r = p.add_run()
-            r.text = instructions_3
-            r = p.add_run()
-            r.text = instructions_4
-            r.font.bold = True
-            r = p.add_run()
-            r.text = instructions_5
+            r.text = instructions
 
             r = p.runs
             for r in r:
