@@ -72,7 +72,8 @@ All notable changes to this project will be documented in this file.
 - Added the option to export DOCX report files to PDF using MS Word on Windows.  This feature is turned off by default.  To enable it, check the box in `Settings \u2192 Other`.
 
 ### Changed
-- In the summary report, the restrictions are now in plain text without any formatting, instead of being inside a table.  This allows the restrictions to be copied and pasted elsewhere more easily.  
+- The instructions in the patient handout are now more succinct.
+- In the summary report, the restrictions are now in plain text without any formatting, instead of being inside a table.  This makes it easier to copy and paste the restrictions elsewhere.  
 - The menu command `Options` was renamed to the more conventional `Settings`.
 
 ### Fixed
