@@ -861,6 +861,13 @@ class Gui:
         self.site_options_df = pd.DataFrame(site_options)
         self.site_options_df.set_index("name", inplace=True)
 
+        patient_handout_comments = (
+            "For the next two days, continue to take precautions with your urine and saliva.  "
+            "Sit down while urinating, shut the toilet lid before flushing, and flush twice.  "
+            "Avoid contacting other people with your saliva "
+            "and wash your toothbrush thoroughly after each use."
+        )
+
         self.init_vals = {
             "therapy_type": self.therapy_options_df.index.to_list()[0],
             "site": self.site_options_df.index.to_list()[0],
@@ -871,7 +878,7 @@ class Gui:
             "data_directory": os.getcwd(),
             "patient_handout_directory": os.getcwd(),
             "summary_report_directory": os.getcwd(),
-            "patient_handout_comments": "For the next two days, continue to take precautions with your urine and saliva. Sit down while urinating, shut the toilet lid before flushing, and flush twice. Avoid contacting other people with your saliva and wash your toothbrush thoroughly after each use.",
+            "patient_handout_comments": patient_handout_comments,
         }
 
         self.other_settings = {"export_pdf": 0}
@@ -4804,21 +4811,22 @@ class Gui:
             inpatient_str = "upon discharge" if inpatient else "at home"
             if generic:
                 generic_str = (
-                    "The calculated close-contact restrictions below are based on the administered activity "
-                    + "and a generic clearance rate."
+                    "The calculated close contact restrictions below are based on the administered activity "
+                    "and a generic clearance rate."
                 )
             else:
                 generic_str = (
-                    "The calculated close-contact restrictions below are based on actual clearance and exposure "
-                    + "rates, derived from several measurements of dose rate from this patient over a period of time."
+                    "The calculated close contact restrictions below are based on actual clearance and exposure rates, "
+                    "derived from several measurements of dose rate from this patient over a period of time."
                 )
 
-            instructions_1 = f"{generic_str} It was assumed the patient is receiving {num_treatments_in_year_str} treatment{plural_str} in a year."
+            instructions_1 = f"{generic_str}  It was assumed the patient is receiving {num_treatments_in_year_str} treatment{plural_str} in a year."
             instructions_2 = (
                 "The precautions and restrictions necessary to limit radiation exposure of other persons "
-                + "have been fully explained to this patient. The patient has also been provided with written "
-                + "instructions which outline the procedures to be followed and the duration of time for which "
-                + "specific restrictions will apply."
+                "have been fully explained to this patient.  "
+                "The patient has also been provided with written instructions "
+                "which outline the procedures to be followed "
+                "and the duration of time for which specific restrictions will apply."
             )
 
             document = Document()
