@@ -4979,6 +4979,9 @@ class Gui:
                         ii += 1
             else:
                 restrictions_plain = "No restrictions."
+            
+            border_str = 120*"_"
+            restrictions_plain = f"{border_str}\n{restrictions_plain}\n{border_str}"
 
             p = document.add_paragraph()
             r = p.add_run()
