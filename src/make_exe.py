@@ -22,6 +22,7 @@ include_files = ["gui_background.png", "report_logo.png", "icofile.ico"]
 
 packages = [
     "numpy",
+    "numpy._core.tests",
     "pandas",
     "matplotlib",
     "scipy",
