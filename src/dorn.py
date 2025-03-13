@@ -105,19 +105,23 @@ def date2str(d):
     """
     return str(d.year) + str(d.month).zfill(2) + str(d.day).zfill(2)
 
+
 def word_available(windows_os):
     if not windows_os:
         raise NotImplementedError("This feature is only supported on Windows.")
     import win32com.client  # from pywin32
+
     try:
         win32com.client.Dispatch("Word.Application")
     except:
         # The default exception message is unhelpful.
         raise FileNotFoundError("MS Word was not found.")
 
+
 def docx2pdf(path_in, path_out):
     # Adapted from https://github.com/AlJohri/docx2pdf
     import win32com.client
+
     word = win32com.client.Dispatch("Word.Application")
     wdFormatPDF = 17
     docx_filepath = Path(path_in).resolve()
@@ -130,6 +134,7 @@ def docx2pdf(path_in, path_out):
     finally:
         doc.Close(0)
 
+
 class RestrictionsWindow:
     def __init__(self, gui):
         self.chks = []
@@ -140,19 +145,25 @@ class RestrictionsWindow:
 
             # Values are in strings first-thing after reading XML file
             self.df["theta"] = self.df["theta"].map(
-                lambda x: [float(i) for i in x]
-                if isinstance(x, (list, np.ndarray))
-                else float(x)
+                lambda x: (
+                    [float(i) for i in x]
+                    if isinstance(x, (list, np.ndarray))
+                    else float(x)
+                )
             )
             self.df["c"] = self.df["c"].map(
-                lambda x: [float(i) for i in x]
-                if isinstance(x, (list, np.ndarray))
-                else float(x)
+                lambda x: (
+                    [float(i) for i in x]
+                    if isinstance(x, (list, np.ndarray))
+                    else float(x)
+                )
             )
             self.df["d"] = self.df["d"].map(
-                lambda x: [float(i) for i in x]
-                if isinstance(x, (list, np.ndarray))
-                else float(x)
+                lambda x: (
+                    [float(i) for i in x]
+                    if isinstance(x, (list, np.ndarray))
+                    else float(x)
+                )
             )
             self.df["dose_constraint"] = self.df["dose_constraint"].astype(float)
             self.df["per_episode"] = self.df["per_episode"].astype(int)
@@ -688,80 +699,92 @@ class Gui:
                             "generic_model",
                         ]
                         if generic_model == "exponential":
-                            self.odict["data"]["clearance_data"][
-                                "curve_fit"
-                            ] = collections.OrderedDict(
-                                [
-                                    ("generic", "1"),
-                                    ("model", "exponential"),
-                                    (
-                                        "fit_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                ("a", generic_parameters[0]),
-                                                (
-                                                    "b",
-                                                    np.log(2) / generic_parameters[1],
-                                                ),
-                                            ]
+                            self.odict["data"]["clearance_data"]["curve_fit"] = (
+                                collections.OrderedDict(
+                                    [
+                                        ("generic", "1"),
+                                        ("model", "exponential"),
+                                        (
+                                            "fit_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    ("a", generic_parameters[0]),
+                                                    (
+                                                        "b",
+                                                        np.log(2)
+                                                        / generic_parameters[1],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                    (
-                                        "meaningful_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                (
-                                                    "dose_rate_1m_init",
-                                                    generic_parameters[0],
-                                                ),
-                                                (
-                                                    "effective_half_life",
-                                                    generic_parameters[1],
-                                                ),
-                                            ]
+                                        (
+                                            "meaningful_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    (
+                                                        "dose_rate_1m_init",
+                                                        generic_parameters[0],
+                                                    ),
+                                                    (
+                                                        "effective_half_life",
+                                                        generic_parameters[1],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                ]
+                                    ]
+                                )
                             )
                         elif generic_model == "biexponential":
-                            self.odict["data"]["clearance_data"][
-                                "curve_fit"
-                            ] = collections.OrderedDict(
-                                [
-                                    ("generic", "1"),
-                                    ("model", "biexponential"),
-                                    (
-                                        "fit_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                ("a", generic_parameters[0]),
-                                                ("b", generic_parameters[1]),
-                                                (
-                                                    "c",
-                                                    np.log(2) / generic_parameters[2],
-                                                ),
-                                                (
-                                                    "d",
-                                                    np.log(2) / generic_parameters[3],
-                                                ),
-                                            ]
+                            self.odict["data"]["clearance_data"]["curve_fit"] = (
+                                collections.OrderedDict(
+                                    [
+                                        ("generic", "1"),
+                                        ("model", "biexponential"),
+                                        (
+                                            "fit_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    ("a", generic_parameters[0]),
+                                                    ("b", generic_parameters[1]),
+                                                    (
+                                                        "c",
+                                                        np.log(2)
+                                                        / generic_parameters[2],
+                                                    ),
+                                                    (
+                                                        "d",
+                                                        np.log(2)
+                                                        / generic_parameters[3],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                    (
-                                        "meaningful_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                (
-                                                    "dose_rate_1m_init",
-                                                    generic_parameters[0],
-                                                ),
-                                                ("fraction_1", generic_parameters[1]),
-                                                ("half_life_1", generic_parameters[2]),
-                                                ("half_life_2", generic_parameters[3]),
-                                            ]
+                                        (
+                                            "meaningful_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    (
+                                                        "dose_rate_1m_init",
+                                                        generic_parameters[0],
+                                                    ),
+                                                    (
+                                                        "fraction_1",
+                                                        generic_parameters[1],
+                                                    ),
+                                                    (
+                                                        "half_life_1",
+                                                        generic_parameters[2],
+                                                    ),
+                                                    (
+                                                        "half_life_2",
+                                                        generic_parameters[3],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                ]
+                                    ]
+                                )
                             )
 
                     self.button_clearance.grid_forget()
@@ -1115,14 +1138,14 @@ class Gui:
             init_vals["site"] = site_combo.get()
             init_vals["num_treatments_in_year"] = num_treatments_in_year_entry.get()
             init_vals["measurement_distance"] = measurement_distance_entry.get()
-            init_vals[
-                "detector_calibration_factor"
-            ] = detector_calibration_factor_entry.get()
+            init_vals["detector_calibration_factor"] = (
+                detector_calibration_factor_entry.get()
+            )
             init_vals["curve_fit_model"] = cfit_combo.get()
             init_vals["data_directory"] = data_directory_entry.get()
-            init_vals[
-                "patient_handout_directory"
-            ] = patient_handout_directory_entry.get()
+            init_vals["patient_handout_directory"] = (
+                patient_handout_directory_entry.get()
+            )
             init_vals["summary_report_directory"] = summary_report_directory_entry.get()
             init_vals["patient_handout_comments"] = patient_handout_comments.get(
                 "1.0", "end"
@@ -1251,9 +1274,9 @@ class Gui:
         patient_handout_directory_xs = ttk.Scrollbar(
             window, orient="horizontal", command=patient_handout_directory_entry.xview
         )
-        patient_handout_directory_entry[
-            "xscrollcommand"
-        ] = patient_handout_directory_xs.set
+        patient_handout_directory_entry["xscrollcommand"] = (
+            patient_handout_directory_xs.set
+        )
         patient_handout_directory_xs.grid(row=10, column=1, sticky="we")
         tk.Button(
             window,
@@ -1275,9 +1298,9 @@ class Gui:
         summary_report_directory_xs = ttk.Scrollbar(
             window, orient="horizontal", command=summary_report_directory_entry.xview
         )
-        summary_report_directory_entry[
-            "xscrollcommand"
-        ] = summary_report_directory_xs.set
+        summary_report_directory_entry["xscrollcommand"] = (
+            summary_report_directory_xs.set
+        )
         summary_report_directory_xs.grid(row=12, column=1, sticky="we")
         tk.Button(
             window,
@@ -1321,7 +1344,9 @@ class Gui:
             row=0, column=0, columnspan=2, pady=(10, 10)
         )
 
-        tk.Label(window, text="Export reports to PDF if MS Word is installed (Windows only)").grid(row=1, column=0, sticky="W", padx=(5,0))
+        tk.Label(
+            window, text="Export reports to PDF if MS Word is installed (Windows only)"
+        ).grid(row=1, column=0, sticky="W", padx=(5, 0))
         chk_export_pdf = tk.IntVar()
         tk.Checkbutton(window, variable=chk_export_pdf).grid(row=1, column=1)
         chk_export_pdf.set(self.other_settings["export_pdf"])
@@ -1381,9 +1406,11 @@ class Gui:
             )
 
         filepath = filedialog.askopenfilename(
-            initialdir=self.init_vals["data_directory"]
-            if self.previous_data_directory is None
-            else self.previous_data_directory,
+            initialdir=(
+                self.init_vals["data_directory"]
+                if self.previous_data_directory is None
+                else self.previous_data_directory
+            ),
             title="Select patient XML file",
             filetypes=[("XML files (*.xml)", "*.xml")],
         )
@@ -1445,9 +1472,9 @@ class Gui:
 
             # Actions to maintain backward compatibility
             if "number_of_treatments" in self.odict["data"]["patient_details"]:
-                self.odict["data"]["patient_details"][
-                    "num_treatments_in_year"
-                ] = self.odict["data"]["patient_details"].pop("number_of_treatments")
+                self.odict["data"]["patient_details"]["num_treatments_in_year"] = (
+                    self.odict["data"]["patient_details"].pop("number_of_treatments")
+                )
 
             update_therapy_names = {
                 "I-131 remnant thyroid ablation, thyrogen": "I-131 thyroid cancer, rhTSH",
@@ -1456,9 +1483,9 @@ class Gui:
             if "type_therapy" in self.odict["data"]["patient_details"]:
                 type_therapy = self.odict["data"]["patient_details"]["type_therapy"]
                 if type_therapy in update_therapy_names:
-                    self.odict["data"]["patient_details"][
-                        "type_therapy"
-                    ] = update_therapy_names[type_therapy]
+                    self.odict["data"]["patient_details"]["type_therapy"] = (
+                        update_therapy_names[type_therapy]
+                    )
 
             if "restriction" in self.odict["data"]["restrictions"]:
                 if (
@@ -1707,15 +1734,15 @@ class Gui:
                 )
 
                 if self.odict["data"]["patient_finished_by"] != "0":
-                    self.viewing_completed_patient_label[
-                        "text"
-                    ] = "Viewing completed patient\n(author: {})".format(
-                        self.odict["data"]["patient_finished_by"]
+                    self.viewing_completed_patient_label["text"] = (
+                        "Viewing completed patient\n(author: {})".format(
+                            self.odict["data"]["patient_finished_by"]
+                        )
                     )
                 else:
-                    self.viewing_completed_patient_label[
-                        "text"
-                    ] = "Viewing completed patient."
+                    self.viewing_completed_patient_label["text"] = (
+                        "Viewing completed patient."
+                    )
             else:
                 self.viewing_completed_patient_label.place_forget()
 
@@ -1765,9 +1792,11 @@ class Gui:
             filename = os.path.basename(filepath)
 
         filepath_new = filedialog.asksaveasfilename(
-            initialdir=self.init_vals["data_directory"]
-            if self.previous_data_directory is None
-            else self.previous_data_directory,
+            initialdir=(
+                self.init_vals["data_directory"]
+                if self.previous_data_directory is None
+                else self.previous_data_directory
+            ),
             title="Save XML file",
             initialfile=filename,
             filetypes=[("XML file (*.xml)", "*.xml")],
@@ -2380,9 +2409,9 @@ class Gui:
             self.odict["data"]["administration_details"][
                 "calibrated_activity"
             ] = r_calib_a
-            self.odict["data"]["administration_details"][
-                "calibration_datetime"
-            ] = datetime2str(r_calib_datetime)
+            self.odict["data"]["administration_details"]["calibration_datetime"] = (
+                datetime2str(r_calib_datetime)
+            )
 
             if not admin_day_entry.get():
                 admin_day_entry.insert(0, r_calib_datetime.day)
@@ -2561,17 +2590,17 @@ class Gui:
                     )
                     return
 
-            self.odict["data"]["administration_details"][
-                "administration_datetime"
-            ] = datetime2str(r_admin_datetime)
+            self.odict["data"]["administration_details"]["administration_datetime"] = (
+                datetime2str(r_admin_datetime)
+            )
 
             if r_residual is not None:
                 self.odict["data"]["administration_details"][
                     "residual_activity"
                 ] = r_resid_a
-                self.odict["data"]["administration_details"][
-                    "residual_datetime"
-                ] = datetime2str(r_resid_datetime)
+                self.odict["data"]["administration_details"]["residual_datetime"] = (
+                    datetime2str(r_resid_datetime)
+                )
             else:
                 if "residual_activity" in self.odict["data"]["administration_details"]:
                     self.odict["data"]["administration_details"].pop(
@@ -3445,38 +3474,38 @@ class Gui:
                             parent=window,
                         )
                         return
-                    self.odict["data"]["clearance_data"][
-                        "curve_fit"
-                    ] = collections.OrderedDict(
-                        [
-                            ("generic", "0"),
-                            ("model", "biexponential"),
-                            (
-                                "fit_parameters",
-                                collections.OrderedDict(
-                                    [
-                                        ("a", params_biexp[0]),
-                                        ("b", params_biexp[1]),
-                                        ("c", params_biexp[2]),
-                                        ("d", params_biexp[3]),
-                                    ]
+                    self.odict["data"]["clearance_data"]["curve_fit"] = (
+                        collections.OrderedDict(
+                            [
+                                ("generic", "0"),
+                                ("model", "biexponential"),
+                                (
+                                    "fit_parameters",
+                                    collections.OrderedDict(
+                                        [
+                                            ("a", params_biexp[0]),
+                                            ("b", params_biexp[1]),
+                                            ("c", params_biexp[2]),
+                                            ("d", params_biexp[3]),
+                                        ]
+                                    ),
                                 ),
-                            ),
-                            (
-                                "meaningful_parameters",
-                                collections.OrderedDict(
-                                    [
-                                        (
-                                            "dose_rate_xm_init",
-                                            meaningful_params_biexp[0],
-                                        ),
-                                        ("fraction_1", meaningful_params_biexp[1]),
-                                        ("half_life_1", meaningful_params_biexp[2]),
-                                        ("half_life_2", meaningful_params_biexp[3]),
-                                    ]
+                                (
+                                    "meaningful_parameters",
+                                    collections.OrderedDict(
+                                        [
+                                            (
+                                                "dose_rate_xm_init",
+                                                meaningful_params_biexp[0],
+                                            ),
+                                            ("fraction_1", meaningful_params_biexp[1]),
+                                            ("half_life_1", meaningful_params_biexp[2]),
+                                            ("half_life_2", meaningful_params_biexp[3]),
+                                        ]
+                                    ),
                                 ),
-                            ),
-                        ]
+                            ]
+                        )
                     )
                     residuals = np.array(dr_xm) - func_biexp(
                         np.array(hrs_elapsed), *params_biexp
@@ -3493,31 +3522,34 @@ class Gui:
                             parent=window,
                         )
                         return
-                    self.odict["data"]["clearance_data"][
-                        "curve_fit"
-                    ] = collections.OrderedDict(
-                        [
-                            ("generic", "0"),
-                            ("model", "exponential"),
-                            (
-                                "fit_parameters",
-                                collections.OrderedDict(
-                                    [("a", params_exp[0]), ("b", params_exp[1])]
+                    self.odict["data"]["clearance_data"]["curve_fit"] = (
+                        collections.OrderedDict(
+                            [
+                                ("generic", "0"),
+                                ("model", "exponential"),
+                                (
+                                    "fit_parameters",
+                                    collections.OrderedDict(
+                                        [("a", params_exp[0]), ("b", params_exp[1])]
+                                    ),
                                 ),
-                            ),
-                            (
-                                "meaningful_parameters",
-                                collections.OrderedDict(
-                                    [
-                                        ("dose_rate_xm_init", meaningful_params_exp[0]),
-                                        (
-                                            "effective_half_life",
-                                            meaningful_params_exp[1],
-                                        ),
-                                    ]
+                                (
+                                    "meaningful_parameters",
+                                    collections.OrderedDict(
+                                        [
+                                            (
+                                                "dose_rate_xm_init",
+                                                meaningful_params_exp[0],
+                                            ),
+                                            (
+                                                "effective_half_life",
+                                                meaningful_params_exp[1],
+                                            ),
+                                        ]
+                                    ),
                                 ),
-                            ),
-                        ]
+                            ]
+                        )
                     )
                     residuals = np.array(dr_xm) - func_exp(
                         np.array(hrs_elapsed), *params_exp
@@ -4471,12 +4503,12 @@ class Gui:
 
             # fill the table
             row_cells = table.add_row().cells
-            row_cells[
-                0
-            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
-            row_cells[
-                1
-            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0} MBq"
+            row_cells[0].text = (
+                f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
+            )
+            row_cells[1].text = (
+                f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0} MBq"
+            )
             if discharge_datetime_str is not None:
                 row_cells[
                     1
@@ -4517,20 +4549,25 @@ class Gui:
             col2 = ""
             col3 = ""
             n_rows = len(df[df["applies"].isin([1, "1"])])
-            if n_rows !=  0:
+            if n_rows != 0:
                 ii = 1
                 for index, row in df.iterrows():
                     if int(row["applies"]):
                         name_str = "\N{BULLET} {}".format(row["name"])
                         MAX_NAME_LEN = 48  # max number of chars before we break a line... we must break the line before Word does... will depend on page margins, font size, etc
-                        name_str_corrected = Gui.split_line_report(name_str, MAX_NAME_LEN)
+                        name_str_corrected = Gui.split_line_report(
+                            name_str, MAX_NAME_LEN
+                        )
                         n_new_lines = name_str_corrected.count("\n")
                         col1 += name_str_corrected
 
                         datetime_end = str2datetime(row["datetime_end"])
                         # display end of restriction as ceil of datetime_end to hour resolution
                         datetime_end_display = (
-                            (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
+                            (
+                                datetime_end.replace(minute=0, second=0, microsecond=0)
+                                + timedelta(hours=1)
+                            )
                             if datetime_end.minute != 0
                             else datetime_end
                         )
@@ -4542,7 +4579,7 @@ class Gui:
                             .replace(" 0", " ")
                         )
                         col2 += "\n" * n_new_lines
-                        
+
                         if discharge_datetime_str is not None:
                             if datetime_end_display <= discharge_datetime:
                                 col3 += "Yes"
@@ -4554,7 +4591,7 @@ class Gui:
                             col3 += "\n"
                         ii += 1
             else:
-                col1+="No restrictions."
+                col1 += "No restrictions."
 
             row_cells = table.add_row().cells
             row_cells[0].text = col1
@@ -4830,12 +4867,12 @@ class Gui:
 
             # fill the table
             row_cells = table.add_row().cells
-            row_cells[
-                0
-            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
-            row_cells[
-                1
-            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0_str} MBq"
+            row_cells[0].text = (
+                f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
+            )
+            row_cells[1].text = (
+                f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0_str} MBq"
+            )
             if discharge_datetime_str is not None:
                 row_cells[
                     1
@@ -4904,7 +4941,7 @@ class Gui:
 
             # restrictions without formatting
             n_rows = len(df[df["applies"].isin([1, "1"])])
-            if n_rows !=  0:
+            if n_rows != 0:
                 restrictions_plain = ""
                 ii = 1
                 for index, row in df.iterrows():
@@ -4914,7 +4951,10 @@ class Gui:
                         datetime_end = str2datetime(row["datetime_end"])
                         # display end of restriction as ceil of datetime_end to hour resolution
                         datetime_end_display = (
-                            (datetime_end.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
+                            (
+                                datetime_end.replace(minute=0, second=0, microsecond=0)
+                                + timedelta(hours=1)
+                            )
                             if datetime_end.minute != 0
                             else datetime_end
                         )
@@ -4930,7 +4970,7 @@ class Gui:
                             restrictions_plain += "\n"
                         ii += 1
             else:
-                restrictions_plain="No restrictions."
+                restrictions_plain = "No restrictions."
 
             p = document.add_paragraph()
             r = p.add_run()
@@ -4999,13 +5039,18 @@ class Gui:
                 word_available(WINDOWS_OS)
             except Exception as e:
                 word_avail = False
-                messagebox.showinfo("Information", f"Unable to export docx files to PDF:\n    {e}\nTo stop seeing this message, uncheck the box in 'Settings \u2192 Other'.")
+                messagebox.showinfo(
+                    "Information",
+                    f"Unable to export docx files to PDF:\n    {e}\nTo stop seeing this message, uncheck the box in 'Settings \u2192 Other'.",
+                )
         export_pdf = want_export_pdf and word_avail
 
         f = filedialog.asksaveasfilename(
-            initialdir=default_dir
-            if self.previous_report_directory is None
-            else self.previous_report_directory,
+            initialdir=(
+                default_dir
+                if self.previous_report_directory is None
+                else self.previous_report_directory
+            ),
             title="Save patient handout",
             initialfile="Patient_handout_" + filename + ".docx",
             filetypes=[("Microsoft Word Document (*.docx)", "*.docx")],
@@ -5020,16 +5065,18 @@ class Gui:
                     "Error",
                     f"{e}",
                 )
-                # Better to raise than return so there is a more verbose 
+                # Better to raise than return so there is a more verbose
                 # error message in CLI session.
                 raise
             if export_pdf:
                 base, _ = os.path.splitext(os.path.basename(f))
                 initfile = base + ".pdf"
                 fp = filedialog.asksaveasfilename(
-                    initialdir=default_dir
-                    if self.previous_report_directory is None
-                    else self.previous_report_directory,
+                    initialdir=(
+                        default_dir
+                        if self.previous_report_directory is None
+                        else self.previous_report_directory
+                    ),
                     title="Save patient handout",
                     initialfile=initfile,
                     filetypes=[("PDF Files", "*.pdf")],
@@ -5054,9 +5101,11 @@ class Gui:
             )
 
         f = filedialog.asksaveasfilename(
-            initialdir=default_dir
-            if self.previous_report_directory is None
-            else self.previous_report_directory,
+            initialdir=(
+                default_dir
+                if self.previous_report_directory is None
+                else self.previous_report_directory
+            ),
             title="Save summary report",
             initialfile="Summary_report_" + filename + ".docx",
             filetypes=[("Microsoft Word Document (*.docx)", "*.docx")],
@@ -5071,16 +5120,18 @@ class Gui:
                     "Error",
                     f"{e}",
                 )
-                # Better to raise than return so there is a more verbose 
+                # Better to raise than return so there is a more verbose
                 # error message in CLI session.
                 raise
             if export_pdf:
                 base, _ = os.path.splitext(os.path.basename(f))
                 initfile = base + ".pdf"
                 fp = filedialog.asksaveasfilename(
-                    initialdir=default_dir
-                    if self.previous_report_directory is None
-                    else self.previous_report_directory,
+                    initialdir=(
+                        default_dir
+                        if self.previous_report_directory is None
+                        else self.previous_report_directory
+                    ),
                     title="Save summary report",
                     initialfile=initfile,
                     filetypes=[("PDF Files", "*.pdf")],
@@ -5128,9 +5179,11 @@ class Gui:
             )
 
         filepath_new = filedialog.asksaveasfilename(
-            initialdir=default_dir
-            if self.previous_data_directory is None
-            else self.previous_data_directory,
+            initialdir=(
+                default_dir
+                if self.previous_data_directory is None
+                else self.previous_data_directory
+            ),
             title="Save XML file",
             initialfile=filename,
             filetypes=[("XML file (*.xml)", "*.xml")],
