@@ -46,6 +46,6 @@ setup(
     name="Dorn",
     options=options,
     version="1.11.0",
-    description="Individual close contact restrictions for nuclear medicine patients",
+    description="Individualised close contact restrictions for nuclear medicine patients",
     executables=executables,
 )

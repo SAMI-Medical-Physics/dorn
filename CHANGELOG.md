@@ -66,10 +66,10 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - In the summary report, fixed the alignment of restrictions in the table.  Now the restriction "Prolonged close contact (>15min) with adult household members" takes up 2 lines in every column.
 
-## [1.12.0] - 2025-02-xx
+## [1.12.0] - 2025-04-xx
 
 ### Added
-- Added the option to export DOCX report files to PDF using MS Word on Windows.  This feature is turned off by default.  To enable it, check the box in `Settings \u2192 Other`.
+- Added the option to export DOCX report files to PDF using MS Word on Windows.  This feature is turned **off** by default.  To enable it, check the box in `Settings \u2192 Other`.
 
 ### Changed
 - The instructions in the patient handout are now more succinct.

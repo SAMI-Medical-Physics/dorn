@@ -25,7 +25,7 @@ Python package dependencies:
 - `glowgreen`
 - `xmltodict`
 - `python-docx`
-
+- `pywin32` (optional)
 
 ## Platforms 
 
@@ -37,8 +37,7 @@ The Python files *dorn.py* and *dorn_cli.py* are known to run on:
 They probably also run on Windows 7 but I can no longer confirm. I have not tried on macOS.
 
 On Linux, some of the GUI windows are too small and need to be expanded to reveal content. 
-Also note that LibreOffice does not render the generated report *.docx* files correctly; the restriction tables are not formatted as intended. 
-
+Also note that LibreOffice does not render the generated report *.docx* files correctly; the restriction tables are not formatted as intended.
 
 ## glowgreen package
 
@@ -67,21 +66,22 @@ Then in the **dorn-master** directory run:
 
 ## Executable provided with release
 
-Each release on Github includes a zip file. The zip file contains an executable file *Dorn.exe* that can be used to run the Dorn program on Windows 10 and 11 systems without needing to install Python and Dorn's other dependencies.
+Each release on GitHub includes a zip file. The zip file contains an executable file *Dorn.exe* that can be used to run the Dorn program on Windows 10 and 11 systems without needing to install Python and Dorn's other dependencies.
 
-The executable for Windows provided with the current release (version 1.11.x) was built using the following:
+The executable for Windows provided with the current release (version 1.12.x) was built using the following:
 
 - Windows 10
-- Python 3.11.2
-- `pip` == 23.2.1
-- `numpy` == 1.24.2
-- `scipy` == 1.11.2
-- `matplotlib` == 3.8.0
-- `pandas` == 2.1.0
-- `glowgreen` == 0.1.0
-- `xmltodict` == 0.13.0
-- `python-docx` == 0.8.11
-- `cx_Freeze` == 6.15.7
+- Python 3.12.9
+- `pip` 25.0.1
+- `numpy` 2.2.3
+- `scipy` 1.15.2
+- `matplotlib` 3.10.1
+- `pandas` 2.2.3
+- `glowgreen` 0.1.1
+- `xmltodict` 0.14.2
+- `python-docx` 1.1.2
+- `cx_Freeze` 7.2.10
+- `pywin32` 309
 
 ## Build your own standalone executable
 
@@ -121,7 +121,6 @@ Then
     img = Image.open(filename)
     icon_sizes = [(16,16), (32, 32), (48, 48), (64,64)]
     img.save('new_icofile.ico', sizes=icon_sizes)
-
 
 ## Source 
 https://github.com/SAMI-Medical-Physics/dorn
@@ -164,14 +163,11 @@ The user may add at most 1 additional therapy options with measured clearance da
 
         Dorn.exe -h
 
-
-### TODO
-
-New features considered:
+### Ideas for new features
 
 - For therapy options that use generic clearance, allow the user to provide an initial dose rate measurement to determine the clearance function parameter: initial dose rate at 1 m.
 - Add more dose rate measurement time points and a scroll bar.
 - Add curve fit model representing no excretion at night. The difficulty will be adding the support in `glowgreen`.
-- Add a familiar name field for the detector.
+- Add a name field for the detector.
 - Attempt to propagate uncertainty from the contact pattern onto the calculated restriction period or dose.
 - Allow the user to edit/add contact patterns.
