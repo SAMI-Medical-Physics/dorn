@@ -4466,6 +4466,8 @@ class Gui:
                 additional_comments = None
 
             document = Document()
+            font = document.styles['Normal'].font
+            font.name = 'Arial'
             section = document.sections[0]
 
             # header and footer
@@ -4615,9 +4617,9 @@ class Gui:
             for cell in table.columns[2].cells:
                 cell.width = Inches(0.7)
             for cell in table.columns[1].cells:
-                cell.width = Inches(2)
+                cell.width = Inches(2.1)
             for cell in table.columns[0].cells:
-                cell.width = Inches(3.9)
+                cell.width = Inches(3.8)
 
             # additional comments
             if additional_comments is not None:
@@ -4830,7 +4832,7 @@ class Gui:
             )
 
             document = Document()
-
+            document.styles['Normal'].font.name = 'Arial'
             section = document.sections[0]
 
             # header and footer
@@ -4980,7 +4982,7 @@ class Gui:
             else:
                 restrictions_plain = "No restrictions."
             
-            border_str = 120*"_"
+            border_str = 80*"_"
             restrictions_plain = f"{border_str}\n{restrictions_plain}\n{border_str}"
 
             p = document.add_paragraph()
@@ -5012,7 +5014,7 @@ class Gui:
             r = p.add_run()
             r.text = "    Date: "
             r = p.add_run()
-            r.text = "\t\t"
+            r.text = "\t"
             r.underline = True
 
             # set the font size in the sign-off
