@@ -2360,13 +2360,16 @@ class Gui:
             try:
                 r_calib_a = float(r_calib_a)
             except ValueError:
+                update_window(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
             if r_calib_a < 0.0:
+                update_window(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
 
             if len(calib_year_entry.get()) != 4:
+                update_window(self)
                 messagebox.showerror(
                     "Error",
                     "Please enter a 4-digit year for calibration",
@@ -2382,33 +2385,42 @@ class Gui:
                     minute=int(calib_minute_entry.get()),
                 )
             except ValueError:
+                update_window(self)
                 messagebox.showerror(
                     "Error", "Bad calibration date/time", parent=window
                 )
                 return
 
-            if (
-                "administration_datetime"
-                in self.odict["data"]["administration_details"]
-            ):
-                if r_calib_datetime > str2datetime(
-                    self.odict["data"]["administration_details"][
-                        "administration_datetime"
-                    ]
-                ):
-                    messagebox.showerror(
-                        "Error", "Calibrated after administration", parent=window
-                    )
-                    return
+            # RuntimeWarning: overflow encountered in exp
+            # if (
+            #     "administration_datetime"
+            #     in self.odict["data"]["administration_details"]
+            # ):
+            #     if r_calib_datetime > str2datetime(
+            #         self.odict["data"]["administration_details"][
+            #             "administration_datetime"
+            #         ]
+            #     ):
+                    # Escape hatch
+                    # delete everything from the next section:
+                    # administration_datetime, administered_activity, residual_activity, residual_datetime
+                    # if "administered_activity" in self.odict["data"]["administration_details"]:
+                    #     self.odict["data"]["administration_details"].pop("administered_activity")
+                    # update_window(self)
+                    # messagebox.showinfo(
+                    #     "Information", "Calibrated after administration, so clearing the administration data", parent=window
+                    # )
+                    # return
 
             r_admin_activity = compute_administered_activity(
                 self, c_calib_activity=r_calib_a, c_calib_datetime=r_calib_datetime
             )
             if r_admin_activity is not None:
                 if r_admin_activity <= 0.0:
+                    update_window(self)
                     messagebox.showerror(
                         "Error",
-                        "Administered activity less than or equal to zero",
+                        f"Administered activity {r_admin_activity:.1f} MBq is less than or equal to zero",
                         parent=window,
                     )
                     return
@@ -2420,33 +2432,13 @@ class Gui:
                 datetime2str(r_calib_datetime)
             )
 
-            if not admin_day_entry.get():
-                admin_day_entry.insert(0, r_calib_datetime.day)
-            if not admin_month_entry.get():
-                admin_month_entry.insert(0, r_calib_datetime.month)
-            if not admin_year_entry.get():
-                admin_year_entry.insert(0, r_calib_datetime.year)
-
-            if not resid_day_entry.get():
-                resid_day_entry.insert(0, r_calib_datetime.day)
-            if not resid_month_entry.get():
-                resid_month_entry.insert(0, r_calib_datetime.month)
-            if not resid_year_entry.get():
-                resid_year_entry.insert(0, r_calib_datetime.year)
-
             # Calculate and write to odict the derived quantity administered_activity if administration datetime was already submitted
             if r_admin_activity is not None:
                 self.odict["data"]["administration_details"][
                     "administered_activity"
                 ] = r_admin_activity
-                admin_activity_str.set(
-                    f"The administered activity was {r_admin_activity:.0f} MBq"
-                )
-                l1.grid(row=2, pady=(10, 0))
-                button_ok.grid(row=3, pady=(10, 0))
-            else:
-                l1.grid_forget()
-                button_ok.grid_forget()
+            
+            update_window(self)
 
             # admin_activity is used in discharge button to calculate discharge_activity
             if "discharge_activity" in self.odict["data"]["patient_discharge"]:
@@ -2511,6 +2503,7 @@ class Gui:
         # Second submit button
         def retrieve_administration(self):
             if len(admin_year_entry.get()) != 4:
+                update_window(self)
                 messagebox.showerror(
                     "Error",
                     "Please enter a 4-digit year for administration",
@@ -2526,6 +2519,7 @@ class Gui:
                     minute=int(admin_minute_entry.get()),
                 )
             except ValueError:
+                update_window(self)
                 messagebox.showerror(
                     "Error", "Bad administration date/time", parent=window
                 )
@@ -2535,28 +2529,33 @@ class Gui:
                 if r_admin_datetime < str2datetime(
                     self.odict["data"]["administration_details"]["calibration_datetime"]
                 ):
+                    update_window(self)
                     messagebox.showerror(
                         "Error", "Administered before calibration", parent=window
                     )
                     return
 
+            # ignore residual date/time if residual activity is not entered
             r_residual = None
             r_resid_a = resid_a_entry.get()
             if r_resid_a != "":
                 try:
                     r_resid_a = float(r_resid_a)
                 except ValueError:
+                    update_window(self)
                     messagebox.showerror(
                         "Error", "Bad residual activity", parent=window
                     )
                     return
                 if r_resid_a < 0.0:
+                    update_window(self)
                     messagebox.showerror(
                         "Error", "Bad residual activity", parent=window
                     )
                     return
 
                 if len(resid_year_entry.get()) != 4:
+                    update_window(self)
                     messagebox.showerror(
                         "Error",
                         "Please enter a 4-digit year for residual",
@@ -2572,11 +2571,13 @@ class Gui:
                         minute=int(resid_minute_entry.get()),
                     )
                 except ValueError:
+                    update_window(self)
                     messagebox.showerror(
                         "Error", "Bad residual date/time", parent=window
                     )
                     return
                 if r_resid_datetime < r_admin_datetime:
+                    update_window(self)
                     messagebox.showerror(
                         "Error",
                         "Residual measured before administration",
@@ -2590,9 +2591,10 @@ class Gui:
             )
             if r_admin_activity is not None:
                 if r_admin_activity <= 0.0:
+                    update_window(self)
                     messagebox.showerror(
                         "Error",
-                        "Administered activity less than or equal to zero",
+                        f"Administered activity {r_admin_activity:.1f} MBq is less than or equal to zero",
                         parent=window,
                     )
                     return
@@ -2622,14 +2624,8 @@ class Gui:
                 self.odict["data"]["administration_details"][
                     "administered_activity"
                 ] = r_admin_activity
-                admin_activity_str.set(
-                    f"The administered activity was {r_admin_activity:.0f} MBq"
-                )
-                l1.grid(row=2, pady=(10, 0))
-                button_ok.grid(row=3, pady=(10, 0))
-            else:
-                l1.grid_forget()
-                button_ok.grid_forget()
+            
+            update_window(self)
 
             # In Measured Clearance Data window, when data is submitted, admin_datetime is used to calculate hours_elapsed
             if "measurement" in self.odict["data"]["clearance_data"]:
@@ -2710,47 +2706,108 @@ class Gui:
             self.info_label["text"] = self.get_info_str()
             self.info_label.place(relx=0.01, rely=0.01)
 
-        # Retrieve values that the user entered previously
-        if "calibrated_activity" in self.odict["data"]["administration_details"]:
-            calib_a = float(
-                self.odict["data"]["administration_details"]["calibrated_activity"]
-            )
-            if calib_a.is_integer():
-                calib_a = int(calib_a)
-        else:
-            calib_a = None
-        if "calibration_datetime" in self.odict["data"]["administration_details"]:
-            calib_datetime = str2datetime(
-                self.odict["data"]["administration_details"]["calibration_datetime"]
-            )
-        else:
-            calib_datetime = None
-        if "administration_datetime" in self.odict["data"]["administration_details"]:
-            admin_datetime = str2datetime(
-                self.odict["data"]["administration_details"]["administration_datetime"]
-            )
-        else:
-            admin_datetime = None
-        if "administered_activity" in self.odict["data"]["administration_details"]:
-            admin_activity = float(
-                self.odict["data"]["administration_details"]["administered_activity"]
-            )
-        else:
-            admin_activity = None
-        if "residual_datetime" in self.odict["data"]["administration_details"]:
-            resid_datetime = str2datetime(
-                self.odict["data"]["administration_details"]["residual_datetime"]
-            )
-        else:
-            resid_datetime = None
-        if "residual_activity" in self.odict["data"]["administration_details"]:
-            resid_a = float(
-                self.odict["data"]["administration_details"]["residual_activity"]
-            )
-            if resid_a.is_integer():
-                resid_a = int(resid_a)
-        else:
-            resid_a = None
+        def update_window(self):
+            # Retrieve the stored values
+            if "calibrated_activity" in self.odict["data"]["administration_details"]:
+                calib_a = float(
+                    self.odict["data"]["administration_details"]["calibrated_activity"]
+                )
+                if calib_a.is_integer():
+                    calib_a = int(calib_a)
+            else:
+                calib_a = None
+            if "calibration_datetime" in self.odict["data"]["administration_details"]:
+                calib_datetime = str2datetime(
+                    self.odict["data"]["administration_details"]["calibration_datetime"]
+                )
+            else:
+                calib_datetime = None
+            if "administration_datetime" in self.odict["data"]["administration_details"]:
+                admin_datetime = str2datetime(
+                    self.odict["data"]["administration_details"]["administration_datetime"]
+                )
+            else:
+                admin_datetime = None
+            if "administered_activity" in self.odict["data"]["administration_details"]:
+                admin_activity = float(
+                    self.odict["data"]["administration_details"]["administered_activity"]
+                )
+            else:
+                admin_activity = None
+            if "residual_datetime" in self.odict["data"]["administration_details"]:
+                resid_datetime = str2datetime(
+                    self.odict["data"]["administration_details"]["residual_datetime"]
+                )
+            else:
+                resid_datetime = None
+            if "residual_activity" in self.odict["data"]["administration_details"]:
+                resid_a = float(
+                    self.odict["data"]["administration_details"]["residual_activity"]
+                )
+                if resid_a.is_integer():
+                    resid_a = int(resid_a)
+            else:
+                resid_a = None
+
+            # update the values showing in the window
+            calib_a_entry.delete(0, tk.END)
+            calib_hour_entry.delete(0, tk.END)
+            calib_minute_entry.delete(0, tk.END)
+            calib_day_entry.delete(0, tk.END)
+            calib_month_entry.delete(0, tk.END)
+            calib_year_entry.delete(0, tk.END)
+            admin_hour_entry.delete(0, tk.END)
+            admin_minute_entry.delete(0, tk.END)
+            admin_day_entry.delete(0, tk.END)
+            admin_month_entry.delete(0, tk.END)
+            admin_year_entry.delete(0, tk.END)
+            resid_a_entry.delete(0, tk.END)
+            resid_hour_entry.delete(0, tk.END)
+            resid_minute_entry.delete(0, tk.END)
+            resid_day_entry.delete(0, tk.END)
+            resid_month_entry.delete(0, tk.END)
+            resid_year_entry.delete(0, tk.END)
+            if calib_a is not None:
+                calib_a_entry.insert(0, calib_a)
+            if calib_datetime is not None:
+                calib_hour_entry.insert(0, calib_datetime.hour)
+                calib_minute_entry.insert(0, calib_datetime.minute)
+                calib_day_entry.insert(0, calib_datetime.day)
+                calib_month_entry.insert(0, calib_datetime.month)
+                calib_year_entry.insert(0, calib_datetime.year)
+            if admin_datetime is not None:
+                admin_hour_entry.insert(0, admin_datetime.hour)
+                admin_minute_entry.insert(0, admin_datetime.minute)
+                admin_day_entry.insert(0, admin_datetime.day)
+                admin_month_entry.insert(0, admin_datetime.month)
+                admin_year_entry.insert(0, admin_datetime.year)
+            elif calib_datetime is not None:
+                # Prefill entries
+                admin_day_entry.insert(0, calib_datetime.day)
+                admin_month_entry.insert(0, calib_datetime.month)
+                admin_year_entry.insert(0, calib_datetime.year)
+            if resid_a is not None:
+                resid_a_entry.insert(0, resid_a)
+            if resid_datetime is not None:
+                resid_hour_entry.insert(0, resid_datetime.hour)
+                resid_minute_entry.insert(0, resid_datetime.minute)
+                resid_day_entry.insert(0, resid_datetime.day)
+                resid_month_entry.insert(0, resid_datetime.month)
+                resid_year_entry.insert(0, resid_datetime.year)
+            elif calib_datetime is not None:
+                # Prefill entries
+                resid_day_entry.insert(0, calib_datetime.day)
+                resid_month_entry.insert(0, calib_datetime.month)
+                resid_year_entry.insert(0, calib_datetime.year)
+            if admin_activity is not None:
+                admin_activity_str.set(
+                    f"The administered activity was {admin_activity:.0f} MBq"
+                )
+                l1.grid(row=2, pady=(10, 0))
+                button_ok.grid(row=3, pady=(10, 0))
+            else:
+                l1.grid_forget()
+                button_ok.grid_forget()
 
         window = tk.Toplevel()
         window.geometry("342x400")
@@ -2763,8 +2820,6 @@ class Gui:
 
         tk.Label(frame1, text="Calibrated activity").grid(row=0, sticky="W")
         calib_a_entry = tk.Entry(frame1, width=6)
-        if calib_a is not None:
-            calib_a_entry.insert(0, calib_a)
         calib_a_entry.grid(row=0, column=1, sticky="E")
         tk.Label(frame1, text="MBq").grid(row=0, column=2, sticky="W")
 
@@ -2789,13 +2844,6 @@ class Gui:
         calib_year_entry = tk.Entry(frame1, width=5)
         calib_year_entry.grid(row=2, column=5)
         tk.Label(frame1, text="(YYYY)").grid(row=2, column=6, sticky="W")
-
-        if calib_datetime is not None:
-            calib_hour_entry.insert(0, calib_datetime.hour)
-            calib_minute_entry.insert(0, calib_datetime.minute)
-            calib_day_entry.insert(0, calib_datetime.day)
-            calib_month_entry.insert(0, calib_datetime.month)
-            calib_year_entry.insert(0, calib_datetime.year)
 
         tk.Button(
             frame1, text="Submit", command=lambda: retrieve_calibration(self)
@@ -2824,20 +2872,11 @@ class Gui:
         admin_year_entry.grid(row=1, column=5)
         tk.Label(frame2, text="(YYYY)").grid(row=1, column=6, sticky="W")
 
-        if admin_datetime is not None:
-            admin_hour_entry.insert(0, admin_datetime.hour)
-            admin_minute_entry.insert(0, admin_datetime.minute)
-            admin_day_entry.insert(0, admin_datetime.day)
-            admin_month_entry.insert(0, admin_datetime.month)
-            admin_year_entry.insert(0, admin_datetime.year)
-
         tk.Label(frame2, text="Residual (optional)", font="Arial 9 bold").grid(
             row=2, pady=(10, 0), columnspan=7
         )
         tk.Label(frame2, text="Residual activity").grid(row=3, sticky="W")
         resid_a_entry = tk.Entry(frame2, width=6)
-        if resid_a is not None:
-            resid_a_entry.insert(0, resid_a)
         resid_a_entry.grid(row=3, column=1, sticky="E")
         tk.Label(frame2, text="MBq").grid(row=3, column=2, sticky="W")
 
@@ -2860,13 +2899,6 @@ class Gui:
         resid_year_entry.grid(row=5, column=5)
         tk.Label(frame2, text="(YYYY)").grid(row=5, column=6, sticky="W")
 
-        if resid_datetime is not None:
-            resid_hour_entry.insert(0, resid_datetime.hour)
-            resid_minute_entry.insert(0, resid_datetime.minute)
-            resid_day_entry.insert(0, resid_datetime.day)
-            resid_month_entry.insert(0, resid_datetime.month)
-            resid_year_entry.insert(0, resid_datetime.year)
-
         tk.Button(
             frame2, text="Submit", command=lambda: retrieve_administration(self)
         ).grid(row=6, columnspan=7, pady=(10, 10))
@@ -2875,15 +2907,8 @@ class Gui:
 
         admin_activity_str = tk.StringVar()
         l1 = tk.Label(window, textvariable=admin_activity_str)
-        if admin_activity is not None:
-            admin_activity_str.set(
-                f"The administered activity was {admin_activity:.0f} MBq"
-            )
-            l1.grid(row=2, pady=(10, 0))
-
         button_ok = tk.Button(window, text="OK", command=window.withdraw)
-        if admin_activity is not None:
-            button_ok.grid(row=3, pady=(10, 0))
+        update_window(self)
 
     # Measured Clearance Data
     def clearance_data(self):
