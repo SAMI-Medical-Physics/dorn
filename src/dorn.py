@@ -2363,7 +2363,7 @@ class Gui:
                 update_window(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
-            if r_calib_a < 0.0:
+            if r_calib_a < 0.0 or np.isinf(r_calib_a):
                 update_window(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
@@ -2547,7 +2547,7 @@ class Gui:
                         "Error", "Bad residual activity", parent=window
                     )
                     return
-                if r_resid_a < 0.0:
+                if r_resid_a < 0.0 or np.isinf(r_resid_a):
                     update_window(self)
                     messagebox.showerror(
                         "Error", "Bad residual activity", parent=window
