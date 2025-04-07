@@ -91,7 +91,7 @@ def datetime2str(dt):
     according to format codes of 1989 C standard.
     """
     return (
-        str(dt.year)
+        str(dt.year).zfill(4)
         + str(dt.month).zfill(2)
         + str(dt.day).zfill(2)
         + str(dt.hour).zfill(2)
@@ -103,7 +103,7 @@ def date2str(d):
     """Return a string of the form %Y%m%d from a datetime.date,
     according to format codes of 1989 C standard.
     """
-    return str(d.year) + str(d.month).zfill(2) + str(d.day).zfill(2)
+    return str(d.year).zfill(4) + str(d.month).zfill(2) + str(d.day).zfill(2)
 
 
 def word_available(windows_os):
