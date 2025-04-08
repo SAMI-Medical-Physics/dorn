@@ -2797,6 +2797,11 @@ class Gui:
                 resid_day_entry.insert(0, resid_datetime.day)
                 resid_month_entry.insert(0, resid_datetime.month)
                 resid_year_entry.insert(0, str(resid_datetime.year).zfill(4))
+            elif admin_datetime is not None:
+                # Prefill entries
+                resid_day_entry.insert(0, admin_datetime.day)
+                resid_month_entry.insert(0, admin_datetime.month)
+                resid_year_entry.insert(0, str(admin_datetime.year).zfill(4))
             elif calib_datetime is not None:
                 # Prefill entries
                 resid_day_entry.insert(0, calib_datetime.day)
