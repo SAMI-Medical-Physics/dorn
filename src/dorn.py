@@ -2587,7 +2587,10 @@ class Gui:
                 r_residual = (r_resid_a, r_resid_datetime)
 
             r_admin_activity = compute_administered_activity(
-                self, c_admin_datetime=r_admin_datetime, c_residual=r_residual
+                self, c_admin_datetime=r_admin_datetime,
+                # c_residual = None makes it look up the stored value,
+                # but in this case the user entered no residual.
+                c_residual=(0, r_admin_datetime) if r_residual is None else r_residual,
             )
             if r_admin_activity is not None:
                 if r_admin_activity <= 0.0:
