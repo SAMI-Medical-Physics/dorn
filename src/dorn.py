@@ -227,9 +227,9 @@ class RestrictionsWindow:
                 else datetime_end
             )
             datetime_end_str = (
-                datetime_end_display.strftime("%d %b, %I %p")
+                datetime_end_display.strftime("%d %b %Y, %I %p")
                 .lstrip("0")
-                .replace(" 0", " ")
+                .replace(", 0", ", ")
             )
             tk.Label(window, text=datetime_end_str).grid(
                 row=i + 2, column=1, padx=(5, 5)
