@@ -2185,7 +2185,7 @@ class Gui:
         if dob is not None:
             dob_day_entry.insert(0, dob.day)
             dob_month_entry.insert(0, dob.month)
-            dob_year_entry.insert(0, dob.year)
+            dob_year_entry.insert(0, str(dob.year).zfill(4))
 
         tk.Label(window, text="Sex").grid(row=4, column=0, sticky="E")
         sex_combo = ttk.Combobox(
@@ -2774,18 +2774,18 @@ class Gui:
                 calib_minute_entry.insert(0, calib_datetime.minute)
                 calib_day_entry.insert(0, calib_datetime.day)
                 calib_month_entry.insert(0, calib_datetime.month)
-                calib_year_entry.insert(0, calib_datetime.year)
+                calib_year_entry.insert(0, str(calib_datetime.year).zfill(4))
             if admin_datetime is not None:
                 admin_hour_entry.insert(0, admin_datetime.hour)
                 admin_minute_entry.insert(0, admin_datetime.minute)
                 admin_day_entry.insert(0, admin_datetime.day)
                 admin_month_entry.insert(0, admin_datetime.month)
-                admin_year_entry.insert(0, admin_datetime.year)
+                admin_year_entry.insert(0, str(admin_datetime.year).zfill(4))
             elif calib_datetime is not None:
                 # Prefill entries
                 admin_day_entry.insert(0, calib_datetime.day)
                 admin_month_entry.insert(0, calib_datetime.month)
-                admin_year_entry.insert(0, calib_datetime.year)
+                admin_year_entry.insert(0, str(calib_datetime.year).zfill(4))
             if resid_a is not None:
                 resid_a_entry.insert(0, resid_a)
             if resid_datetime is not None:
@@ -2793,12 +2793,12 @@ class Gui:
                 resid_minute_entry.insert(0, resid_datetime.minute)
                 resid_day_entry.insert(0, resid_datetime.day)
                 resid_month_entry.insert(0, resid_datetime.month)
-                resid_year_entry.insert(0, resid_datetime.year)
+                resid_year_entry.insert(0, str(resid_datetime.year).zfill(4))
             elif calib_datetime is not None:
                 # Prefill entries
                 resid_day_entry.insert(0, calib_datetime.day)
                 resid_month_entry.insert(0, calib_datetime.month)
-                resid_year_entry.insert(0, calib_datetime.year)
+                resid_year_entry.insert(0, str(calib_datetime.year).zfill(4))
             if admin_activity is not None:
                 admin_activity_str.set(
                     f"The administered activity was {admin_activity:.0f} MBq"
@@ -3817,16 +3817,16 @@ class Gui:
             if prev_datetime is not None:
                 day[x].insert(0, prev_datetime.day)
                 month[x].insert(0, prev_datetime.month)
-                year[x].insert(0, prev_datetime.year)
+                year[x].insert(0, str(prev_datetime.year).zfill(4))
                 hour[x].insert(0, prev_datetime.hour)
                 minute[x].insert(0, prev_datetime.minute)
             elif admin_datetime is not None and x == 0:
                 day[x].insert(0, admin_datetime.day)
                 month[x].insert(0, admin_datetime.month)
-                year[x].insert(0, admin_datetime.year)
+                year[x].insert(0, str(admin_datetime.year).zfill(4))
             elif admin_datetime is not None:
                 month[x].insert(0, admin_datetime.month)
-                year[x].insert(0, admin_datetime.year)
+                year[x].insert(0, str(admin_datetime.year).zfill(4))
 
             doserate.append(tk.Entry(frame4, width=5))
             if prev_doserate is not None:
@@ -4246,13 +4246,13 @@ class Gui:
             discharge_minute_entry.insert(0, discharge_datetime.minute)
             discharge_day_entry.insert(0, discharge_datetime.day)
             discharge_month_entry.insert(0, discharge_datetime.month)
-            discharge_year_entry.insert(0, discharge_datetime.year)
+            discharge_year_entry.insert(0, str(discharge_datetime.year).zfill(4))
         else:
             admin_datetime = str2datetime(
                 self.odict["data"]["administration_details"]["administration_datetime"]
             )
             discharge_month_entry.insert(0, admin_datetime.month)
-            discharge_year_entry.insert(0, admin_datetime.year)
+            discharge_year_entry.insert(0, str(admin_datetime.year).zfill(4))
 
         tk.Button(
             frame, text="Submit", command=lambda: set_patient_discharge(self)
