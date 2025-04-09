@@ -1952,7 +1952,7 @@ class Gui:
                     "Error", "Bad number of treatments in a year", parent=window
                 )
                 return
-            if e_num_treatments_in_year < 0.0:
+            if e_num_treatments_in_year <= 0.0 or (1/e_num_treatments_in_year == 0) or np.isnan(e_num_treatments_in_year):
                 messagebox.showerror(
                     "Error", "Bad number of treatments in a year", parent=window
                 )
@@ -2388,7 +2388,7 @@ class Gui:
                 update_window(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
-            if r_calib_a < 0.0 or np.isinf(r_calib_a):
+            if r_calib_a < 0.0 or np.isinf(r_calib_a) or np.isnan(r_calib_a):
                 update_window(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
@@ -2573,7 +2573,7 @@ class Gui:
                         "Error", "Bad residual activity", parent=window
                     )
                     return
-                if r_resid_a < 0.0 or np.isinf(r_resid_a):
+                if r_resid_a < 0.0 or np.isinf(r_resid_a) or np.isnan(r_resid_a):
                     update_window(self)
                     messagebox.showerror(
                         "Error", "Bad residual activity", parent=window
@@ -3305,7 +3305,7 @@ class Gui:
                     "Error", "Bad detector calibration factor", parent=window
                 )
                 return
-            if r_detector_calibration_factor <= 0.0:
+            if r_detector_calibration_factor <= 0.0 or np.isinf(r_detector_calibration_factor) or np.isnan(r_detector_calibration_factor):
                 messagebox.showerror(
                     "Error", "Bad detector calibration factor", parent=window
                 )
