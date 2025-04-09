@@ -2385,16 +2385,16 @@ class Gui:
             try:
                 r_calib_a = float(r_calib_a)
             except ValueError:
-                update_window(self)
+                update_window_admin(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
             if r_calib_a < 0.0 or np.isinf(r_calib_a) or np.isnan(r_calib_a):
-                update_window(self)
+                update_window_admin(self)
                 messagebox.showerror("Error", "Bad calibrated activity", parent=window)
                 return
 
             if len(calib_year_entry.get()) != 4:
-                update_window(self)
+                update_window_admin(self)
                 messagebox.showerror(
                     "Error",
                     "Please enter a 4-digit year for calibration",
@@ -2410,7 +2410,7 @@ class Gui:
                     minute=int(calib_minute_entry.get()),
                 )
             except ValueError:
-                update_window(self)
+                update_window_admin(self)
                 messagebox.showerror(
                     "Error", "Bad calibration date/time", parent=window
                 )
@@ -2450,8 +2450,8 @@ class Gui:
                 self.odict["data"]["administration_details"][
                     "administered_activity"
                 ] = r_admin_activity
-            
-            update_window(self)
+
+            update_window_admin(self)
 
             # admin_activity is used in discharge button to calculate discharge_activity
             if "discharge_activity" in self.odict["data"]["patient_discharge"]:
@@ -2539,7 +2539,7 @@ class Gui:
         # Second submit button
         def retrieve_administration(self):
             if len(admin_year_entry.get()) != 4:
-                update_window(self)
+                update_window_admin(self)
                 messagebox.showerror(
                     "Error",
                     "Please enter a 4-digit year for administration",
@@ -2555,7 +2555,7 @@ class Gui:
                     minute=int(admin_minute_entry.get()),
                 )
             except ValueError:
-                update_window(self)
+                update_window_admin(self)
                 messagebox.showerror(
                     "Error", "Bad administration date/time", parent=window
                 )
@@ -2568,20 +2568,20 @@ class Gui:
                 try:
                     r_resid_a = float(r_resid_a)
                 except ValueError:
-                    update_window(self)
+                    update_window_admin(self)
                     messagebox.showerror(
                         "Error", "Bad residual activity", parent=window
                     )
                     return
                 if r_resid_a < 0.0 or np.isinf(r_resid_a) or np.isnan(r_resid_a):
-                    update_window(self)
+                    update_window_admin(self)
                     messagebox.showerror(
                         "Error", "Bad residual activity", parent=window
                     )
                     return
 
                 if len(resid_year_entry.get()) != 4:
-                    update_window(self)
+                    update_window_admin(self)
                     messagebox.showerror(
                         "Error",
                         "Please enter a 4-digit year for residual",
@@ -2597,13 +2597,13 @@ class Gui:
                         minute=int(resid_minute_entry.get()),
                     )
                 except ValueError:
-                    update_window(self)
+                    update_window_admin(self)
                     messagebox.showerror(
                         "Error", "Bad residual date/time", parent=window
                     )
                     return
                 if r_resid_datetime < r_admin_datetime:
-                    update_window(self)
+                    update_window_admin(self)
                     messagebox.showerror(
                         "Error",
                         "The residual cannot be measured before administration.  Please try again.",
@@ -2632,7 +2632,7 @@ class Gui:
             )
             if r_admin_activity is not None:
                 if r_admin_activity <= 0.0:
-                    update_window(self)
+                    update_window_admin(self)
                     messagebox.showerror(
                         "Error",
                         f"The calculated administered activity of {r_admin_activity:.1f} MBq is less than or equal to zero.  Please try again.",
@@ -2640,7 +2640,7 @@ class Gui:
                     )
                     return
                 if r_admin_activity > MAX_ADMINISTERED_ACTIVITY_MBQ:
-                    update_window(self)
+                    update_window_admin(self)
                     messagebox.showerror(
                         "Error",
                         f"The calculated administered activity of {r_admin_activity:.3g} MBq is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6)} TBq).  Please try again.",
@@ -2675,8 +2675,8 @@ class Gui:
                 self.odict["data"]["administration_details"][
                     "administered_activity"
                 ] = r_admin_activity
-            
-            update_window(self)
+
+            update_window_admin(self)
 
             # In Measured Clearance Data window, when data is submitted, admin_datetime is used to calculate hours_elapsed
             if "measurement" in self.odict["data"]["clearance_data"]:
@@ -2757,7 +2757,7 @@ class Gui:
             self.info_label["text"] = self.get_info_str()
             self.info_label.place(relx=0.01, rely=0.01)
 
-        def update_window(self):
+        def update_window_admin(self):
             # Retrieve the stored values
             if "calibrated_activity" in self.odict["data"]["administration_details"]:
                 calib_a = float(
@@ -2964,7 +2964,7 @@ class Gui:
         admin_activity_str = tk.StringVar()
         l1 = tk.Label(window, textvariable=admin_activity_str)
         button_ok = tk.Button(window, text="OK", command=window.withdraw)
-        update_window(self)
+        update_window_admin(self)
 
     # Measured Clearance Data
     def clearance_data(self):
