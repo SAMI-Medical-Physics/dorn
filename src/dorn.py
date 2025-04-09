@@ -3338,7 +3338,7 @@ class Gui:
                         update_window_measure(self)
                         messagebox.showerror(
                             "Error",
-                            f"Bad dose rate measurement {qdoserate}",
+                            f"Bad dose rate measurement: '{qdoserate}'",
                             parent=window,
                         )
                         return
@@ -3347,7 +3347,7 @@ class Gui:
                         update_window_measure(self)
                         messagebox.showerror(
                             "Error",
-                            f"Bad dose rate measurement {qqdoserate}",
+                            f"Bad dose rate measurement: '{qqdoserate}'",
                             parent=window,
                         )
                         return
