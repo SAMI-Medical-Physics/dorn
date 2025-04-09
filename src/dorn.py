@@ -4200,7 +4200,7 @@ class Gui:
                 discharge_dose_rate_1m_warning_label["fg"] = "black"
 
         window = tk.Toplevel()
-        window.geometry("260x295")
+        window.geometry("273x295")
         window.title("Patient Discharge")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
@@ -4214,9 +4214,9 @@ class Gui:
                     "datetime"
                 ]
             )
-            .strftime("%d %b, %I:%M %p")
+            .strftime("%d %b %Y, %I:%M %p")
             .lstrip("0")
-            .replace(" 0", " ")
+            .replace(", 0", ", ")
         )
 
         frame = tk.Frame(window)
