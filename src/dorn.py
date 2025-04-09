@@ -53,6 +53,8 @@ except importlib.metadata.PackageNotFoundError:
 
 WINDOWS_OS = platform.system() == "Windows"
 
+# To help restriction periods for once-off patterns converge.
+MAX_ADMINISTERED_ACTIVITY_MBQ = 1e9  # 1 PBq
 
 def func_exp(t, a, b):
     return a * np.exp(-b * t)
@@ -207,6 +209,24 @@ class RestrictionsWindow:
             num_treatments_in_year,
             admin_datetime=admin_datetime,
         )
+
+        with warnings.catch_warnings():
+            # The fsolve used for onceoff patterns doesn't converge
+            # for very large activities.  In that case, fail loudly.
+            warnings.simplefilter("error", RuntimeWarning)
+            try:
+                self.df = restrictions_for(
+                    self.df,
+                    cfit,
+                    num_treatments_in_year,
+                    admin_datetime=admin_datetime,
+                )
+            except Exception as e:
+                messagebox.showerror(
+                    "Error",
+                    f"Failed to calculate the restriction periods.  The RuntimeWarning message is shown below.\n\n{e}",
+                )
+                raise
         self.df["datetime_end"] = self.df["datetime_end"].map(datetime2str)
 
         gui.odict["data"]["glowgreen_version"] = GLOWGREEN_VERSION
@@ -2344,13 +2364,18 @@ class Gui:
                     )
                     c_residual = (c_resid_activity, c_resid_datetime)
 
-            c_a0 = Gui.administered_activity(
-                c_calib_activity,
-                c_calib_datetime,
-                c_admin_datetime,
-                half_life,
-                c_residual,
-            )
+            with warnings.catch_warnings():
+                # Don't print the RuntimeWarning
+                warnings.filterwarnings(
+                    "ignore", "overflow encountered in exp"
+                )
+                c_a0 = Gui.administered_activity(
+                    c_calib_activity,
+                    c_calib_datetime,
+                    c_admin_datetime,
+                    half_life,
+                    c_residual,
+                )
 
             return c_a0
 
@@ -2391,39 +2416,27 @@ class Gui:
                 )
                 return
 
-            # RuntimeWarning: overflow encountered in exp
-            # if (
-            #     "administration_datetime"
-            #     in self.odict["data"]["administration_details"]
-            # ):
-            #     if r_calib_datetime > str2datetime(
-            #         self.odict["data"]["administration_details"][
-            #             "administration_datetime"
-            #         ]
-            #     ):
-                    # Escape hatch
-                    # delete everything from the next section:
-                    # administration_datetime, administered_activity, residual_activity, residual_datetime
-                    # if "administered_activity" in self.odict["data"]["administration_details"]:
-                    #     self.odict["data"]["administration_details"].pop("administered_activity")
-                    # update_window(self)
-                    # messagebox.showinfo(
-                    #     "Information", "Calibrated after administration, so clearing the administration data", parent=window
-                    # )
-                    # return
-
+            # No failing from here.
+            #
+            # Returns None if admin time has not previously been entered.
             r_admin_activity = compute_administered_activity(
                 self, c_calib_activity=r_calib_a, c_calib_datetime=r_calib_datetime
             )
+            info_msg = None
             if r_admin_activity is not None:
+                # If calculated A0 is unacceptable, accept the
+                # calibration details entered just now and remove the
+                # previously entered admin time and residual details.
+                # This is an escape hatch to be able to make large
+                # changes to calibration and admin times.
                 if r_admin_activity <= 0.0:
-                    update_window(self)
-                    messagebox.showerror(
-                        "Error",
-                        f"Administered activity {r_admin_activity:.1f} MBq is less than or equal to zero",
-                        parent=window,
-                    )
-                    return
+                    self.odict["data"]["administration_details"] = collections.OrderedDict()
+                    info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is less than or equal to zero."
+                    r_admin_activity = None
+                elif r_admin_activity > MAX_ADMINISTERED_ACTIVITY_MBQ:
+                    self.odict["data"]["administration_details"] = collections.OrderedDict()
+                    info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6)} TBq)."
+                    r_admin_activity = None
 
             self.odict["data"]["administration_details"][
                 "calibrated_activity"
@@ -2499,6 +2512,29 @@ class Gui:
 
             self.generic_updates()
             self.update_buttons()
+            # we may have removed the admin time
+            self.info_label["text"] = self.get_info_str()
+            self.info_label.place(relx=0.01, rely=0.01)
+
+            if info_msg is not None:
+                messagebox.showinfo(
+                    "Information",
+                    info_msg,
+                    parent=window,
+                )
+            else:
+                if (
+                        "administration_datetime"
+                        in self.odict["data"]["administration_details"]
+                ):
+                    if r_calib_datetime > str2datetime(
+                            self.odict["data"]["administration_details"][
+                                "administration_datetime"
+                            ]
+                    ):
+                        messagebox.showwarning(
+                            "Warning", "Calibrated before administration.  This is just a warning.", parent=window
+                        )
 
         # Second submit button
         def retrieve_administration(self):
@@ -2524,16 +2560,6 @@ class Gui:
                     "Error", "Bad administration date/time", parent=window
                 )
                 return
-
-            if "calibration_datetime" in self.odict["data"]["administration_details"]:
-                if r_admin_datetime < str2datetime(
-                    self.odict["data"]["administration_details"]["calibration_datetime"]
-                ):
-                    update_window(self)
-                    messagebox.showerror(
-                        "Error", "Administered before calibration", parent=window
-                    )
-                    return
 
             # ignore residual date/time if residual activity is not entered
             r_residual = None
@@ -2580,12 +2606,24 @@ class Gui:
                     update_window(self)
                     messagebox.showerror(
                         "Error",
-                        "Residual measured before administration",
+                        "The residual cannot be measured before administration.  Please try again.",
                         parent=window,
                     )
                     return
                 r_residual = (r_resid_a, r_resid_datetime)
 
+            if "calibration_datetime" in self.odict["data"]["administration_details"]:
+                if r_admin_datetime < str2datetime(
+                    self.odict["data"]["administration_details"]["calibration_datetime"]
+                ):
+                    # Show the warning before the error, because it
+                    # may help identify the cause of the error.
+                    messagebox.showwarning(
+                        "Warning", "Administered before calibration.  This is just a warning.", parent=window
+                    )
+
+            # Returns None if calibration info was not been previously
+            # entered.
             r_admin_activity = compute_administered_activity(
                 self, c_admin_datetime=r_admin_datetime,
                 # c_residual = None makes it look up the stored value,
@@ -2597,11 +2635,21 @@ class Gui:
                     update_window(self)
                     messagebox.showerror(
                         "Error",
-                        f"Administered activity {r_admin_activity:.1f} MBq is less than or equal to zero",
+                        f"The calculated administered activity of {r_admin_activity:.1f} MBq is less than or equal to zero.  Please try again.",
+                        parent=window,
+                    )
+                    return
+                if r_admin_activity > MAX_ADMINISTERED_ACTIVITY_MBQ:
+                    update_window(self)
+                    messagebox.showerror(
+                        "Error",
+                        f"The calculated administered activity of {r_admin_activity:.3g} MBq is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6)} TBq).  Please try again.",
                         parent=window,
                     )
                     return
 
+            # No failing from here.
+            #
             self.odict["data"]["administration_details"]["administration_datetime"] = (
                 datetime2str(r_admin_datetime)
             )
@@ -2809,7 +2857,7 @@ class Gui:
                 resid_year_entry.insert(0, str(calib_datetime.year).zfill(4))
             if admin_activity is not None:
                 admin_activity_str.set(
-                    f"The administered activity was {admin_activity:.0f} MBq"
+                    f"The administered activity was {admin_activity:g} MBq"
                 )
                 l1.grid(row=2, pady=(10, 0))
                 button_ok.grid(row=3, pady=(10, 0))
@@ -5553,7 +5601,8 @@ class Gui:
     ):
         hrs = (admin_datetime - calib_datetime).total_seconds() / 3600
         a0 = calib_activity * np.exp(-np.log(2) * hrs / half_life)
-        if residual is not None:
+        # inf - inf = nan, make it return inf to trigger an error
+        if residual is not None and not np.isinf(a0):
             residual_activity, residual_datetime = residual
             hrs = (residual_datetime - admin_datetime).total_seconds() / 3600
             a0 -= residual_activity * np.exp(np.log(2) * hrs / half_life)
