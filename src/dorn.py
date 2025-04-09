@@ -3301,11 +3301,13 @@ class Gui:
                     detector_calibration_factor_entry.get()
                 )
             except ValueError:
+                update_window_measure(self)
                 messagebox.showerror(
                     "Error", "Bad detector calibration factor", parent=window
                 )
                 return
             if r_detector_calibration_factor <= 0.0 or np.isinf(r_detector_calibration_factor) or np.isnan(r_detector_calibration_factor):
+                update_window_measure(self)
                 messagebox.showerror(
                     "Error", "Bad detector calibration factor", parent=window
                 )
@@ -3314,10 +3316,12 @@ class Gui:
             try:
                 r_measurement_distance = float(measurement_distance_entry.get())
             except ValueError:
+                update_window_measure(self)
                 messagebox.showerror("Error", "Bad measurement distance", parent=window)
                 return
 
             if not (1.0 <= r_measurement_distance <= 3.0):
+                update_window_measure(self)
                 messagebox.showerror(
                     "Error",
                     "Measurement distance must be between 1 and 3 m",
@@ -3331,6 +3335,7 @@ class Gui:
                     try:
                         qqdoserate = float(qdoserate)
                     except ValueError:
+                        update_window_measure(self)
                         messagebox.showerror(
                             "Error",
                             f"Bad dose rate measurement {qdoserate}",
@@ -3338,7 +3343,8 @@ class Gui:
                         )
                         return
 
-                    if qqdoserate < 0.0:
+                    if qqdoserate < 0.0 or np.isinf(qqdoserate) or np.isnan(qqdoserate):
+                        update_window_measure(self)
                         messagebox.showerror(
                             "Error",
                             f"Bad dose rate measurement {qqdoserate}",
@@ -3376,6 +3382,7 @@ class Gui:
 
             for r_year in year_list:
                 if len(r_year) != 4:
+                    update_window_measure(self)
                     messagebox.showerror(
                         "Error", "Please enter 4-digit years", parent=window
                     )
@@ -3395,6 +3402,7 @@ class Gui:
                     )
                     datetime_str_list.append(datetime2str(r_datetime))
                 except ValueError:
+                    update_window_measure(self)
                     messagebox.showerror(
                         "Error",
                         "Bad date/time for at least one dose rate measurement",
@@ -3407,6 +3415,7 @@ class Gui:
             )
             for datetime_str in datetime_str_list:
                 if str2datetime(datetime_str) < r_admin_datetime:
+                    update_window_measure(self)
                     messagebox.showerror(
                         "Error",
                         "Dose rate measurement before administration",
@@ -3556,6 +3565,7 @@ class Gui:
                             self, hrs_elapsed, dr_xm
                         )
                     except Exception as e:
+                        update_window_measure(self)
                         messagebox.showerror(
                             "Error",
                             f"Unable to fit a biexponential curve.\n{e}",
@@ -3604,6 +3614,7 @@ class Gui:
                             self, hrs_elapsed, dr_xm
                         )
                     except Exception as e:
+                        update_window_measure(self)
                         messagebox.showerror(
                             "Error",
                             f"Unable to fit an exponential curve.\n{e}",
@@ -3760,54 +3771,121 @@ class Gui:
                 plt.tight_layout()
                 plt.show()
 
-        # Retrieve values that the user entered previously
-        if "detector_calibration_factor" in self.odict["data"]["clearance_data"]:
-            detector_calibration_factor = self.odict["data"]["clearance_data"][
-                "detector_calibration_factor"
-            ]
-        else:
-            detector_calibration_factor = None
-
-        if "measurement_distance" in self.odict["data"]["clearance_data"]:
-            measurement_distance = float(
-                self.odict["data"]["clearance_data"]["measurement_distance"]
-            )
-            if measurement_distance.is_integer():
-                measurement_distance = int(measurement_distance)
-        else:
-            measurement_distance = None
-
-        if "administration_datetime" in self.odict["data"]["administration_details"]:
-            admin_datetime = str2datetime(
-                self.odict["data"]["administration_details"]["administration_datetime"]
-            )
-        else:
-            admin_datetime = None
-
-        if "curve_fit" in self.odict["data"]["clearance_data"]:
-            model = self.odict["data"]["clearance_data"]["curve_fit"]["model"]
-        else:
-            model = None
-
-        prev_datetime_list = []
-        prev_doserate_list = []
-        prev_exclude_list = []
-        if "measurement" in self.odict["data"]["clearance_data"]:
-            if isinstance(self.odict["data"]["clearance_data"]["measurement"], list):
-                for child in self.odict["data"]["clearance_data"]["measurement"]:
-                    prev_datetime_list.append(child["datetime"])
-                    prev_doserate_list.append(child["doserate"])
-                    prev_exclude_list.append(child["exclude"])
+        def update_window_measure(self):
+            # Retrieve values that the user entered previously
+            if "detector_calibration_factor" in self.odict["data"]["clearance_data"]:
+                detector_calibration_factor = self.odict["data"]["clearance_data"][
+                    "detector_calibration_factor"
+                ]
             else:
-                prev_datetime_list.append(
-                    self.odict["data"]["clearance_data"]["measurement"]["datetime"]
+                detector_calibration_factor = None
+
+            if "measurement_distance" in self.odict["data"]["clearance_data"]:
+                measurement_distance = float(
+                    self.odict["data"]["clearance_data"]["measurement_distance"]
                 )
-                prev_doserate_list.append(
-                    self.odict["data"]["clearance_data"]["measurement"]["doserate"]
+                if measurement_distance.is_integer():
+                    measurement_distance = int(measurement_distance)
+            else:
+                measurement_distance = None
+
+            if "administration_datetime" in self.odict["data"]["administration_details"]:
+                admin_datetime = str2datetime(
+                    self.odict["data"]["administration_details"]["administration_datetime"]
                 )
-                prev_exclude_list.append(
-                    self.odict["data"]["clearance_data"]["measurement"]["exclude"]
+            else:
+                admin_datetime = None
+
+            if "curve_fit" in self.odict["data"]["clearance_data"]:
+                model = self.odict["data"]["clearance_data"]["curve_fit"]["model"]
+            else:
+                model = None
+
+            prev_datetime_list = []
+            prev_doserate_list = []
+            prev_exclude_list = []
+            if "measurement" in self.odict["data"]["clearance_data"]:
+                if isinstance(self.odict["data"]["clearance_data"]["measurement"], list):
+                    for child in self.odict["data"]["clearance_data"]["measurement"]:
+                        prev_datetime_list.append(child["datetime"])
+                        prev_doserate_list.append(child["doserate"])
+                        prev_exclude_list.append(child["exclude"])
+                else:
+                    prev_datetime_list.append(
+                        self.odict["data"]["clearance_data"]["measurement"]["datetime"]
+                    )
+                    prev_doserate_list.append(
+                        self.odict["data"]["clearance_data"]["measurement"]["doserate"]
+                    )
+                    prev_exclude_list.append(
+                        self.odict["data"]["clearance_data"]["measurement"]["exclude"]
+                    )
+
+            for x in range(self.N_MEASUREMENTS_MAX):
+                if x < len(prev_doserate_list):
+                    prev_datetime = str2datetime(prev_datetime_list[x])
+                    prev_doserate = prev_doserate_list[x]
+                    prev_exclude = prev_exclude_list[x]
+                else:
+                    prev_datetime = None
+                    prev_doserate = None
+                    prev_exclude = None
+
+                day[x].delete(0, tk.END)
+                month[x].delete(0, tk.END)
+                year[x].delete(0, tk.END)
+                hour[x].delete(0, tk.END)
+                minute[x].delete(0, tk.END)
+                if prev_datetime is not None:
+                    day[x].insert(0, prev_datetime.day)
+                    month[x].insert(0, prev_datetime.month)
+                    year[x].insert(0, str(prev_datetime.year).zfill(4))
+                    hour[x].insert(0, prev_datetime.hour)
+                    minute[x].insert(0, prev_datetime.minute)
+                elif admin_datetime is not None and x == 0:
+                    day[x].insert(0, admin_datetime.day)
+                    month[x].insert(0, admin_datetime.month)
+                    year[x].insert(0, str(admin_datetime.year).zfill(4))
+                elif admin_datetime is not None:
+                    month[x].insert(0, admin_datetime.month)
+                    year[x].insert(0, str(admin_datetime.year).zfill(4))
+
+                doserate[x].delete(0, tk.END)
+                if prev_doserate is not None:
+                    doserate[x].insert(0, prev_doserate)
+
+                if prev_exclude is not None:
+                    chks[x].set(prev_exclude)
+
+            measurement_distance_entry.delete(0, tk.END)
+            if measurement_distance is not None:
+                measurement_distance_entry.insert(0, measurement_distance)
+            else:
+                measurement_distance_entry.insert(0, self.init_vals["measurement_distance"])
+
+            detector_calibration_factor_entry.delete(0, tk.END)
+            if detector_calibration_factor is not None:
+                detector_calibration_factor_entry.insert(0, detector_calibration_factor)
+            else:
+                detector_calibration_factor_entry.insert(
+                    0, self.init_vals["detector_calibration_factor"]
                 )
+
+            if "curve_fit" not in self.odict["data"]["clearance_data"]:
+                button_view_residuals["state"] = "disabled"
+
+            if model is not None:
+                if model == "biexponential":
+                    var1.set(2)
+                elif model == "exponential":
+                    var1.set(1)
+            else:
+                if self.init_vals["curve_fit_model"] == "biexponential":
+                    var1.set(2)
+                elif self.init_vals["curve_fit_model"] == "exponential":
+                    var1.set(1)
+
+            plot_clearance(self)
 
         window = tk.Toplevel()
         window_height = 24 * self.N_MEASUREMENTS_MAX + 300
@@ -3850,15 +3928,6 @@ class Gui:
         doserate = []
         chks = []
         for x in range(self.N_MEASUREMENTS_MAX):
-            if x < len(prev_doserate_list):
-                prev_datetime = str2datetime(prev_datetime_list[x])
-                prev_doserate = prev_doserate_list[x]
-                prev_exclude = prev_exclude_list[x]
-            else:
-                prev_datetime = None
-                prev_doserate = None
-                prev_exclude = None
-
             day.append(tk.Entry(frame4, width=3))
             day[x].grid(row=x + 2, padx=(5, 0))
             month.append(tk.Entry(frame4, width=3))
@@ -3870,29 +3939,11 @@ class Gui:
             minute.append(tk.Entry(frame4, width=3))
             minute[x].grid(row=x + 2, column=4)
 
-            if prev_datetime is not None:
-                day[x].insert(0, prev_datetime.day)
-                month[x].insert(0, prev_datetime.month)
-                year[x].insert(0, str(prev_datetime.year).zfill(4))
-                hour[x].insert(0, prev_datetime.hour)
-                minute[x].insert(0, prev_datetime.minute)
-            elif admin_datetime is not None and x == 0:
-                day[x].insert(0, admin_datetime.day)
-                month[x].insert(0, admin_datetime.month)
-                year[x].insert(0, str(admin_datetime.year).zfill(4))
-            elif admin_datetime is not None:
-                month[x].insert(0, admin_datetime.month)
-                year[x].insert(0, str(admin_datetime.year).zfill(4))
-
             doserate.append(tk.Entry(frame4, width=5))
-            if prev_doserate is not None:
-                doserate[x].insert(0, prev_doserate)
             doserate[x].grid(row=x + 2, column=5)
 
             chks.append(tk.IntVar())
             tk.Checkbutton(frame4, variable=chks[-1]).grid(row=x + 2, column=6)
-            if prev_exclude is not None:
-                chks[-1].set(prev_exclude)
 
         # This is to let the user press "Enter" to go down to next row in the same column
         def go_to_next_entry(event, entry_list, this_index):
@@ -3920,19 +3971,10 @@ class Gui:
         ).grid(row=1, column=0, sticky="e")
 
         measurement_distance_entry = tk.Entry(frame1, width=5)
-        if measurement_distance is not None:
-            measurement_distance_entry.insert(0, measurement_distance)
-        else:
-            measurement_distance_entry.insert(0, self.init_vals["measurement_distance"])
         measurement_distance_entry.grid(row=0, column=1, padx=(5, 0), pady=(5, 0))
 
         detector_calibration_factor_entry = tk.Entry(frame1, width=5)
-        if detector_calibration_factor is not None:
-            detector_calibration_factor_entry.insert(0, detector_calibration_factor)
-        else:
-            detector_calibration_factor_entry.insert(
-                0, self.init_vals["detector_calibration_factor"]
-            )
+
         detector_calibration_factor_entry.grid(row=1, column=1, padx=(5, 0))
         frame1.grid(row=2, column=0, pady=(10, 0))
 
@@ -3941,8 +3983,6 @@ class Gui:
             frame5, text="View residuals", command=lambda: view_residuals(self)
         )
         button_view_residuals.grid(row=0, sticky="e")
-        if "curve_fit" not in self.odict["data"]["clearance_data"]:
-            button_view_residuals["state"] = "disabled"
 
         fig = Figure(figsize=(6.4, 4.8), dpi=100)
         plot_dr = fig.add_subplot(111)
@@ -3956,16 +3996,6 @@ class Gui:
 
         frame2 = tk.LabelFrame(window, text="Curve Fit", font="Arial 10 bold")
         var1 = tk.IntVar()
-        if model is not None:
-            if model == "biexponential":
-                var1.set(2)
-            elif model == "exponential":
-                var1.set(1)
-        else:
-            if self.init_vals["curve_fit_model"] == "biexponential":
-                var1.set(2)
-            elif self.init_vals["curve_fit_model"] == "exponential":
-                var1.set(1)
 
         tk.Radiobutton(frame2, text="Exponential", variable=var1, value=1).grid(
             sticky="w"
@@ -3992,7 +4022,7 @@ class Gui:
 
         frame3.grid(row=4, pady=(20, 0))
 
-        plot_clearance(self)
+        update_window_measure(self)
 
     # Patient Discharge
     def patient_discharge(self):
@@ -5062,7 +5092,7 @@ class Gui:
                         ii += 1
             else:
                 restrictions_plain = "No restrictions."
-            
+
             border_str = 80*"_"
             restrictions_plain = f"{border_str}\n{restrictions_plain}\n{border_str}"
 
