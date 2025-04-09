@@ -3530,12 +3530,12 @@ class Gui:
                 return
 
             hrs_elapsed = [
-                child1["hours_elapsed"]
+                float(child1["hours_elapsed"])
                 for child1 in self.odict["data"]["clearance_data"]["measurement"]
                 if not int(child1["exclude"])
             ]
             dr_xm = [
-                child1["doserate_corrected"]
+                float(child1["doserate_corrected"])
                 for child1 in self.odict["data"]["clearance_data"]["measurement"]
                 if not int(child1["exclude"])
             ]
