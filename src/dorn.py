@@ -4304,7 +4304,7 @@ class Gui:
     # Restrictions
     def restrictions_window(self):
         window = tk.Toplevel()
-        window.geometry("650x590")
+        window.geometry("680x590")
         window.title("Restrictions")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
