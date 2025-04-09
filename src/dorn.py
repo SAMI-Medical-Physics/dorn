@@ -4102,6 +4102,7 @@ class Gui:
 
         def set_patient_discharge(self):
             if len(discharge_year_entry.get()) != 4:
+                display_discharge_datetime(self)
                 messagebox.showerror(
                     "Error", "Please enter a 4-digit year", parent=window
                 )
@@ -4115,11 +4116,13 @@ class Gui:
                     minute=int(discharge_minute_entry.get()),
                 )
             except ValueError:
+                display_discharge_datetime(self)
                 messagebox.showerror("Error", "Bad discharge date/time", parent=window)
                 return
             if s_discharge_datetime < str2datetime(
                 self.odict["data"]["administration_details"]["administration_datetime"]
             ):
+                display_discharge_datetime(self)
                 messagebox.showerror(
                     "Error", "Discharge before administration", parent=window
                 )
@@ -4276,6 +4279,22 @@ class Gui:
             else:
                 discharge_dose_rate_1m_warning_str.set("OK")
                 discharge_dose_rate_1m_warning_label["fg"] = "black"
+
+        def display_discharge_datetime(self):
+            discharge_hour_entry.delete(0, tk.END)
+            discharge_minute_entry.delete(0, tk.END)
+            discharge_day_entry.delete(0, tk.END)
+            discharge_month_entry.delete(0, tk.END)
+            discharge_year_entry.delete(0, tk.END)
+            if "actual_datetime" in self.odict["data"]["patient_discharge"]:
+                discharge_datetime = str2datetime(
+                    self.odict["data"]["patient_discharge"]["actual_datetime"]
+                )
+                discharge_hour_entry.insert(0, discharge_datetime.hour)
+                discharge_minute_entry.insert(0, discharge_datetime.minute)
+                discharge_day_entry.insert(0, discharge_datetime.day)
+                discharge_month_entry.insert(0, discharge_datetime.month)
+                discharge_year_entry.insert(0, str(discharge_datetime.year).zfill(4))
 
         window = tk.Toplevel()
         window.geometry("273x295")
