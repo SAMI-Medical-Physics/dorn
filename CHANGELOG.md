@@ -80,3 +80,4 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Reports can now be generated when no restrictions are checked.
+- Previously, after both the administration time and calibration time had been entered, it was not possible to make larges changes to either one.  This is because the two are submitted separately, and a large change in one may be incompatible with the current value of the other (e.g. because the administered activity would become infinitely large).  Now, if the new calibration time is incompatible with the current administration time, the calibration information is accepted and the administration time and residual information are cleared.  An information message is shown.
