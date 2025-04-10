@@ -901,7 +901,7 @@ class Gui:
             "patient_handout_comments": patient_handout_comments,
         }
 
-        self.other_settings = {"export_pdf": 0}
+        self.other_settings = {"export_pdf": 0, "allow_admin_before_calib": 0}
 
     @staticmethod
     def read_organisation_info(settings_odict):
@@ -1357,11 +1357,12 @@ class Gui:
 
             other_settings = {}
             other_settings["export_pdf"] = chk_export_pdf.get()
+            other_settings["allow_admin_before_calib"] = chk_allow_admin_before_calib.get()
             self.other_settings = other_settings
             self.write_settings()
 
         window = tk.Toplevel()
-        window.geometry("355x130")
+        window.geometry("355x155")
         window.title("Settings - Other")
         if WINDOWS_OS:
             window.resizable(width=False, height=False)
@@ -1377,6 +1378,13 @@ class Gui:
         chk_export_pdf = tk.IntVar()
         tk.Checkbutton(window, variable=chk_export_pdf).grid(row=1, column=1)
         chk_export_pdf.set(self.other_settings["export_pdf"])
+
+        tk.Label(
+            window, text="Allow administration time before calibration time"
+        ).grid(row=2, column=0, sticky="W", padx=(5, 0))
+        chk_allow_admin_before_calib = tk.IntVar()
+        tk.Checkbutton(window, variable=chk_allow_admin_before_calib).grid(row=2, column=1)
+        chk_allow_admin_before_calib.set(self.other_settings["allow_admin_before_calib"])
 
         tk.Button(
             window, text="Submit", command=lambda: submit_settings_other(self)
@@ -2421,6 +2429,23 @@ class Gui:
                 )
                 return
 
+            allow_admin_before_calib = int(self.other_settings["allow_admin_before_calib"])
+            if not allow_admin_before_calib:
+                if (
+                        "administration_datetime"
+                        in self.odict["data"]["administration_details"]
+                ):
+                    if r_calib_datetime > str2datetime(
+                            self.odict["data"]["administration_details"][
+                                "administration_datetime"
+                            ]
+                    ):
+                        update_window_admin(self)
+                        messagebox.showerror(
+                            "Error", "Calibrated before administration.", parent=window
+                        )
+                        return
+
             # No failing from here.
             #
             # Returns None if admin time has not previously been entered.
@@ -2537,6 +2562,7 @@ class Gui:
                                 "administration_datetime"
                             ]
                     ):
+                        assert allow_admin_before_calib
                         messagebox.showwarning(
                             "Warning", "Calibrated before administration.  This is just a warning.", parent=window
                         )
@@ -2621,11 +2647,19 @@ class Gui:
                 if r_admin_datetime < str2datetime(
                     self.odict["data"]["administration_details"]["calibration_datetime"]
                 ):
-                    # Show the warning before the error, because it
-                    # may help identify the cause of the error.
-                    messagebox.showwarning(
-                        "Warning", "Administered before calibration.  This is just a warning.", parent=window
-                    )
+                    allow_admin_before_calib = int(self.other_settings["allow_admin_before_calib"])
+                    if not allow_admin_before_calib:
+                        update_window_admin(self)
+                        messagebox.showerror(
+                            "Error", "Administered before calibration.", parent=window
+                        )
+                        return
+                    else:
+                        # Show the warning before the error, because it
+                        # may help identify the cause of the error.
+                        messagebox.showwarning(
+                            "Warning", "Administered before calibration.  This is just a warning.", parent=window
+                        )
 
             # Returns None if calibration info was not been previously
             # entered.

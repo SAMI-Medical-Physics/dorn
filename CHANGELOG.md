@@ -70,6 +70,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Added the option to export DOCX report files to PDF using MS Word on Windows.  This feature is turned **off** by default.  To enable it, check the box in `Settings \u2192 Other`.
+- Added the option to allow activity calibration time after administration time.  With this option turnend on, a warning is shown instead of an error.  This option is turned **off** by default.  To enable it, check the box in `Settings \u2192 Other`.
 
 ### Changed
 - The instructions in the patient handout are now more succinct.
