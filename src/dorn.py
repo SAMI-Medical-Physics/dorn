@@ -1994,10 +1994,15 @@ class Gui:
                 self.odict["data"]["patient_details"]["name"] = (
                     last_name + "^" + first_name
                 )
+            if last_name == "" and first_name == "":
+                if "name" in self.odict["data"]["patient_details"]:
+                    self.odict["data"]["patient_details"].pop("name")
 
             e_pid = pid_entry.get()
             if e_pid != "":
                 self.odict["data"]["patient_details"]["id"] = e_pid
+            elif "id" in self.odict["data"]["patient_details"]:
+                self.odict["data"]["patient_details"].pop("id")
 
             self.odict["data"]["patient_details"]["dob"] = date2str(e_dob)
 
