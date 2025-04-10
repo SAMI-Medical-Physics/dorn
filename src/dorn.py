@@ -2463,6 +2463,15 @@ class Gui:
                     self.odict["data"]["administration_details"] = collections.OrderedDict()
                     info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is less than or equal to zero."
                     r_admin_activity = None
+                elif np.isinf(r_admin_activity):
+                    self.odict["data"]["administration_details"] = collections.OrderedDict()
+                    # Since Dorn does not accept admin and residual
+                    # times that give an infinitely large residual
+                    # (the second submit button), A0 here is
+                    # infinitely large unless the XML file was edited
+                    # by the user.
+                    info_msg = "The previously entered administration time and residual have been CLEARED because they gave an administered activity that is infinitely large or otherwise cannot be computed."
+                    r_admin_activity = None
                 elif r_admin_activity > MAX_ADMINISTERED_ACTIVITY_MBQ:
                     self.odict["data"]["administration_details"] = collections.OrderedDict()
                     info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6)} TBq)."
@@ -2553,6 +2562,7 @@ class Gui:
                     parent=window,
                 )
             else:
+                # We didn't clear the administration time and residual.
                 if (
                         "administration_datetime"
                         in self.odict["data"]["administration_details"]
@@ -2674,7 +2684,15 @@ class Gui:
                     update_window_admin(self)
                     messagebox.showerror(
                         "Error",
-                        f"The calculated administered activity of {r_admin_activity:.1f} MBq is less than or equal to zero.  Please try again.",
+                        f"The calculated administered activity of {r_admin_activity:.3g} MBq is less than or equal to zero.  Please try again.",
+                        parent=window,
+                    )
+                    return
+                if np.isinf(r_admin_activity):
+                    update_window_admin(self)
+                    messagebox.showerror(
+                        "Error",
+                        "The calculated administered activity is infinitely large or otherwise cannot be computed.  Please try again.",
                         parent=window,
                     )
                     return
@@ -2682,7 +2700,7 @@ class Gui:
                     update_window_admin(self)
                     messagebox.showerror(
                         "Error",
-                        f"The calculated administered activity of {r_admin_activity:.3g} MBq is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6)} TBq).  Please try again.",
+                        f"The calculated administered activity of {r_admin_activity:.3g} MBq is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6):g} TBq).  Please try again.",
                         parent=window,
                     )
                     return
