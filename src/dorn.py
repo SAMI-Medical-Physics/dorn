@@ -56,6 +56,7 @@ WINDOWS_OS = platform.system() == "Windows"
 # To help restriction periods for once-off patterns converge.
 MAX_ADMINISTERED_ACTIVITY_MBQ = 1e9  # 1 PBq
 
+
 def func_exp(t, a, b):
     return a * np.exp(-b * t)
 
@@ -719,92 +720,89 @@ class Gui:
                             "generic_model",
                         ]
                         if generic_model == "exponential":
-                            self.odict["data"]["clearance_data"]["curve_fit"] = (
-                                collections.OrderedDict(
-                                    [
-                                        ("generic", "1"),
-                                        ("model", "exponential"),
-                                        (
-                                            "fit_parameters",
-                                            collections.OrderedDict(
-                                                [
-                                                    ("a", generic_parameters[0]),
-                                                    (
-                                                        "b",
-                                                        np.log(2)
-                                                        / generic_parameters[1],
-                                                    ),
-                                                ]
-                                            ),
+                            self.odict["data"]["clearance_data"][
+                                "curve_fit"
+                            ] = collections.OrderedDict(
+                                [
+                                    ("generic", "1"),
+                                    ("model", "exponential"),
+                                    (
+                                        "fit_parameters",
+                                        collections.OrderedDict(
+                                            [
+                                                ("a", generic_parameters[0]),
+                                                (
+                                                    "b",
+                                                    np.log(2) / generic_parameters[1],
+                                                ),
+                                            ]
                                         ),
-                                        (
-                                            "meaningful_parameters",
-                                            collections.OrderedDict(
-                                                [
-                                                    (
-                                                        "dose_rate_1m_init",
-                                                        generic_parameters[0],
-                                                    ),
-                                                    (
-                                                        "effective_half_life",
-                                                        generic_parameters[1],
-                                                    ),
-                                                ]
-                                            ),
+                                    ),
+                                    (
+                                        "meaningful_parameters",
+                                        collections.OrderedDict(
+                                            [
+                                                (
+                                                    "dose_rate_1m_init",
+                                                    generic_parameters[0],
+                                                ),
+                                                (
+                                                    "effective_half_life",
+                                                    generic_parameters[1],
+                                                ),
+                                            ]
                                         ),
-                                    ]
-                                )
+                                    ),
+                                ]
                             )
                         elif generic_model == "biexponential":
-                            self.odict["data"]["clearance_data"]["curve_fit"] = (
-                                collections.OrderedDict(
-                                    [
-                                        ("generic", "1"),
-                                        ("model", "biexponential"),
-                                        (
-                                            "fit_parameters",
-                                            collections.OrderedDict(
-                                                [
-                                                    ("a", generic_parameters[0]),
-                                                    ("b", generic_parameters[1]),
-                                                    (
-                                                        "c",
-                                                        np.log(2)
-                                                        / generic_parameters[2],
-                                                    ),
-                                                    (
-                                                        "d",
-                                                        np.log(2)
-                                                        / generic_parameters[3],
-                                                    ),
-                                                ]
-                                            ),
+                            self.odict["data"]["clearance_data"][
+                                "curve_fit"
+                            ] = collections.OrderedDict(
+                                [
+                                    ("generic", "1"),
+                                    ("model", "biexponential"),
+                                    (
+                                        "fit_parameters",
+                                        collections.OrderedDict(
+                                            [
+                                                ("a", generic_parameters[0]),
+                                                ("b", generic_parameters[1]),
+                                                (
+                                                    "c",
+                                                    np.log(2) / generic_parameters[2],
+                                                ),
+                                                (
+                                                    "d",
+                                                    np.log(2) / generic_parameters[3],
+                                                ),
+                                            ]
                                         ),
-                                        (
-                                            "meaningful_parameters",
-                                            collections.OrderedDict(
-                                                [
-                                                    (
-                                                        "dose_rate_1m_init",
-                                                        generic_parameters[0],
-                                                    ),
-                                                    (
-                                                        "fraction_1",
-                                                        generic_parameters[1],
-                                                    ),
-                                                    (
-                                                        "half_life_1",
-                                                        generic_parameters[2],
-                                                    ),
-                                                    (
-                                                        "half_life_2",
-                                                        generic_parameters[3],
-                                                    ),
-                                                ]
-                                            ),
+                                    ),
+                                    (
+                                        "meaningful_parameters",
+                                        collections.OrderedDict(
+                                            [
+                                                (
+                                                    "dose_rate_1m_init",
+                                                    generic_parameters[0],
+                                                ),
+                                                (
+                                                    "fraction_1",
+                                                    generic_parameters[1],
+                                                ),
+                                                (
+                                                    "half_life_1",
+                                                    generic_parameters[2],
+                                                ),
+                                                (
+                                                    "half_life_2",
+                                                    generic_parameters[3],
+                                                ),
+                                            ]
                                         ),
-                                    ]
-                                )
+                                    ),
+                                ]
                             )
 
                     self.button_clearance.grid_forget()
@@ -1165,14 +1163,14 @@ class Gui:
             init_vals["site"] = site_combo.get()
             init_vals["num_treatments_in_year"] = num_treatments_in_year_entry.get()
             init_vals["measurement_distance"] = measurement_distance_entry.get()
-            init_vals["detector_calibration_factor"] = (
-                detector_calibration_factor_entry.get()
-            )
+            init_vals[
+                "detector_calibration_factor"
+            ] = detector_calibration_factor_entry.get()
             init_vals["curve_fit_model"] = cfit_combo.get()
             init_vals["data_directory"] = data_directory_entry.get()
-            init_vals["patient_handout_directory"] = (
-                patient_handout_directory_entry.get()
-            )
+            init_vals[
+                "patient_handout_directory"
+            ] = patient_handout_directory_entry.get()
             init_vals["summary_report_directory"] = summary_report_directory_entry.get()
             init_vals["patient_handout_comments"] = patient_handout_comments.get(
                 "1.0", "end"
@@ -1301,9 +1299,9 @@ class Gui:
         patient_handout_directory_xs = ttk.Scrollbar(
             window, orient="horizontal", command=patient_handout_directory_entry.xview
         )
-        patient_handout_directory_entry["xscrollcommand"] = (
-            patient_handout_directory_xs.set
-        )
+        patient_handout_directory_entry[
+            "xscrollcommand"
+        ] = patient_handout_directory_xs.set
         patient_handout_directory_xs.grid(row=10, column=1, sticky="we")
         tk.Button(
             window,
@@ -1325,9 +1323,9 @@ class Gui:
         summary_report_directory_xs = ttk.Scrollbar(
             window, orient="horizontal", command=summary_report_directory_entry.xview
         )
-        summary_report_directory_entry["xscrollcommand"] = (
-            summary_report_directory_xs.set
-        )
+        summary_report_directory_entry[
+            "xscrollcommand"
+        ] = summary_report_directory_xs.set
         summary_report_directory_xs.grid(row=12, column=1, sticky="we")
         tk.Button(
             window,
@@ -1357,7 +1355,9 @@ class Gui:
 
             other_settings = {}
             other_settings["export_pdf"] = chk_export_pdf.get()
-            other_settings["allow_admin_before_calib"] = chk_allow_admin_before_calib.get()
+            other_settings[
+                "allow_admin_before_calib"
+            ] = chk_allow_admin_before_calib.get()
             self.other_settings = other_settings
             self.write_settings()
 
@@ -1379,12 +1379,16 @@ class Gui:
         tk.Checkbutton(window, variable=chk_export_pdf).grid(row=1, column=1)
         chk_export_pdf.set(self.other_settings["export_pdf"])
 
-        tk.Label(
-            window, text="Allow administration time before calibration time"
-        ).grid(row=2, column=0, sticky="W", padx=(5, 0))
+        tk.Label(window, text="Allow administration time before calibration time").grid(
+            row=2, column=0, sticky="W", padx=(5, 0)
+        )
         chk_allow_admin_before_calib = tk.IntVar()
-        tk.Checkbutton(window, variable=chk_allow_admin_before_calib).grid(row=2, column=1)
-        chk_allow_admin_before_calib.set(self.other_settings["allow_admin_before_calib"])
+        tk.Checkbutton(window, variable=chk_allow_admin_before_calib).grid(
+            row=2, column=1
+        )
+        chk_allow_admin_before_calib.set(
+            self.other_settings["allow_admin_before_calib"]
+        )
 
         tk.Button(
             window, text="Submit", command=lambda: submit_settings_other(self)
@@ -1507,9 +1511,9 @@ class Gui:
 
             # Actions to maintain backward compatibility
             if "number_of_treatments" in self.odict["data"]["patient_details"]:
-                self.odict["data"]["patient_details"]["num_treatments_in_year"] = (
-                    self.odict["data"]["patient_details"].pop("number_of_treatments")
-                )
+                self.odict["data"]["patient_details"][
+                    "num_treatments_in_year"
+                ] = self.odict["data"]["patient_details"].pop("number_of_treatments")
 
             update_therapy_names = {
                 "I-131 remnant thyroid ablation, thyrogen": "I-131 thyroid cancer, rhTSH",
@@ -1518,9 +1522,9 @@ class Gui:
             if "type_therapy" in self.odict["data"]["patient_details"]:
                 type_therapy = self.odict["data"]["patient_details"]["type_therapy"]
                 if type_therapy in update_therapy_names:
-                    self.odict["data"]["patient_details"]["type_therapy"] = (
-                        update_therapy_names[type_therapy]
-                    )
+                    self.odict["data"]["patient_details"][
+                        "type_therapy"
+                    ] = update_therapy_names[type_therapy]
 
             if "restriction" in self.odict["data"]["restrictions"]:
                 if (
@@ -1769,15 +1773,15 @@ class Gui:
                 )
 
                 if self.odict["data"]["patient_finished_by"] != "0":
-                    self.viewing_completed_patient_label["text"] = (
-                        "Viewing completed patient\n(author: {})".format(
-                            self.odict["data"]["patient_finished_by"]
-                        )
+                    self.viewing_completed_patient_label[
+                        "text"
+                    ] = "Viewing completed patient\n(author: {})".format(
+                        self.odict["data"]["patient_finished_by"]
                     )
                 else:
-                    self.viewing_completed_patient_label["text"] = (
-                        "Viewing completed patient."
-                    )
+                    self.viewing_completed_patient_label[
+                        "text"
+                    ] = "Viewing completed patient."
             else:
                 self.viewing_completed_patient_label.place_forget()
 
@@ -1960,7 +1964,11 @@ class Gui:
                     "Error", "Bad number of treatments in a year", parent=window
                 )
                 return
-            if e_num_treatments_in_year <= 0.0 or (1/e_num_treatments_in_year == 0) or np.isnan(e_num_treatments_in_year):
+            if (
+                e_num_treatments_in_year <= 0.0
+                or (1 / e_num_treatments_in_year == 0)
+                or np.isnan(e_num_treatments_in_year)
+            ):
                 messagebox.showerror(
                     "Error", "Bad number of treatments in a year", parent=window
                 )
@@ -2379,9 +2387,7 @@ class Gui:
 
             with warnings.catch_warnings():
                 # Don't print the RuntimeWarning
-                warnings.filterwarnings(
-                    "ignore", "overflow encountered in exp"
-                )
+                warnings.filterwarnings("ignore", "overflow encountered in exp")
                 c_a0 = Gui.administered_activity(
                     c_calib_activity,
                     c_calib_datetime,
@@ -2429,16 +2435,18 @@ class Gui:
                 )
                 return
 
-            allow_admin_before_calib = int(self.other_settings["allow_admin_before_calib"])
+            allow_admin_before_calib = int(
+                self.other_settings["allow_admin_before_calib"]
+            )
             if not allow_admin_before_calib:
                 if (
-                        "administration_datetime"
-                        in self.odict["data"]["administration_details"]
+                    "administration_datetime"
+                    in self.odict["data"]["administration_details"]
                 ):
                     if r_calib_datetime > str2datetime(
-                            self.odict["data"]["administration_details"][
-                                "administration_datetime"
-                            ]
+                        self.odict["data"]["administration_details"][
+                            "administration_datetime"
+                        ]
                     ):
                         update_window_admin(self)
                         messagebox.showerror(
@@ -2460,11 +2468,15 @@ class Gui:
                 # This is an escape hatch to be able to make large
                 # changes to calibration and admin times.
                 if r_admin_activity <= 0.0:
-                    self.odict["data"]["administration_details"] = collections.OrderedDict()
+                    self.odict["data"][
+                        "administration_details"
+                    ] = collections.OrderedDict()
                     info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is less than or equal to zero."
                     r_admin_activity = None
                 elif np.isinf(r_admin_activity):
-                    self.odict["data"]["administration_details"] = collections.OrderedDict()
+                    self.odict["data"][
+                        "administration_details"
+                    ] = collections.OrderedDict()
                     # Since Dorn does not accept admin and residual
                     # times that give an infinitely large residual
                     # (the second submit button), A0 here is
@@ -2473,16 +2485,18 @@ class Gui:
                     info_msg = "The previously entered administration time and residual have been CLEARED because they gave an administered activity that is infinitely large or otherwise cannot be computed."
                     r_admin_activity = None
                 elif r_admin_activity > MAX_ADMINISTERED_ACTIVITY_MBQ:
-                    self.odict["data"]["administration_details"] = collections.OrderedDict()
+                    self.odict["data"][
+                        "administration_details"
+                    ] = collections.OrderedDict()
                     info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6)} TBq)."
                     r_admin_activity = None
 
             self.odict["data"]["administration_details"][
                 "calibrated_activity"
             ] = r_calib_a
-            self.odict["data"]["administration_details"]["calibration_datetime"] = (
-                datetime2str(r_calib_datetime)
-            )
+            self.odict["data"]["administration_details"][
+                "calibration_datetime"
+            ] = datetime2str(r_calib_datetime)
 
             # Calculate and write to odict the derived quantity administered_activity if administration datetime was already submitted
             if r_admin_activity is not None:
@@ -2564,17 +2578,19 @@ class Gui:
             else:
                 # We didn't clear the administration time and residual.
                 if (
-                        "administration_datetime"
-                        in self.odict["data"]["administration_details"]
+                    "administration_datetime"
+                    in self.odict["data"]["administration_details"]
                 ):
                     if r_calib_datetime > str2datetime(
-                            self.odict["data"]["administration_details"][
-                                "administration_datetime"
-                            ]
+                        self.odict["data"]["administration_details"][
+                            "administration_datetime"
+                        ]
                     ):
                         assert allow_admin_before_calib
                         messagebox.showwarning(
-                            "Warning", "Calibrated before administration.  This is just a warning.", parent=window
+                            "Warning",
+                            "Calibrated before administration.  This is just a warning.",
+                            parent=window,
                         )
 
         # Second submit button
@@ -2657,7 +2673,9 @@ class Gui:
                 if r_admin_datetime < str2datetime(
                     self.odict["data"]["administration_details"]["calibration_datetime"]
                 ):
-                    allow_admin_before_calib = int(self.other_settings["allow_admin_before_calib"])
+                    allow_admin_before_calib = int(
+                        self.other_settings["allow_admin_before_calib"]
+                    )
                     if not allow_admin_before_calib:
                         update_window_admin(self)
                         messagebox.showerror(
@@ -2668,13 +2686,16 @@ class Gui:
                         # Show the warning before the error, because it
                         # may help identify the cause of the error.
                         messagebox.showwarning(
-                            "Warning", "Administered before calibration.  This is just a warning.", parent=window
+                            "Warning",
+                            "Administered before calibration.  This is just a warning.",
+                            parent=window,
                         )
 
             # Returns None if calibration info was not been previously
             # entered.
             r_admin_activity = compute_administered_activity(
-                self, c_admin_datetime=r_admin_datetime,
+                self,
+                c_admin_datetime=r_admin_datetime,
                 # c_residual = None makes it look up the stored value,
                 # but in this case the user entered no residual.
                 c_residual=(0, r_admin_datetime) if r_residual is None else r_residual,
@@ -2707,17 +2728,17 @@ class Gui:
 
             # No failing from here.
             #
-            self.odict["data"]["administration_details"]["administration_datetime"] = (
-                datetime2str(r_admin_datetime)
-            )
+            self.odict["data"]["administration_details"][
+                "administration_datetime"
+            ] = datetime2str(r_admin_datetime)
 
             if r_residual is not None:
                 self.odict["data"]["administration_details"][
                     "residual_activity"
                 ] = r_resid_a
-                self.odict["data"]["administration_details"]["residual_datetime"] = (
-                    datetime2str(r_resid_datetime)
-                )
+                self.odict["data"]["administration_details"][
+                    "residual_datetime"
+                ] = datetime2str(r_resid_datetime)
             else:
                 if "residual_activity" in self.odict["data"]["administration_details"]:
                     self.odict["data"]["administration_details"].pop(
@@ -2830,15 +2851,22 @@ class Gui:
                 )
             else:
                 calib_datetime = None
-            if "administration_datetime" in self.odict["data"]["administration_details"]:
+            if (
+                "administration_datetime"
+                in self.odict["data"]["administration_details"]
+            ):
                 admin_datetime = str2datetime(
-                    self.odict["data"]["administration_details"]["administration_datetime"]
+                    self.odict["data"]["administration_details"][
+                        "administration_datetime"
+                    ]
                 )
             else:
                 admin_datetime = None
             if "administered_activity" in self.odict["data"]["administration_details"]:
                 admin_activity = float(
-                    self.odict["data"]["administration_details"]["administered_activity"]
+                    self.odict["data"]["administration_details"][
+                        "administered_activity"
+                    ]
                 )
             else:
                 admin_activity = None
@@ -3363,7 +3391,11 @@ class Gui:
                     "Error", "Bad detector calibration factor", parent=window
                 )
                 return
-            if r_detector_calibration_factor <= 0.0 or np.isinf(r_detector_calibration_factor) or np.isnan(r_detector_calibration_factor):
+            if (
+                r_detector_calibration_factor <= 0.0
+                or np.isinf(r_detector_calibration_factor)
+                or np.isnan(r_detector_calibration_factor)
+            ):
                 update_window_measure(self)
                 messagebox.showerror(
                     "Error", "Bad detector calibration factor", parent=window
@@ -3629,38 +3661,38 @@ class Gui:
                             parent=window,
                         )
                         return
-                    self.odict["data"]["clearance_data"]["curve_fit"] = (
-                        collections.OrderedDict(
-                            [
-                                ("generic", "0"),
-                                ("model", "biexponential"),
-                                (
-                                    "fit_parameters",
-                                    collections.OrderedDict(
-                                        [
-                                            ("a", params_biexp[0]),
-                                            ("b", params_biexp[1]),
-                                            ("c", params_biexp[2]),
-                                            ("d", params_biexp[3]),
-                                        ]
-                                    ),
+                    self.odict["data"]["clearance_data"][
+                        "curve_fit"
+                    ] = collections.OrderedDict(
+                        [
+                            ("generic", "0"),
+                            ("model", "biexponential"),
+                            (
+                                "fit_parameters",
+                                collections.OrderedDict(
+                                    [
+                                        ("a", params_biexp[0]),
+                                        ("b", params_biexp[1]),
+                                        ("c", params_biexp[2]),
+                                        ("d", params_biexp[3]),
+                                    ]
                                 ),
-                                (
-                                    "meaningful_parameters",
-                                    collections.OrderedDict(
-                                        [
-                                            (
-                                                "dose_rate_xm_init",
-                                                meaningful_params_biexp[0],
-                                            ),
-                                            ("fraction_1", meaningful_params_biexp[1]),
-                                            ("half_life_1", meaningful_params_biexp[2]),
-                                            ("half_life_2", meaningful_params_biexp[3]),
-                                        ]
-                                    ),
+                            ),
+                            (
+                                "meaningful_parameters",
+                                collections.OrderedDict(
+                                    [
+                                        (
+                                            "dose_rate_xm_init",
+                                            meaningful_params_biexp[0],
+                                        ),
+                                        ("fraction_1", meaningful_params_biexp[1]),
+                                        ("half_life_1", meaningful_params_biexp[2]),
+                                        ("half_life_2", meaningful_params_biexp[3]),
+                                    ]
                                 ),
-                            ]
-                        )
+                            ),
+                        ]
                     )
                     residuals = np.array(dr_xm) - func_biexp(
                         np.array(hrs_elapsed), *params_biexp
@@ -3678,34 +3710,34 @@ class Gui:
                             parent=window,
                         )
                         return
-                    self.odict["data"]["clearance_data"]["curve_fit"] = (
-                        collections.OrderedDict(
-                            [
-                                ("generic", "0"),
-                                ("model", "exponential"),
-                                (
-                                    "fit_parameters",
-                                    collections.OrderedDict(
-                                        [("a", params_exp[0]), ("b", params_exp[1])]
-                                    ),
+                    self.odict["data"]["clearance_data"][
+                        "curve_fit"
+                    ] = collections.OrderedDict(
+                        [
+                            ("generic", "0"),
+                            ("model", "exponential"),
+                            (
+                                "fit_parameters",
+                                collections.OrderedDict(
+                                    [("a", params_exp[0]), ("b", params_exp[1])]
                                 ),
-                                (
-                                    "meaningful_parameters",
-                                    collections.OrderedDict(
-                                        [
-                                            (
-                                                "dose_rate_xm_init",
-                                                meaningful_params_exp[0],
-                                            ),
-                                            (
-                                                "effective_half_life",
-                                                meaningful_params_exp[1],
-                                            ),
-                                        ]
-                                    ),
+                            ),
+                            (
+                                "meaningful_parameters",
+                                collections.OrderedDict(
+                                    [
+                                        (
+                                            "dose_rate_xm_init",
+                                            meaningful_params_exp[0],
+                                        ),
+                                        (
+                                            "effective_half_life",
+                                            meaningful_params_exp[1],
+                                        ),
+                                    ]
                                 ),
-                            ]
-                        )
+                            ),
+                        ]
                     )
                     residuals = np.array(dr_xm) - func_exp(
                         np.array(hrs_elapsed), *params_exp
@@ -3846,9 +3878,14 @@ class Gui:
             else:
                 measurement_distance = None
 
-            if "administration_datetime" in self.odict["data"]["administration_details"]:
+            if (
+                "administration_datetime"
+                in self.odict["data"]["administration_details"]
+            ):
                 admin_datetime = str2datetime(
-                    self.odict["data"]["administration_details"]["administration_datetime"]
+                    self.odict["data"]["administration_details"][
+                        "administration_datetime"
+                    ]
                 )
             else:
                 admin_datetime = None
@@ -3862,7 +3899,9 @@ class Gui:
             prev_doserate_list = []
             prev_exclude_list = []
             if "measurement" in self.odict["data"]["clearance_data"]:
-                if isinstance(self.odict["data"]["clearance_data"]["measurement"], list):
+                if isinstance(
+                    self.odict["data"]["clearance_data"]["measurement"], list
+                ):
                     for child in self.odict["data"]["clearance_data"]["measurement"]:
                         prev_datetime_list.append(child["datetime"])
                         prev_doserate_list.append(child["doserate"])
@@ -3918,7 +3957,9 @@ class Gui:
             if measurement_distance is not None:
                 measurement_distance_entry.insert(0, measurement_distance)
             else:
-                measurement_distance_entry.insert(0, self.init_vals["measurement_distance"])
+                measurement_distance_entry.insert(
+                    0, self.init_vals["measurement_distance"]
+                )
 
             detector_calibration_factor_entry.delete(0, tk.END)
             if detector_calibration_factor is not None:
@@ -4653,8 +4694,8 @@ class Gui:
                 additional_comments = None
 
             document = Document()
-            font = document.styles['Normal'].font
-            font.name = 'Arial'
+            font = document.styles["Normal"].font
+            font.name = "Arial"
             section = document.sections[0]
 
             # header and footer
@@ -4699,12 +4740,12 @@ class Gui:
 
             # fill the table
             row_cells = table.add_row().cells
-            row_cells[0].text = (
-                f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
-            )
-            row_cells[1].text = (
-                f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0} MBq"
-            )
+            row_cells[
+                0
+            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
+            row_cells[
+                1
+            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0} MBq"
             if discharge_datetime_str is not None:
                 row_cells[
                     1
@@ -5019,7 +5060,7 @@ class Gui:
             )
 
             document = Document()
-            document.styles['Normal'].font.name = 'Arial'
+            document.styles["Normal"].font.name = "Arial"
             section = document.sections[0]
 
             # header and footer
@@ -5064,12 +5105,12 @@ class Gui:
 
             # fill the table
             row_cells = table.add_row().cells
-            row_cells[0].text = (
-                f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
-            )
-            row_cells[1].text = (
-                f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0_str} MBq"
-            )
+            row_cells[
+                0
+            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
+            row_cells[
+                1
+            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0_str} MBq"
             if discharge_datetime_str is not None:
                 row_cells[
                     1
@@ -5169,7 +5210,7 @@ class Gui:
             else:
                 restrictions_plain = "No restrictions."
 
-            border_str = 80*"_"
+            border_str = 80 * "_"
             restrictions_plain = f"{border_str}\n{restrictions_plain}\n{border_str}"
 
             p = document.add_paragraph()
