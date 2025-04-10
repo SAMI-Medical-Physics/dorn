@@ -76,6 +76,7 @@ All notable changes to this project will be documented in this file.
 - In the summary report, the restrictions are now in plain text without any formatting, instead of being inside a table.  This makes it easier to copy and paste the restrictions elsewhere.
 - Arial font is requested for the Normal Style in reports.
 - The menu command `Options` was renamed to the more conventional `Settings`.
+- In windows that show the results of calculations based on values entered in the same window, the stored value is immediately redisplayed following submission of an improper value.  This change affects the windows `Administration Details`, `Measured Clearance Data`, and `Patient Discharge`.  Previously, if the user submitted a value or combination of values that were unacceptable, an error message appeared but the improper user values remained inplace.  The user had to exit the window and click on the button again to see the values currently stored in the program.  In Dorn, if user input was previously accepted and new user input is rejected, the previously entered input remains.  In those windows mentioned, it may be misleading to leave the improper user input inplace while continuing to show the results of calculations using the stored values.  Now, if invalid input is submitted, in addition to showing an error message, the stored user input is immediately redisplayed in the window (what you see is what you get).
 
 ### Fixed
 - Reports can now be generated when no restrictions are checked.
