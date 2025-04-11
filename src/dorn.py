@@ -2490,7 +2490,7 @@ class Gui:
                     self.odict["data"][
                         "administration_details"
                     ] = collections.OrderedDict()
-                    info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6)} TBq)."
+                    info_msg = f"The previously entered administration time and residual have been CLEARED because they gave an administered activity of {r_admin_activity:.3g} MBq, which is too large (>{(MAX_ADMINISTERED_ACTIVITY_MBQ*1e-6):g} TBq)."
                     r_admin_activity = None
 
             self.odict["data"]["administration_details"][
