@@ -2450,7 +2450,9 @@ class Gui:
                     ):
                         update_window_admin(self)
                         messagebox.showerror(
-                            "Error", "Calibrated before administration.", parent=window
+                            "Error",
+                            "Calibrated after administration.  This is usually a mistake.\nIf it was intentional, you will need to check the box in 'Settings \u2192 Other' to proceed.",
+                            parent=window
                         )
                         return
 
@@ -2589,7 +2591,7 @@ class Gui:
                         assert allow_admin_before_calib
                         messagebox.showwarning(
                             "Warning",
-                            "Calibrated before administration.  This is just a warning.",
+                            "Calibrated after administration.  This is just a warning.",
                             parent=window,
                         )
 
@@ -2679,7 +2681,9 @@ class Gui:
                     if not allow_admin_before_calib:
                         update_window_admin(self)
                         messagebox.showerror(
-                            "Error", "Administered before calibration.", parent=window
+                            "Error",
+                            "Administered before calibration.  This is usually a mistake.\nIf it was intentional, you will need to check the box in 'Settings \u2192 Other' to proceed.",
+                            parent=window
                         )
                         return
                     else:
