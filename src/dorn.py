@@ -720,89 +720,92 @@ class Gui:
                             "generic_model",
                         ]
                         if generic_model == "exponential":
-                            self.odict["data"]["clearance_data"][
-                                "curve_fit"
-                            ] = collections.OrderedDict(
-                                [
-                                    ("generic", "1"),
-                                    ("model", "exponential"),
-                                    (
-                                        "fit_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                ("a", generic_parameters[0]),
-                                                (
-                                                    "b",
-                                                    np.log(2) / generic_parameters[1],
-                                                ),
-                                            ]
+                            self.odict["data"]["clearance_data"]["curve_fit"] = (
+                                collections.OrderedDict(
+                                    [
+                                        ("generic", "1"),
+                                        ("model", "exponential"),
+                                        (
+                                            "fit_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    ("a", generic_parameters[0]),
+                                                    (
+                                                        "b",
+                                                        np.log(2)
+                                                        / generic_parameters[1],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                    (
-                                        "meaningful_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                (
-                                                    "dose_rate_1m_init",
-                                                    generic_parameters[0],
-                                                ),
-                                                (
-                                                    "effective_half_life",
-                                                    generic_parameters[1],
-                                                ),
-                                            ]
+                                        (
+                                            "meaningful_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    (
+                                                        "dose_rate_1m_init",
+                                                        generic_parameters[0],
+                                                    ),
+                                                    (
+                                                        "effective_half_life",
+                                                        generic_parameters[1],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                ]
+                                    ]
+                                )
                             )
                         elif generic_model == "biexponential":
-                            self.odict["data"]["clearance_data"][
-                                "curve_fit"
-                            ] = collections.OrderedDict(
-                                [
-                                    ("generic", "1"),
-                                    ("model", "biexponential"),
-                                    (
-                                        "fit_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                ("a", generic_parameters[0]),
-                                                ("b", generic_parameters[1]),
-                                                (
-                                                    "c",
-                                                    np.log(2) / generic_parameters[2],
-                                                ),
-                                                (
-                                                    "d",
-                                                    np.log(2) / generic_parameters[3],
-                                                ),
-                                            ]
+                            self.odict["data"]["clearance_data"]["curve_fit"] = (
+                                collections.OrderedDict(
+                                    [
+                                        ("generic", "1"),
+                                        ("model", "biexponential"),
+                                        (
+                                            "fit_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    ("a", generic_parameters[0]),
+                                                    ("b", generic_parameters[1]),
+                                                    (
+                                                        "c",
+                                                        np.log(2)
+                                                        / generic_parameters[2],
+                                                    ),
+                                                    (
+                                                        "d",
+                                                        np.log(2)
+                                                        / generic_parameters[3],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                    (
-                                        "meaningful_parameters",
-                                        collections.OrderedDict(
-                                            [
-                                                (
-                                                    "dose_rate_1m_init",
-                                                    generic_parameters[0],
-                                                ),
-                                                (
-                                                    "fraction_1",
-                                                    generic_parameters[1],
-                                                ),
-                                                (
-                                                    "half_life_1",
-                                                    generic_parameters[2],
-                                                ),
-                                                (
-                                                    "half_life_2",
-                                                    generic_parameters[3],
-                                                ),
-                                            ]
+                                        (
+                                            "meaningful_parameters",
+                                            collections.OrderedDict(
+                                                [
+                                                    (
+                                                        "dose_rate_1m_init",
+                                                        generic_parameters[0],
+                                                    ),
+                                                    (
+                                                        "fraction_1",
+                                                        generic_parameters[1],
+                                                    ),
+                                                    (
+                                                        "half_life_1",
+                                                        generic_parameters[2],
+                                                    ),
+                                                    (
+                                                        "half_life_2",
+                                                        generic_parameters[3],
+                                                    ),
+                                                ]
+                                            ),
                                         ),
-                                    ),
-                                ]
+                                    ]
+                                )
                             )
 
                     self.button_clearance.grid_forget()
@@ -1163,14 +1166,14 @@ class Gui:
             init_vals["site"] = site_combo.get()
             init_vals["num_treatments_in_year"] = num_treatments_in_year_entry.get()
             init_vals["measurement_distance"] = measurement_distance_entry.get()
-            init_vals[
-                "detector_calibration_factor"
-            ] = detector_calibration_factor_entry.get()
+            init_vals["detector_calibration_factor"] = (
+                detector_calibration_factor_entry.get()
+            )
             init_vals["curve_fit_model"] = cfit_combo.get()
             init_vals["data_directory"] = data_directory_entry.get()
-            init_vals[
-                "patient_handout_directory"
-            ] = patient_handout_directory_entry.get()
+            init_vals["patient_handout_directory"] = (
+                patient_handout_directory_entry.get()
+            )
             init_vals["summary_report_directory"] = summary_report_directory_entry.get()
             init_vals["patient_handout_comments"] = patient_handout_comments.get(
                 "1.0", "end"
@@ -1299,9 +1302,9 @@ class Gui:
         patient_handout_directory_xs = ttk.Scrollbar(
             window, orient="horizontal", command=patient_handout_directory_entry.xview
         )
-        patient_handout_directory_entry[
-            "xscrollcommand"
-        ] = patient_handout_directory_xs.set
+        patient_handout_directory_entry["xscrollcommand"] = (
+            patient_handout_directory_xs.set
+        )
         patient_handout_directory_xs.grid(row=10, column=1, sticky="we")
         tk.Button(
             window,
@@ -1323,9 +1326,9 @@ class Gui:
         summary_report_directory_xs = ttk.Scrollbar(
             window, orient="horizontal", command=summary_report_directory_entry.xview
         )
-        summary_report_directory_entry[
-            "xscrollcommand"
-        ] = summary_report_directory_xs.set
+        summary_report_directory_entry["xscrollcommand"] = (
+            summary_report_directory_xs.set
+        )
         summary_report_directory_xs.grid(row=12, column=1, sticky="we")
         tk.Button(
             window,
@@ -1355,9 +1358,9 @@ class Gui:
 
             other_settings = {}
             other_settings["export_pdf"] = chk_export_pdf.get()
-            other_settings[
-                "allow_admin_before_calib"
-            ] = chk_allow_admin_before_calib.get()
+            other_settings["allow_admin_before_calib"] = (
+                chk_allow_admin_before_calib.get()
+            )
             self.other_settings = other_settings
             self.write_settings()
 
@@ -1511,9 +1514,9 @@ class Gui:
 
             # Actions to maintain backward compatibility
             if "number_of_treatments" in self.odict["data"]["patient_details"]:
-                self.odict["data"]["patient_details"][
-                    "num_treatments_in_year"
-                ] = self.odict["data"]["patient_details"].pop("number_of_treatments")
+                self.odict["data"]["patient_details"]["num_treatments_in_year"] = (
+                    self.odict["data"]["patient_details"].pop("number_of_treatments")
+                )
 
             update_therapy_names = {
                 "I-131 remnant thyroid ablation, thyrogen": "I-131 thyroid cancer, rhTSH",
@@ -1522,9 +1525,9 @@ class Gui:
             if "type_therapy" in self.odict["data"]["patient_details"]:
                 type_therapy = self.odict["data"]["patient_details"]["type_therapy"]
                 if type_therapy in update_therapy_names:
-                    self.odict["data"]["patient_details"][
-                        "type_therapy"
-                    ] = update_therapy_names[type_therapy]
+                    self.odict["data"]["patient_details"]["type_therapy"] = (
+                        update_therapy_names[type_therapy]
+                    )
 
             if "restriction" in self.odict["data"]["restrictions"]:
                 if (
@@ -1773,15 +1776,15 @@ class Gui:
                 )
 
                 if self.odict["data"]["patient_finished_by"] != "0":
-                    self.viewing_completed_patient_label[
-                        "text"
-                    ] = "Viewing completed patient\n(author: {})".format(
-                        self.odict["data"]["patient_finished_by"]
+                    self.viewing_completed_patient_label["text"] = (
+                        "Viewing completed patient\n(author: {})".format(
+                            self.odict["data"]["patient_finished_by"]
+                        )
                     )
                 else:
-                    self.viewing_completed_patient_label[
-                        "text"
-                    ] = "Viewing completed patient."
+                    self.viewing_completed_patient_label["text"] = (
+                        "Viewing completed patient."
+                    )
             else:
                 self.viewing_completed_patient_label.place_forget()
 
@@ -2452,7 +2455,7 @@ class Gui:
                         messagebox.showerror(
                             "Error",
                             "Calibrated after administration.  This is usually a mistake.\nIf it was intentional, you will need to check the box in 'Settings \u2192 Other' to proceed.",
-                            parent=window
+                            parent=window,
                         )
                         return
 
@@ -2496,9 +2499,9 @@ class Gui:
             self.odict["data"]["administration_details"][
                 "calibrated_activity"
             ] = r_calib_a
-            self.odict["data"]["administration_details"][
-                "calibration_datetime"
-            ] = datetime2str(r_calib_datetime)
+            self.odict["data"]["administration_details"]["calibration_datetime"] = (
+                datetime2str(r_calib_datetime)
+            )
 
             # Calculate and write to odict the derived quantity administered_activity if administration datetime was already submitted
             if r_admin_activity is not None:
@@ -2683,7 +2686,7 @@ class Gui:
                         messagebox.showerror(
                             "Error",
                             "Administered before calibration.  This is usually a mistake.\nIf it was intentional, you will need to check the box in 'Settings \u2192 Other' to proceed.",
-                            parent=window
+                            parent=window,
                         )
                         return
                     else:
@@ -2732,17 +2735,17 @@ class Gui:
 
             # No failing from here.
             #
-            self.odict["data"]["administration_details"][
-                "administration_datetime"
-            ] = datetime2str(r_admin_datetime)
+            self.odict["data"]["administration_details"]["administration_datetime"] = (
+                datetime2str(r_admin_datetime)
+            )
 
             if r_residual is not None:
                 self.odict["data"]["administration_details"][
                     "residual_activity"
                 ] = r_resid_a
-                self.odict["data"]["administration_details"][
-                    "residual_datetime"
-                ] = datetime2str(r_resid_datetime)
+                self.odict["data"]["administration_details"]["residual_datetime"] = (
+                    datetime2str(r_resid_datetime)
+                )
             else:
                 if "residual_activity" in self.odict["data"]["administration_details"]:
                     self.odict["data"]["administration_details"].pop(
@@ -3665,38 +3668,38 @@ class Gui:
                             parent=window,
                         )
                         return
-                    self.odict["data"]["clearance_data"][
-                        "curve_fit"
-                    ] = collections.OrderedDict(
-                        [
-                            ("generic", "0"),
-                            ("model", "biexponential"),
-                            (
-                                "fit_parameters",
-                                collections.OrderedDict(
-                                    [
-                                        ("a", params_biexp[0]),
-                                        ("b", params_biexp[1]),
-                                        ("c", params_biexp[2]),
-                                        ("d", params_biexp[3]),
-                                    ]
+                    self.odict["data"]["clearance_data"]["curve_fit"] = (
+                        collections.OrderedDict(
+                            [
+                                ("generic", "0"),
+                                ("model", "biexponential"),
+                                (
+                                    "fit_parameters",
+                                    collections.OrderedDict(
+                                        [
+                                            ("a", params_biexp[0]),
+                                            ("b", params_biexp[1]),
+                                            ("c", params_biexp[2]),
+                                            ("d", params_biexp[3]),
+                                        ]
+                                    ),
                                 ),
-                            ),
-                            (
-                                "meaningful_parameters",
-                                collections.OrderedDict(
-                                    [
-                                        (
-                                            "dose_rate_xm_init",
-                                            meaningful_params_biexp[0],
-                                        ),
-                                        ("fraction_1", meaningful_params_biexp[1]),
-                                        ("half_life_1", meaningful_params_biexp[2]),
-                                        ("half_life_2", meaningful_params_biexp[3]),
-                                    ]
+                                (
+                                    "meaningful_parameters",
+                                    collections.OrderedDict(
+                                        [
+                                            (
+                                                "dose_rate_xm_init",
+                                                meaningful_params_biexp[0],
+                                            ),
+                                            ("fraction_1", meaningful_params_biexp[1]),
+                                            ("half_life_1", meaningful_params_biexp[2]),
+                                            ("half_life_2", meaningful_params_biexp[3]),
+                                        ]
+                                    ),
                                 ),
-                            ),
-                        ]
+                            ]
+                        )
                     )
                     residuals = np.array(dr_xm) - func_biexp(
                         np.array(hrs_elapsed), *params_biexp
@@ -3714,34 +3717,34 @@ class Gui:
                             parent=window,
                         )
                         return
-                    self.odict["data"]["clearance_data"][
-                        "curve_fit"
-                    ] = collections.OrderedDict(
-                        [
-                            ("generic", "0"),
-                            ("model", "exponential"),
-                            (
-                                "fit_parameters",
-                                collections.OrderedDict(
-                                    [("a", params_exp[0]), ("b", params_exp[1])]
+                    self.odict["data"]["clearance_data"]["curve_fit"] = (
+                        collections.OrderedDict(
+                            [
+                                ("generic", "0"),
+                                ("model", "exponential"),
+                                (
+                                    "fit_parameters",
+                                    collections.OrderedDict(
+                                        [("a", params_exp[0]), ("b", params_exp[1])]
+                                    ),
                                 ),
-                            ),
-                            (
-                                "meaningful_parameters",
-                                collections.OrderedDict(
-                                    [
-                                        (
-                                            "dose_rate_xm_init",
-                                            meaningful_params_exp[0],
-                                        ),
-                                        (
-                                            "effective_half_life",
-                                            meaningful_params_exp[1],
-                                        ),
-                                    ]
+                                (
+                                    "meaningful_parameters",
+                                    collections.OrderedDict(
+                                        [
+                                            (
+                                                "dose_rate_xm_init",
+                                                meaningful_params_exp[0],
+                                            ),
+                                            (
+                                                "effective_half_life",
+                                                meaningful_params_exp[1],
+                                            ),
+                                        ]
+                                    ),
                                 ),
-                            ),
-                        ]
+                            ]
+                        )
                     )
                     residuals = np.array(dr_xm) - func_exp(
                         np.array(hrs_elapsed), *params_exp
@@ -4744,12 +4747,12 @@ class Gui:
 
             # fill the table
             row_cells = table.add_row().cells
-            row_cells[
-                0
-            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
-            row_cells[
-                1
-            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0} MBq"
+            row_cells[0].text = (
+                f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
+            )
+            row_cells[1].text = (
+                f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0} MBq"
+            )
             if discharge_datetime_str is not None:
                 row_cells[
                     1
@@ -5109,12 +5112,12 @@ class Gui:
 
             # fill the table
             row_cells = table.add_row().cells
-            row_cells[
-                0
-            ].text = f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
-            row_cells[
-                1
-            ].text = f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0_str} MBq"
+            row_cells[0].text = (
+                f"\u2022 First name: {first_name}\n\u2022 Last name: {last_name}\n\u2022 ID number: {pid}\n\u2022 Date of birth: {dob}"
+            )
+            row_cells[1].text = (
+                f"\u2022 Type of therapy: {type_therapy}\n\u2022 Site: {site}\n\u2022 Date/time of administration: {admin_datetime_str}\n\u2022 Activity administered: {a0_str} MBq"
+            )
             if discharge_datetime_str is not None:
                 row_cells[
                     1
