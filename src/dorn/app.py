@@ -1,5 +1,5 @@
 __program_name__ = "Dorn"
-__version__ = "1.12.0"
+__version__ = "1.13.0"
 __release_date__ = "26 May 2025"
 __homepage__ = "https://github.com/SAMI-Medical-Physics/dorn"
 __author__ = "Jake Forster"
@@ -17,6 +17,7 @@ from datetime import datetime, date, timedelta
 import numpy as np
 import pandas as pd
 
+from platformdirs import user_config_dir
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -345,14 +346,25 @@ class RestrictionsWindow:
         gui.update_buttons()
 
 
+
+ASSET_DIR = Path(__file__).resolve().parent
+
 class Gui:
     def __init__(
         self, add_therapy_measured=None, add_therapy_generic=None, write_info=False
     ):
         """Start GUI program."""
-        self.SOFTWARE_ICON = "icofile.ico"
-        self.GUI_BKGD = "gui_background.png"
-        self.FILENAME_SETTINGS = "settings.xml"
+        # self.SOFTWARE_ICON = "icofile.ico"
+
+        self.SOFTWARE_ICON = str(ASSET_DIR / "shovel.ico")
+        # self.GUI_BKGD = "gui_background.png"
+        self.GUI_BKGD = str(ASSET_DIR / "gui_background.png")
+        self.FILENAME_SETTINGS = Path(user_config_dir(__program_name__)) / "settings.xml"
+        if Path("settings.xml").is_file():
+            # Use the settings.xml in the current directory instead.
+            self.FILENAME_SETTINGS = "settings.xml"
+
+        # self.FILENAME_SETTINGS = "settings.xml" # FIXME: this is a dotfile
         # the following would let you call the script from a different dir, but won't work for cx_Freeze exe
         # if WINDOWS_OS:
         # self.SOFTWARE_ICON = os.path.join(os.path.dirname(__file__), self.SOFTWARE_ICON)
@@ -843,7 +855,8 @@ class Gui:
     def set_default_settings(self):
         self.email = "RadiationSafety@sa.gov.au"
         self.url = "sahealth.sa.gov.au/sami"
-        self.report_logo = os.path.abspath("report_logo.png")
+        # self.report_logo = os.path.abspath("report_logo.png")
+        self.report_logo = str(ASSET_DIR / "report_logo.png")
         # the following would let you call the script from a different dir, but won't work for cx_Freeze exe
         # self.report_logo = os.path.join(os.path.dirname(__file__), self.report_logo)
 
@@ -1003,6 +1016,7 @@ class Gui:
             self.other_settings
         )
 
+        self.FILENAME_SETTINGS.parent.mkdir(parents=True, exist_ok=True)
         with open(self.FILENAME_SETTINGS, "w") as fd:
             fd.write(xmltodict.unparse(settings_odict, pretty=True))
 

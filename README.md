@@ -22,6 +22,7 @@ Python package dependencies:
 - `scipy`
 - `matplotlib`
 - `pandas`
+- `platformdirs`
 - `glowgreen`
 - `xmltodict`
 - `python-docx`

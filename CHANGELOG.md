@@ -82,3 +82,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Reports can now be generated when no restrictions are checked.
 - Previously, after both the administration time and calibration time had been entered, it was not possible to make large changes to either one.  This is because the two are submitted separately, and a large change in one may be incompatible with the current value of the other (e.g. because the administered activity would become infinitely large).  Now, if the new calibration time is incompatible with the current administration time, the calibration information is accepted and the administration time and residual information are cleared.  An information message is shown.
+
+## [2.0.0] - 2025-??-??
+
+### Changed
+- To use Dorn with a local Python installation (as opposed to using Dorn from an executable produced by cx_Freeze), Dorn must now be installed as a Python package.  Once installed, use the command `dorn` to start Dorn.
+- Dorn's settings file `settings.xml` is now located in the user's configuration directory.  On Windows, the new location is `C:\Users\<USER>\AppData\Local\Dorn\Dorn\settings.xml`.  If you made changes to Dorn's settings and wish to preserve them, place your `settings.xml` in the new location.  For backward compatibility, if there is a `settings.xml` in the current working directory, that file will be used instead.

@@ -1,5 +1,5 @@
 import argparse
-from dorn import Gui
+from dorn.app import Gui
 
 
 def main():
@@ -11,7 +11,7 @@ def main():
         metavar=("THERAPY_NAME", "RADIONUCLIDE", "INPATIENT"),
         dest="therapy_measured",
         help="""
-        add a therapy option with measured clearance data. Use double quotes. 
+        add a therapy option with measured clearance data. Use double quotes.
         E.g. -m "Y-90-dotatate skin cancer" Y-90 1
         """,
     )
@@ -27,9 +27,9 @@ def main():
         ),
         dest="therapy_generic",
         help="""
-        add a therapy option with a generic clearance function. Use double quotes. 
-        MODEL_PARAMETERS is 
-        "dose_rate_1m_init_perA0(uSv/h/MBq) effective_half_life(h)" for MODEL exponential and 
+        add a therapy option with a generic clearance function. Use double quotes.
+        MODEL_PARAMETERS is
+        "dose_rate_1m_init_perA0(uSv/h/MBq) effective_half_life(h)" for MODEL exponential and
         "dose_rate_1m_init_perA0(uSv/h/MBq) fraction_1[0-1] half_life_1(h) half_life_2(h)" for MODEL biexponential.
         E.g. -g "Lu-177-PSMA (generic clearance)" Lu-177 0 exponential "0.05 20"
         """,
