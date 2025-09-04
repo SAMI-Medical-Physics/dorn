@@ -1,5 +1,5 @@
 import numpy as np
-from dorn import Gui
+from dorn.app import Gui
 from datetime import datetime, timedelta
 from glowgreen import (
     Clearance_1m,
