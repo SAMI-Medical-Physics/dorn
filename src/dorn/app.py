@@ -18,16 +18,8 @@ import numpy as np
 import pandas as pd
 
 from platformdirs import user_config_dir
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-
-from scipy.optimize import curve_fit
 
 import warnings
-
-from docx import Document
-from docx.shared import Inches, Pt
 
 import os.path
 import xmltodict
@@ -38,13 +30,6 @@ from pathlib import Path
 import importlib.metadata
 import platform
 
-from glowgreen import (
-    Clearance_1m,
-    ContactPatternRepeating,
-    ContactPatternOnceoff,
-    cs_patterns,
-    restrictions_for,
-)
 
 try:
     GLOWGREEN_VERSION = importlib.metadata.version("glowgreen")
@@ -141,6 +126,14 @@ def docx2pdf(path_in, path_out):
 
 class RestrictionsWindow:
     def __init__(self, gui):
+        from glowgreen import (
+            Clearance_1m,
+            ContactPatternRepeating,
+            ContactPatternOnceoff,
+            cs_patterns,
+            restrictions_for,
+        )
+
         self.chks = []
         if gui.odict["data"]["restrictions"]:
             self.df = pd.DataFrame.from_dict(
@@ -3074,6 +3067,11 @@ class Gui:
 
     # Measured Clearance Data
     def clearance_data(self):
+        from scipy.optimize import curve_fit
+        import matplotlib.pyplot as plt
+        from matplotlib.figure import Figure
+        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+
         def fit_exponential(self, time_lapse, dose_rate_xm):
             # Fit to y = a * np.exp(-b * t)
             # i.e. fit_parameters = [a, b]
@@ -4145,6 +4143,8 @@ class Gui:
 
     # Patient Discharge
     def patient_discharge(self):
+        from glowgreen import Clearance_1m
+
         def compute_recommended_discharge(self):
             model = self.odict["data"]["clearance_data"]["curve_fit"]["model"]
             meaningful_parameters = [
@@ -4632,6 +4632,9 @@ class Gui:
 
     # Generate Reports
     def generate_reports(self):
+        from docx import Document
+        from docx.shared import Inches, Pt
+
         def get_patient_handout(self):
             site = self.odict["data"]["patient_details"]["site"]
             if site in self.site_options_df.index.to_list():
@@ -5804,6 +5807,8 @@ class Gui:
         meaningful_parameters,
         measurement_distance,
     ):
+        from glowgreen import Clearance_1m
+
         hrs = (discharge_datetime - admin_datetime).total_seconds() / 3600
 
         discharge_dose_rate_xm = 0
