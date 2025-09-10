@@ -126,13 +126,7 @@ def docx2pdf(path_in, path_out):
 
 class RestrictionsWindow:
     def __init__(self, gui):
-        from glowgreen import (
-            Clearance_1m,
-            ContactPatternRepeating,
-            ContactPatternOnceoff,
-            cs_patterns,
-            restrictions_for,
-        )
+        from glowgreen import cs_patterns
 
         self.chks = []
         if gui.odict["data"]["restrictions"]:
@@ -172,6 +166,11 @@ class RestrictionsWindow:
             self.compute_restrictions(gui)
 
     def compute_restrictions(self, gui):
+        from glowgreen import (
+            Clearance_1m,
+            restrictions_for,
+        )
+
         admin_datetime = str2datetime(
             gui.odict["data"]["administration_details"]["administration_datetime"]
         )
@@ -266,6 +265,12 @@ class RestrictionsWindow:
 
     # View button alongside each restriction
     def view_restriction(self, gui, i):
+        from glowgreen import (
+            Clearance_1m,
+            ContactPatternRepeating,
+            ContactPatternOnceoff,
+        )
+
         admin_datetime = str2datetime(
             gui.odict["data"]["administration_details"]["administration_datetime"]
         )
