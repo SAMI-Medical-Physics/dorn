@@ -5417,6 +5417,8 @@ class Gui:
                         # PDF export is not essential
                         # so don't raise or return
 
+        if not int(self.odict["data"]["reports_generated"]):
+            self.unsaved_data = True
         self.odict["data"]["reports_generated"] = "1"
         self.update_buttons()
 
