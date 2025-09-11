@@ -37,3 +37,11 @@ freeze = ["cx_Freeze"]
 Homepage = "https://github.com/SAMI-Medical-Physics/dorn"
 Issues = "https://github.com/SAMI-Medical-Physics/dorn/issues"
 Changelog = "https://github.com/SAMI-Medical-Physics/dorn/blob/main/CHANGELOG.md"
+
+[tool.cxfreeze]
+[[tool.cxfreeze.executables]]
+script = "src/dorn/cli.py"
+# base = "gui"                    #disables CLI
+target_name = "Dorn.exe"
+icon = "src/dorn/shovel"
+copyright = "Copyright (C) 2022-2025 South Australia Medical Imaging"
