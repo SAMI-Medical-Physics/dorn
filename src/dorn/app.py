@@ -518,7 +518,7 @@ class Gui:
         self.viewing_completed_patient_label = tk.Label(self.root, bg="yellow")
 
         tk.Label(
-            self.root, text=__program_name__, bg="white", font="Arial 16 bold"
+            self.root, text=f"{__program_name__} {__version__}", bg="white", font="Arial 16 bold"
         ).grid(row=0, pady=(55, 0))
         tk.Label(
             self.root,
