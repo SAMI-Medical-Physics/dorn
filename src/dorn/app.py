@@ -42,6 +42,8 @@ WINDOWS_OS = platform.system() == "Windows"
 # To help restriction periods for once-off patterns converge.
 MAX_ADMINISTERED_ACTIVITY_MBQ = 1e9  # 1 PBq
 
+ASSET_DIR = Path(__file__).resolve().parent
+
 
 def func_exp(t, a, b):
     return a * np.exp(-b * t)
@@ -344,30 +346,19 @@ class RestrictionsWindow:
         gui.update_buttons()
 
 
-
-ASSET_DIR = Path(__file__).resolve().parent
-
 class Gui:
     def __init__(
         self, add_therapy_measured=None, add_therapy_generic=None, write_info=False
     ):
         """Start GUI program."""
-        # self.SOFTWARE_ICON = "icofile.ico"
-
         self.SOFTWARE_ICON = str(ASSET_DIR / "shovel.ico")
-        # self.GUI_BKGD = "gui_background.png"
         self.GUI_BKGD = str(ASSET_DIR / "gui_background.png")
-        self.FILENAME_SETTINGS = Path(user_config_dir(__program_name__)) / "settings.xml"
+        self.FILENAME_SETTINGS = (
+            Path(user_config_dir(__program_name__)) / "settings.xml"
+        )
         if Path("settings.xml").is_file():
             # Use the settings.xml in the current directory instead.
             self.FILENAME_SETTINGS = "settings.xml"
-
-        # self.FILENAME_SETTINGS = "settings.xml" # FIXME: this is a dotfile
-        # the following would let you call the script from a different dir, but won't work for cx_Freeze exe
-        # if WINDOWS_OS:
-        # self.SOFTWARE_ICON = os.path.join(os.path.dirname(__file__), self.SOFTWARE_ICON)
-        # self.GUI_BKGD = os.path.join(os.path.dirname(__file__), self.GUI_BKGD)
-        # self.FILENAME_SETTINGS = os.path.join(os.path.dirname(__file__), self.FILENAME_SETTINGS)
         self.SEX_OPTIONS = ["Male", "Female", "Other"]
         self.N_MEASUREMENTS_MAX = 15
 
@@ -518,7 +509,10 @@ class Gui:
         self.viewing_completed_patient_label = tk.Label(self.root, bg="yellow")
 
         tk.Label(
-            self.root, text=f"{__program_name__} {__version__}", bg="white", font="Arial 16 bold"
+            self.root,
+            text=f"{__program_name__} {__version__}",
+            bg="white",
+            font="Arial 16 bold",
         ).grid(row=0, pady=(55, 0))
         tk.Label(
             self.root,
@@ -3075,7 +3069,10 @@ class Gui:
         from scipy.optimize import curve_fit
         import matplotlib.pyplot as plt
         from matplotlib.figure import Figure
-        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+        from matplotlib.backends.backend_tkagg import (
+            FigureCanvasTkAgg,
+            NavigationToolbar2Tk,
+        )
 
         def fit_exponential(self, time_lapse, dose_rate_xm):
             # Fit to y = a * np.exp(-b * t)
