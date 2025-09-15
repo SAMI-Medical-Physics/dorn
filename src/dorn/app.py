@@ -635,8 +635,6 @@ class Gui:
                             "Information",
                             f"Ignoring 'other_settings' in {self.FILENAME_SETTINGS}:\n    {e}",
                         )
-        else:
-            self.write_settings()
 
         self.root.mainloop()
 
