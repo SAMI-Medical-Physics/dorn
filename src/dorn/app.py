@@ -1018,7 +1018,7 @@ class Gui:
             if os.path.isfile(f_old):
                 startdir = os.path.dirname(f_old)
             else:
-                startdir = os.getcwd()
+                startdir = ASSET_DIR
 
             filep = filedialog.askopenfilename(
                 initialdir=startdir,
