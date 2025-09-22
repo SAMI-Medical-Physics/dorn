@@ -843,39 +843,21 @@ class Gui:
         return info_str
 
     def set_default_settings(self):
-        self.email = "RadiationSafety@sa.gov.au"
-        self.url = "sahealth.sa.gov.au/sami"
+        self.email = "info@example.org"
+        self.url = "https://example.org"
         self.report_logo = str(ASSET_DIR / "organisation_logo.png")
         site_options = [
             self.site_dict(
-                "The Queen Elizabeth Hospital",
-                "28 Woodville Road",
-                "Woodville South SA 5011",
-                "(08) 8222 6431",
+                "Your Hospital Here",
+                "123 Main Street",
+                "Anytown SA 5002",
+                "(08) 1234 5678",
             ),
             self.site_dict(
-                "Lyell McEwin Hospital",
-                "120 - 130 Haydown Road",
-                "Elizabeth Vale SA 5112",
-                "(08) 8182 9999",
-            ),
-            self.site_dict(
-                "The Royal Adelaide Hospital",
-                "Level 2, Lift E - 1 Port Road",
-                "Adelaide SA 5000",
-                "1300 724 319",
-            ),
-            self.site_dict(
-                "Women's and Children's Hospital",
-                "Level 2, Rogerson and Queen Victoria Buildings, 72 King William Road",
-                "North Adelaide SA 5006",
-                "(08) 8161 6055",
-            ),
-            self.site_dict(
-                "Flinders Medical Centre",
-                "Level 2, Medical Imaging, Flinders Drive",
-                "Bedford Park SA 5042",
-                "(08) 8204 4291",
+                "Another Hospital",
+                "124 Main Street",
+                "Anytown SA 5002",
+                "(08) 1234 5679",
             ),
         ]
         self.site_options_df = pd.DataFrame(site_options)
@@ -893,7 +875,7 @@ class Gui:
             "site": self.site_options_df.index.to_list()[0],
             "num_treatments_in_year": 1,
             "measurement_distance": 2,
-            "detector_calibration_factor": 0.75,
+            "detector_calibration_factor": 1,
             "curve_fit_model": "biexponential",
             "data_directory": os.getcwd(),
             "patient_handout_directory": os.getcwd(),
