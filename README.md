@@ -2,7 +2,7 @@
 
 # Dorn
 
-Dorn is a GUI for generating individualised close contact restrictions for radionuclide therapy patients.
+Dorn is a GUI for generating individualised close contact restrictions for nuclear medicine patients, particularly radionuclide therapy patients.
 
 ## Executable provided with release
 
@@ -74,8 +74,6 @@ The Dorn icon was designed by Kevin Hickson.
 - Patient data is stored in an ordered dictionary.  Program reads/writes patient data to XML files.
 
 - Program settings are stored in another ordered dictionary, which has read/write with *settings.xml*.
-If *settings.xml* does not exist at runtime, hard-coded settings are used in the program and a new *settings.xml* file is written.
-The hard-coded settings are applicable to South Australia Medical Imaging.
 
 - Some settings cannot be edited via the GUI, such as the therapy options and the radionuclide data.
 The user may add at most 1 additional therapy options with measured clearance data and 1 additional therapy option with generic clearance via the command line interface (see below).
