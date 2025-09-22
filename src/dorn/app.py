@@ -845,11 +845,7 @@ class Gui:
     def set_default_settings(self):
         self.email = "RadiationSafety@sa.gov.au"
         self.url = "sahealth.sa.gov.au/sami"
-        # self.report_logo = os.path.abspath("report_logo.png")
         self.report_logo = str(ASSET_DIR / "organisation_logo.png")
-        # the following would let you call the script from a different dir, but won't work for cx_Freeze exe
-        # self.report_logo = os.path.join(os.path.dirname(__file__), self.report_logo)
-
         site_options = [
             self.site_dict(
                 "The Queen Elizabeth Hospital",
