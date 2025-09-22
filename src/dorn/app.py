@@ -936,7 +936,7 @@ class Gui:
         for site in settings_odict["root"]["organisation"]["site"]:
             if any(x not in site for x in site_keys):
                 raise KeyError(
-                    "There is a site is missing one or more of the keys: {}".format(
+                    "There is a site missing one or more of the keys: {}".format(
                         ", ".join(site_keys)
                     )
                 )
