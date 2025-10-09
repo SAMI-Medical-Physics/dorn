@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "dorn"
-version = "1.12.1"
+version = "2.0.0"
 description = "Close contact restrictions for radionuclide therapy patients"
 authors = [
     { name = "Jake Forster" }
