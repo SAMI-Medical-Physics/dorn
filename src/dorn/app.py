@@ -516,10 +516,10 @@ class Gui:
         ).grid(row=0, pady=(55, 0))
         tk.Label(
             self.root,
-            text="Close contact restrictions\nfor nuclear medicine patients",
+            text="Close contact restrictions\nfor radionuclide therapy patients",
             bg="white",
             font="Arial 10",
-        ).grid(row=1, padx=(138, 138), pady=(0, 0))
+        ).grid(row=1, padx=130, pady=(0, 0))
 
         self.button_patient = tk.Button(
             self.root, text="Patient Details", command=self.patient_details
