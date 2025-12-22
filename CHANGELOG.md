@@ -90,3 +90,8 @@ All notable changes to this project will be documented in this file.
 - Dorn's settings file `settings.xml` is now located in the user's configuration directory.  On Windows, the new location is `C:\Users\<USER>\AppData\Local\Dorn\Dorn\settings.xml`.  If you made changes to Dorn's settings and wish to preserve them, place your `settings.xml` file in the new location.  For backward compatibility, if there is a `settings.xml` in the current working directory, that file will be used instead.
 - The startup time was reduced by delaying module imports.  There may now be a small delay when opening the "Measured Clearance Data" window for the first time in a session.
 - Dorn no longer uses SAMI's organisation information and the generated reports do not use SAMI's branding.
+
+## [2.0.1] - XXXX-XX-XX
+
+### Fixed
+- Fixed an error message that appeared when submitting settings if Dorn loaded `settings.xml` from the current working directory.

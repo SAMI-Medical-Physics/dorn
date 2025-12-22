@@ -984,7 +984,8 @@ class Gui:
             self.other_settings
         )
 
-        self.FILENAME_SETTINGS.parent.mkdir(parents=True, exist_ok=True)
+        if isinstance(self.FILENAME_SETTINGS, Path):
+            self.FILENAME_SETTINGS.parent.mkdir(parents=True, exist_ok=True)
         with open(self.FILENAME_SETTINGS, "w") as fd:
             fd.write(xmltodict.unparse(settings_odict, pretty=True))
 
